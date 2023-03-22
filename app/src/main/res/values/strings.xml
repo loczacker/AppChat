@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AppChat</string>
+    <string name="awesome_chat"><font font="@font/exo_black">Awesome</font><font font="@font/exo_italic"> chat</font></string>
+</resources>

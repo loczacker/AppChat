@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "789004909426",
+    "project_id": "chatapp-76fd6",
+    "storage_bucket": "chatapp-76fd6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789004909426:android:32ba486a013d0d94c8bbeb",
+        "android_client_info": {
+          "package_name": "com.rikkei.training.appchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789004909426-bsi0g6f0541hsunmqc5mmnr40uocoeav.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rikkei.training.appchat",
+            "certificate_hash": "d54b4fb95d8f0d4f8c21393c79574e705a99c265"
+          }
+        },
+        {
+          "client_id": "789004909426-qnqbcfekfn18mbdt9vinej4osrlbjuj1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMsrM5qpJmflIJ7YIq-tYsq041_Xx2oX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789004909426-qnqbcfekfn18mbdt9vinej4osrlbjuj1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
