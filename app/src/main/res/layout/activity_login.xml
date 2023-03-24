@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="25dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/mail_2_2"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trải nghiệm Awesome chat"
+            android:fontFamily="@font/lato_regular"
+            android:textSize="26sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ĐĂNG NHẬP"
+            android:textSize="30sp"
+            android:fontFamily="@font/lato_bold"
+            android:textColor="#4356B4"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EMAIL"
+            android:textSize="14sp"
+            android:fontFamily="@font/lato_regular"
+            android:textColor="#999999"/>
+
+        <EditText
+            android:id="@+id/ed_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/mess"
+            android:hint="yourname@gmail.com"
+            android:inputType="textEmailAddress"
+            android:textSize="22sp"
+            android:fontFamily="@font/lato_regular"
+            android:textColor="#999999"
+            android:layout_marginTop="10dp"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MẬT KHẨU"
+            android:textSize="14sp"
+            android:fontFamily="@font/lato_regular"
+            android:textColor="#999999"/>
+
+        <EditText
+            android:id="@+id/ed_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/key"
+            android:hint="........."
+            android:inputType="textPassword"
+            android:textSize="22sp"
+            android:fontFamily="@font/lato_regular"
+            android:textColor="#999999"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="Quên mật khẩu"
+        android:textSize="17sp"
+        android:textColor="#4356B4"
+        android:fontFamily="@font/lato_regular"
+        android:layout_marginTop="10dp"/>
+
+    <android.widget.Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/button_white"
+        android:text="ĐĂNG NHẬP"
+        android:textColor="@color/white"
+        android:textSize="19sp"
+        android:fontFamily="@font/lato_regular"/>
+
+    <TextView
+        android:id="@+id/tv_register_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Chưa có tài khoản? Đăng ký ngay"
+        android:textSize="17sp"
+        android:fontFamily="@font/lato_regular"
+        android:layout_marginTop="150dp"/>
+
+
+</LinearLayout>

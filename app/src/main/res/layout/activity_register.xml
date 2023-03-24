@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="25dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp">
+
+        <ImageButton
+            android:id="@+id/ib_res"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:src="@drawable/vector"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ĐĂNG KÝ"
+        android:textSize="30sp"
+        android:fontFamily="@font/lato_bold"
+        android:textColor="#4356B4"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HỌ VÀ TÊN"
+        android:textSize="15sp"
+        android:fontFamily="@font/lato_regular"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/ed_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/profile"
+        android:hint="Awesome Chat"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EMAIL"
+        android:textSize="15sp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/ed_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/mess"
+        android:hint="yourname@gmail.com"
+        android:inputType="textEmailAddress"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MẬT KHẨU"
+        android:textSize="15sp"
+        android:fontFamily="@font/lato_regular"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/ed_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/key"
+        android:hint="........."
+        android:inputType="textPassword"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/tv_forgot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quên mật khẩu"
+        android:layout_gravity="right"
+        android:fontFamily="@font/lato_regular"
+        android:textColor="#4356B4"
+        android:textSize="17sp"
+        android:layout_marginTop="20dp"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/custom_check_box"
+            android:checked="false"/>
+
+        <TextView
+            android:id="@+id/tv_agree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tôi đồng ý với các chính sách và điều khoản"
+            android:fontFamily="@font/lato_regular"
+            android:textSize="15sp"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <android.widget.Button
+        android:id="@+id/bt_res"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ĐĂNG KÝ"
+        android:textColor="@color/white"
+        android:background="@drawable/buttonblue"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="18sp"
+        android:layout_marginTop="40dp"/>
+
+    <TextView
+        android:id="@+id/tv_login_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đã có tài khoản? Đăng nhập ngay"
+        android:layout_gravity="center"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="17sp"
+        android:layout_marginTop="130dp"/>
+</LinearLayout>
