@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.vm
+package com.rikkei.training.appchat.activity
 
 import android.content.Intent
 import android.graphics.Typeface
