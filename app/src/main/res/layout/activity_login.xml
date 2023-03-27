@@ -60,10 +60,11 @@
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/mess"
             android:hint="yourname@gmail.com"
+            android:textColorHint="#999999"
             android:inputType="textEmailAddress"
             android:textSize="22sp"
             android:fontFamily="@font/lato_regular"
-            android:textColor="#999999"
+            android:textColor="@color/black"
             android:layout_marginTop="10dp"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -88,9 +89,10 @@
             android:drawableEnd="@drawable/key"
             android:hint="........."
             android:inputType="textPassword"
+            android:textColorHint="#999999"
             android:textSize="22sp"
             android:fontFamily="@font/lato_regular"
-            android:textColor="#999999"/>
+            android:textColor="@color/black"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <TextView
@@ -111,6 +113,7 @@
         android:background="@drawable/button_white"
         android:text="ĐĂNG NHẬP"
         android:textColor="@color/white"
+        android:textColorHint="@color/black"
         android:textSize="19sp"
         android:fontFamily="@font/lato_regular"/>
 

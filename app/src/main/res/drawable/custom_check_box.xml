@@ -2,7 +2,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_checked="false"
-        android:drawable="@drawable/customcheckbox"/>
+        android:drawable="@drawable/custom_check_box_white"/>
+
     <item android:state_checked="true"
         android:drawable="@drawable/check"/>
 

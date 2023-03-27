@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:title="Messenger"
-        android:id="@+id/messenger"
+    <item android:id="@+id/messenger"
+        android:title="Tin nhắn"
         android:icon="@drawable/chat_fillled_messenger_2"/>
-    <item android:title="Friends"
-        android:id="@+id/friends"
+
+    <item android:id="@+id/friends"
+        android:title="Bạn bè"
         android:icon="@drawable/friends"/>
-    <item android:title="Profile"
-        android:id="@+id/profile"
+
+    <item android:id="@+id/profile"
+        android:title="Trang cá nhân"
         android:icon="@drawable/profile"/>
 </menu>

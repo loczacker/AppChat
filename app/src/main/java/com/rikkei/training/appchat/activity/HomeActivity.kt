@@ -19,8 +19,9 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
         replaceFragment(MessengerFragment())
 
-        binding.bottomNavigationView.setOnClickListener{
-            when(it.id) {
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when(it.itemId) {
+
                 R.id.messenger -> replaceFragment(MessengerFragment())
                 R.id.friends -> replaceFragment(FriendsFragment())
                 R.id.profile -> replaceFragment(ProfileFragment())
@@ -35,10 +36,11 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun replaceFragment(fragment : Fragment) {
+    private fun replaceFragment(fragment: Fragment) {
+
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout, fragment)
+        fragmentTransaction.replace(R.id.frame_layout,fragment)
         fragmentTransaction.commit()
     }
 }
