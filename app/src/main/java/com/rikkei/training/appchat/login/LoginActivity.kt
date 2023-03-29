@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.activity
+package com.rikkei.training.appchat.login
 
 import android.content.Intent
 import android.graphics.Color
@@ -9,17 +9,16 @@ import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.util.Patterns
-import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.widget.addTextChangedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rikkei.training.appchat.R
+import com.rikkei.training.appchat.activity.HomeActivity
+import com.rikkei.training.appchat.activity.RegisterActivity
 import com.rikkei.training.appchat.databinding.ActivityLoginBinding
 
 
@@ -32,7 +31,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
 
     private lateinit var firebaseAuth: FirebaseAuth
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,6 +115,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Log.e(TAG, task.exception.toString())
                     updateUI(null)
                 }
             }

@@ -7,16 +7,16 @@
     android:background="@drawable/bg"
     tools:context=".activity.HomeActivity">
 
-<FrameLayout
-    android:id="@+id/frame_layout"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    app:layout_constraintBottom_toTopOf="@+id/layout_bottom"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toTopOf="@+id/layout_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-</FrameLayout>
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_bottom"

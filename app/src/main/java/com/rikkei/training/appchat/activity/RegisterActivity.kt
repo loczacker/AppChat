@@ -13,12 +13,12 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.CompoundButton
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityRegisterBinding
+import com.rikkei.training.appchat.login.LoginActivity
 
 class RegisterActivity : AppCompatActivity() {
     companion object {

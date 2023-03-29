@@ -3,9 +3,14 @@ package com.rikkei.training.appchat.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.google.android.material.tabs.TabLayoutMediator
 import com.rikkei.training.appchat.R
+import com.rikkei.training.appchat.adapter.HomePagerAdapter
 import com.rikkei.training.appchat.databinding.ActivityHomeBinding
 import com.rikkei.training.appchat.databinding.FragmentFriendsBinding
+import com.rikkei.training.appchat.fragments.ChangeProfileFragment
 import com.rikkei.training.appchat.fragments.FriendsFragment
 import com.rikkei.training.appchat.fragments.MessengerFragment
 import com.rikkei.training.appchat.fragments.ProfileFragment
@@ -44,3 +49,4 @@ class HomeActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 }
+

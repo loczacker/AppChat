@@ -28,7 +28,7 @@
             android:id="@+id/ib_add_mess"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/create_new_message"
+            android:background="@drawable/ic_add_new_friend"
             app:layout_constraintBottom_toBottomOf="@+id/tv_mess"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_mess"/>
@@ -41,7 +41,7 @@
             android:padding="10dp"
             android:drawableStart="@drawable/search"
             android:background="@drawable/background_search_bar"
-            android:hint="Tìm kiếm tin nhắn"
+            android:hint="@string/search_message"
             android:drawablePadding="10dp"
             app:layout_constraintTop_toBottomOf="@+id/tv_mess"
             app:layout_editor_absoluteX="44dp" />

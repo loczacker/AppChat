@@ -8,6 +8,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import com.rikkei.training.appchat.databinding.ActivitySplashBinding
+import com.rikkei.training.appchat.login.LoginActivity
 
 private lateinit var binding: ActivitySplashBinding
 
