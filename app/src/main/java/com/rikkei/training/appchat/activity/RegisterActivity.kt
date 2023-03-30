@@ -15,8 +15,11 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.rikkei.training.appchat.R
+import com.rikkei.training.appchat.Users
 import com.rikkei.training.appchat.databinding.ActivityRegisterBinding
 import com.rikkei.training.appchat.login.LoginActivity
 
@@ -25,13 +28,18 @@ class RegisterActivity : AppCompatActivity() {
         private const val TAG = "RegisterActivity"
     }
     private lateinit var binding: ActivityRegisterBinding
+
     private lateinit var firebaseAuth: FirebaseAuth
+
+    private lateinit var dbref: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        dbref = FirebaseDatabase.getInstance().getReference("Users")
         textOneSpan()
         textTwoSpan()
         changeColor()
@@ -53,6 +61,9 @@ class RegisterActivity : AppCompatActivity() {
             val email = binding.edEmail.text.toString()
             val password = binding.edPassword.text.toString()
             val checkPolicy = binding.cb1
+            val uid = dbref.push().key!!
+            val users = Users(name,email,uid)
+            dbref.child(name).setValue(users)
 
             if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && checkPolicy.isChecked) {
                     if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
