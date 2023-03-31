@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Patterns
+import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -31,23 +32,19 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
 
-    private lateinit var dbref: DatabaseReference
+    private lateinit var database: FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dbref = FirebaseDatabase.getInstance().getReference("Users")
         textOneSpan()
         textTwoSpan()
         changeColor()
-        //Textview back login
         binding.tvLoginRegister.setOnClickListener{
             loginBack()
         }
-        //ImageButton back login
         binding.ibRes.setOnClickListener{
             loginBack()
         }
@@ -55,15 +52,13 @@ class RegisterActivity : AppCompatActivity() {
         //validate signup firebase
 
         firebaseAuth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
 
         binding.btRes.setOnClickListener {
             val name = binding.edName.text.toString()
             val email = binding.edEmail.text.toString()
             val password = binding.edPassword.text.toString()
             val checkPolicy = binding.cb1
-            val uid = dbref.push().key!!
-            val users = Users(name,email,uid)
-            dbref.child(name).setValue(users)
 
             if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && checkPolicy.isChecked) {
                     if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -72,8 +67,6 @@ class RegisterActivity : AppCompatActivity() {
                             && password.matches(".*[a-z].*".toRegex())
                             && password.matches(".*\\d.*".toRegex())) {
                             register(email,password)
-
-
                         } else {
 
                             Toast.makeText(this, "Password is not invalid", Toast.LENGTH_SHORT).show()
@@ -85,6 +78,7 @@ class RegisterActivity : AppCompatActivity() {
 
 
             } else {
+                binding.btRes.visibility = View.VISIBLE
             }
         }
 
@@ -174,13 +168,24 @@ class RegisterActivity : AppCompatActivity() {
 
 
     private  fun register(email: String, password: String){
+        val name = binding.edName.text.toString()
+        val email = binding.edEmail.text.toString()
         Firebase.auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
+                    val databaseRef = database.reference.child("Users").child(firebaseAuth.currentUser!!.uid)
+                    val users: Users = Users(firebaseAuth.currentUser!!.uid, name, email)
+
+                    databaseRef.setValue(users).addOnCompleteListener{
+                        if (it.isSuccessful){
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this, "Something went wrong,try again", Toast.LENGTH_SHORT).show()
+                        }
+                    }
 
                 } else {
                     // If sign in fails, display a message to the user.

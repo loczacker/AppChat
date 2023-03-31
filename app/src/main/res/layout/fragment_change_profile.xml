@@ -15,7 +15,7 @@
         android:gravity="center_vertical"
         android:paddingHorizontal="10dp">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/img_back_home_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -118,6 +118,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/ed_phone_change"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_telephone"
@@ -141,6 +142,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/ed_birthday_change"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_birthday"
