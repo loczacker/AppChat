@@ -19,12 +19,13 @@ class FriendsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFriendsBinding.inflate(inflater, container, false)
-        return binding.root
 
         val tabTitles = arrayOf("Bạn bè", "Tất cả", "Yêu cầu")
         TabLayoutMediator(binding.tabFriends, binding.vpFriends) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
+
+        return binding.root
     }
 
 }

@@ -70,9 +70,9 @@
                 android:id="@+id/img_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="184dp"
+                android:layout_marginStart="130dp"
                 android:layout_marginTop="148dp"
-                android:background="@drawable/ic_add_photo"
+                android:background="@drawable/changeimg"
                 app:layout_constraintStart_toStartOf="@+id/img_ava"
                 app:layout_constraintTop_toTopOf="@+id/img_ava" />
 
@@ -124,7 +124,8 @@
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_telephone"
                 android:fontFamily="@font/lato_medium"
-                android:hint="Số điện thoại" />
+                android:hint="Số điện thoại"
+                android:inputType="number"/>
         </LinearLayout>
 
         <LinearLayout
@@ -148,7 +149,8 @@
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_birthday"
                 android:fontFamily="@font/lato_medium"
-                android:hint="Ngày sinh" />
+                android:hint="Ngày sinh"
+                android:inputType="date"/>
         </LinearLayout>
 
         <LinearLayout

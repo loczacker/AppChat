@@ -32,6 +32,7 @@
             android:layout_width="63dp"
             android:layout_height="63dp"
             android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/random3" />

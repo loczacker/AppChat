@@ -1,5 +1,6 @@
 package com.rikkei.training.appchat.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,7 +11,9 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.rikkei.training.appchat.R
+import com.rikkei.training.appchat.activity.MainActivity
 import com.rikkei.training.appchat.databinding.FragmentProfileBinding
+import com.rikkei.training.appchat.login.LoginActivity
 
 class ProfileFragment : Fragment() {
 
@@ -34,6 +37,12 @@ class ProfileFragment : Fragment() {
         binding.ibChange.setOnClickListener {
             val transaction = fragmentManager?.beginTransaction()
             transaction?.replace(R.id.frame_layout, ChangeProfileFragment())?.commit()
+        }
+        binding.txtSignOut.setOnClickListener{
+            firebaseAuth.signOut()
+            startActivity(
+                Intent(activity, LoginActivity::class.java )
+            )
         }
         return binding.root
     }
@@ -89,7 +98,6 @@ class ProfileFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
                 }
             })
     }
