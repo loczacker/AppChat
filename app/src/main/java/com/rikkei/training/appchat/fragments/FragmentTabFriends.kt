@@ -5,18 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentMessengerBinding
+import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
 
-class MessengerFragment : Fragment() {
+class FragmentTabFriends : Fragment() {
 
-    private lateinit var binding: FragmentMessengerBinding
+    private lateinit var binding: FragmentTabFriendsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMessengerBinding.inflate(inflater, container, false)
+        binding = FragmentTabFriendsBinding.inflate(inflater, container, false)
         return binding.root
     }
 }
