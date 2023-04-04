@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.tabs.TabLayout
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentMessengerBinding
 import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding

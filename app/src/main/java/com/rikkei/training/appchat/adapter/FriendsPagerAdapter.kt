@@ -1,23 +1,24 @@
 package com.rikkei.training.appchat.adapter
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.rikkei.training.appchat.activity.HomeActivity
-import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
-import com.rikkei.training.appchat.fragments.FriendsFragment
-import com.rikkei.training.appchat.fragments.MessengerFragment
-import com.rikkei.training.appchat.fragments.ProfileFragment
+import com.rikkei.training.appchat.fragments.*
 
 
-class FriendsPagerAdapter (activity: HomeActivity) : FragmentStateAdapter(activity) {
+class FriendsPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle): FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
+
         return when(position) {
-            0 -> MessengerFragment()
-            1 -> FriendsFragment()
-            2 -> ProfileFragment()
+            0 -> FragmentTabFriends()
+            1 -> FragmentTabUser()
+            2 -> FragmentTabRequest()
             else -> throw IllegalArgumentException("Unknown Fragment for position $position")
+
         }
     }
+
 }

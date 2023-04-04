@@ -8,6 +8,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.database.DatabaseReference
 import com.rikkei.training.appchat.R
+import com.rikkei.training.appchat.adapter.FriendsPagerAdapter
 import com.rikkei.training.appchat.adapter.HomePagerAdapter
 import com.rikkei.training.appchat.databinding.ActivityHomeBinding
 import com.rikkei.training.appchat.databinding.FragmentFriendsBinding
@@ -41,7 +42,6 @@ class HomeActivity : AppCompatActivity() {
 
             true
         }
-
 
     }
 
