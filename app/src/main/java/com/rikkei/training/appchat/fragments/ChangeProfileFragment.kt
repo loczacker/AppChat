@@ -1,12 +1,15 @@
 package com.rikkei.training.appchat.fragments
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,9 +19,11 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.ActionCodeUrl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -26,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.rikkei.training.appchat.R
+import com.rikkei.training.appchat.Users
+import com.rikkei.training.appchat.activity.HomeActivity
 import com.rikkei.training.appchat.databinding.FragmentChangeProfileBinding
 
 
@@ -117,7 +124,7 @@ class ChangeProfileFragment : Fragment() {
         }
 
 
-        //update to db
+        //upadate to db
         val reference = FirebaseDatabase.getInstance().getReference("Users")
         reference.child(firebaseAuth.uid!!)
             .updateChildren(hashMap)
@@ -129,6 +136,7 @@ class ChangeProfileFragment : Fragment() {
                 progressDialog.dismiss()
                 Toast.makeText(activity, "Failed to upload profile due ", Toast.LENGTH_SHORT).show()
             }
+
     }
 
     private fun uploadImage() {
@@ -153,7 +161,7 @@ class ChangeProfileFragment : Fragment() {
                 Toast.makeText(activity, "Failed to upload image due ", Toast.LENGTH_SHORT).show()
             }
     }
-    
+
     private fun loadUserInfo() {
         //db reference to load user info
         val ref = FirebaseDatabase.getInstance().getReference("Users")
@@ -161,10 +169,12 @@ class ChangeProfileFragment : Fragment() {
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     //get user info
+                    val email = "${snapshot.child("email").value}"
                     val name = "${snapshot.child("name").value}"
                     val img = "${snapshot.child("img").value}"
                     val birthday = "${snapshot.child("birthday").value}"
                     val phone = "${snapshot.child("phone").value}"
+                    val uid = "${snapshot.child("uid").value}"
 
                     binding.edtChangeName.setText("$name")
                     binding.edPhoneChange.setText("$phone")
@@ -242,6 +252,9 @@ class ChangeProfileFragment : Fragment() {
         ActivityResultCallback<ActivityResult> {result ->
             //used to handle result of camera intent
             if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+//                imageUri = data!!.data
+
                 //set to imageview
                 binding.imgAva.setImageURI(imageUri)
             }
@@ -258,6 +271,7 @@ class ChangeProfileFragment : Fragment() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 imageUri = data!!.data
+
                 //set to imageview
                 binding.imgAva.setImageURI(imageUri)
             }
