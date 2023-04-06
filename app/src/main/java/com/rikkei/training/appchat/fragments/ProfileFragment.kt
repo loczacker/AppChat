@@ -72,9 +72,6 @@ class ProfileFragment : Fragment() {
                     val email = "${snapshot.child("email").value}"
                     val name = "${snapshot.child("name").value}"
                     val img = "${snapshot.child("img").value}"
-                    val birthday = "${snapshot.child("birthday").value}"
-                    val phone = "${snapshot.child("phone").value}"
-                    val uid = "${snapshot.child("uid").value}"
 
                     binding.tvNameProfile.text = name
                     binding.tvEmailProfile.text = email
