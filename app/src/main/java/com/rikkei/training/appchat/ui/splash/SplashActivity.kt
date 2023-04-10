@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.activity
+package com.rikkei.training.appchat.ui.splash
 
 import android.content.Intent
 import android.graphics.Typeface
@@ -9,7 +9,8 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import com.google.firebase.auth.FirebaseAuth
 import com.rikkei.training.appchat.databinding.ActivitySplashBinding
-import com.rikkei.training.appchat.login.LoginActivity
+import com.rikkei.training.appchat.ui.home.HomeActivity
+import com.rikkei.training.appchat.ui.login.LoginActivity
 
 class SplashActivity : AppCompatActivity() {
 

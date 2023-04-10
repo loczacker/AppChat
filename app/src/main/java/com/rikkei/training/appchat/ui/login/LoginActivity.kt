@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.login
+package com.rikkei.training.appchat.ui.login
 
 import android.content.Intent
 import android.graphics.Color
@@ -18,8 +18,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rikkei.training.appchat.R
-import com.rikkei.training.appchat.activity.HomeActivity
-import com.rikkei.training.appchat.activity.RegisterActivity
+import com.rikkei.training.appchat.ui.home.HomeActivity
+import com.rikkei.training.appchat.ui.register.RegisterActivity
 import com.rikkei.training.appchat.databinding.ActivityLoginBinding
 
 

@@ -1,20 +1,14 @@
-package com.rikkei.training.appchat.activity
+package com.rikkei.training.appchat.ui.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.database.DatabaseReference
 import com.rikkei.training.appchat.R
-import com.rikkei.training.appchat.adapter.HomePagerAdapter
 import com.rikkei.training.appchat.databinding.ActivityHomeBinding
-import com.rikkei.training.appchat.databinding.FragmentFriendsBinding
-import com.rikkei.training.appchat.fragments.ChangeProfileFragment
-import com.rikkei.training.appchat.fragments.FriendsFragment
-import com.rikkei.training.appchat.fragments.MessengerFragment
-import com.rikkei.training.appchat.fragments.ProfileFragment
+import com.rikkei.training.appchat.ui.tabFriends.FragmentFriendsTab
+import com.rikkei.training.appchat.ui.Messenger.FragmentMessenger
+import com.rikkei.training.appchat.ui.profile.ProfileFragment
 
 class HomeActivity : AppCompatActivity() {
 
@@ -25,13 +19,13 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(MessengerFragment())
+        replaceFragment(FragmentMessenger())
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
 
-                R.id.messenger -> replaceFragment(MessengerFragment())
-                R.id.friends -> replaceFragment(FriendsFragment())
+                R.id.messenger -> replaceFragment(FragmentMessenger())
+                R.id.friends -> replaceFragment(FragmentFriendsTab())
                 R.id.profile -> replaceFragment(ProfileFragment())
 
                 else -> {

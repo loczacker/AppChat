@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.activity
+package com.rikkei.training.appchat.ui.register
 
 import android.content.Intent
 import android.graphics.Color
@@ -19,9 +19,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.rikkei.training.appchat.R
-import com.rikkei.training.appchat.Users
+import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.databinding.ActivityRegisterBinding
-import com.rikkei.training.appchat.login.LoginActivity
+import com.rikkei.training.appchat.ui.home.HomeActivity
+import com.rikkei.training.appchat.ui.login.LoginActivity
 
 class RegisterActivity : AppCompatActivity() {
     companion object {
@@ -175,7 +176,7 @@ class RegisterActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
                     val databaseRef = database.reference.child("Users").child(firebaseAuth.currentUser!!.uid)
-                    val users: Users = Users(null, email,null, name, null, firebaseAuth.currentUser!!.uid)
+                    val users: UsersModel = UsersModel(null, email,null, name, null, firebaseAuth.currentUser!!.uid)
 
                     databaseRef.setValue(users).addOnCompleteListener{
                         if (it.isSuccessful){

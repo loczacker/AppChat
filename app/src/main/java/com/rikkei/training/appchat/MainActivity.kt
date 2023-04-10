@@ -1,9 +1,10 @@
-package com.rikkei.training.appchat.activity
+package com.rikkei.training.appchat
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.rikkei.training.appchat.databinding.ActivityMainBinding
+import com.rikkei.training.appchat.ui.splash.SplashActivity
 
 
 class MainActivity : AppCompatActivity() {

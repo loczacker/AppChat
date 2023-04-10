@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.fragments
+package com.rikkei.training.appchat.ui.tabFriends
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
-import com.rikkei.training.appchat.R
-import com.rikkei.training.appchat.adapter.FriendsPagerAdapter
 import com.rikkei.training.appchat.databinding.FragmentFriendsBinding
 
-class FriendsFragment : Fragment() {
+class FragmentFriendsTab : Fragment() {
 
     private lateinit var binding: FragmentFriendsBinding
     override fun onCreateView(

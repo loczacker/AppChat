@@ -1,7 +1,7 @@
-package com.rikkei.training.appchat.fragments
+package com.rikkei.training.appchat.ui.tabUser
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,22 +9,34 @@ import android.view.ViewGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.rikkei.training.appchat.Users
-import com.rikkei.training.appchat.adapter.UserAllAdapter
+import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.databinding.FragmentTabUserBinding
+import com.rikkei.training.appchat.ui.tabRequest.FragmentTabRequest
 
-class FragmentTabUser : Fragment() {
+class FragmentTabUser : Fragment(){
 
     private lateinit var binding: FragmentTabUserBinding
-    private val database by lazy { FirebaseDatabase.getInstance() }
+
+    private val database by lazy {
+        FirebaseDatabase.getInstance()
+    }
+
+    private lateinit var requestRef : DatabaseReference
 
     private val firebaseAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
-    private val users: ArrayList<Users> = arrayListOf()
+
+    private val users: ArrayList<UsersModel> = arrayListOf()
+
     private lateinit var usersAdapter: UserAllAdapter
+
+    private var currentState: String =  "nothing_happen"
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,19 +48,18 @@ class FragmentTabUser : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     private fun disPlayInfoUsers() {
-        usersAdapter = UserAllAdapter(users)
+        usersAdapter = UserAllAdapter(users,object: ItemUsersRecycleView{
+            override fun getDetail(position: Int) {
+            }
+        })
         binding.recyclerViewTabUser.adapter = usersAdapter
 
         users.clear()
         database.reference.child("Users").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (postSnapshot in dataSnapshot.children) {
-                    val user = postSnapshot.getValue(Users::class.java)
+                    val user = postSnapshot.getValue(UsersModel::class.java)
                      if (user?.uid != firebaseAuth.uid) {
                          user?.let { users.add(it) }
 
@@ -74,4 +85,7 @@ class FragmentTabUser : Fragment() {
         database.reference.child("presence")
             .child(currentId!!).setValue("Offline")
     }
+
+
+
 }

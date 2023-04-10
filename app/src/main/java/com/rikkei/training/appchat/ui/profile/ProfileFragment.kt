@@ -1,8 +1,7 @@
-package com.rikkei.training.appchat.fragments
+package com.rikkei.training.appchat.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,8 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.rikkei.training.appchat.R
-import com.rikkei.training.appchat.activity.MainActivity
 import com.rikkei.training.appchat.databinding.FragmentProfileBinding
-import com.rikkei.training.appchat.login.LoginActivity
+import com.rikkei.training.appchat.ui.login.LoginActivity
 
 class ProfileFragment : Fragment() {
 
@@ -36,7 +34,7 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.ibChange.setOnClickListener {
             val transaction = fragmentManager?.beginTransaction()
-            transaction?.replace(R.id.frame_layout, ChangeProfileFragment())?.commit()
+            transaction?.replace(R.id.frame_layout, FragmentChangeProfile())?.commit()
         }
         binding.txtSignOut.setOnClickListener{
             firebaseAuth.signOut()
