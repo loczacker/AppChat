@@ -9,4 +9,5 @@ class ChatApplication : Application() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
     }
+
 }

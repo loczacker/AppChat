@@ -22,4 +22,5 @@ class MainActivity : AppCompatActivity() {
         val intentSplashActivity = Intent(this, SplashActivity::class.java)
         startActivity(intentSplashActivity)
     }
+
 }

@@ -10,8 +10,10 @@ import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.tabUser.UserAllAdapter.UserViewHolder
 import com.rikkei.training.appchat.databinding.ItemUserAllBinding
 
-class UserAllAdapter(private val userList: ArrayList<UsersModel>,
-    private val itemUsersRecycleView: ItemUsersRecycleView):
+class UserAllAdapter(
+    private val userList: ArrayList<UsersModel>,
+    private val itemUsersRecycleView: ItemUsersRecycleView
+) :
 
     RecyclerView.Adapter<UserViewHolder>() {
     class UserViewHolder(private val binding: ItemUserAllBinding) :
@@ -24,11 +26,10 @@ class UserAllAdapter(private val userList: ArrayList<UsersModel>,
                 .into(binding.imgCircleHomeMess)
 
             binding.btnAdd.setOnClickListener {
-                itemUsersRecycleView.getDetail(adapterPosition)
+                itemUsersRecycleView.getDetail(user)
             }
-            }
-
         }
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {

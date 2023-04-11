@@ -6,5 +6,6 @@ data class UsersModel(
     var img: String ?= null,
     var name: String? = null,
     var phone: String ?= null,
-    var uid: String ? = null
+    var uid: String ?= null,
+    var presence: String ?= null
 )

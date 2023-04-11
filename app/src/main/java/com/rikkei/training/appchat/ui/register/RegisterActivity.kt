@@ -176,7 +176,7 @@ class RegisterActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
                     val databaseRef = database.reference.child("Users").child(firebaseAuth.currentUser!!.uid)
-                    val users: UsersModel = UsersModel(null, email,null, name, null, firebaseAuth.currentUser!!.uid)
+                    val users: UsersModel = UsersModel(null, email,null, name, null, firebaseAuth.currentUser!!.uid, null)
 
                     databaseRef.setValue(users).addOnCompleteListener{
                         if (it.isSuccessful){

@@ -162,12 +162,10 @@ class FragmentChangeProfile : Fragment() {
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     //get user info
-                    val email = "${snapshot.child("email").value}"
                     val name = "${snapshot.child("name").value}"
                     val img = "${snapshot.child("img").value}"
                     val birthday = "${snapshot.child("birthday").value}"
                     val phone = "${snapshot.child("phone").value}"
-                    val uid = "${snapshot.child("uid").value}"
 
                     binding.edtChangeName.setText("$name")
                     binding.edPhoneChange.setText("$phone")
