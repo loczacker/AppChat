@@ -176,7 +176,7 @@ class RegisterActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
                     val databaseRef = database.reference.child("Users").child(firebaseAuth.currentUser!!.uid)
-                    val users: UsersModel = UsersModel(null, email,null, name, null, firebaseAuth.currentUser!!.uid, null)
+                    val users = UsersModel(null, email,null, name, null, firebaseAuth.currentUser!!.uid, null)
 
                     databaseRef.setValue(users).addOnCompleteListener{
                         if (it.isSuccessful){
@@ -186,7 +186,6 @@ class RegisterActivity : AppCompatActivity() {
                             Toast.makeText(this, "Something went wrong,try again", Toast.LENGTH_SHORT).show()
                         }
                     }
-
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)

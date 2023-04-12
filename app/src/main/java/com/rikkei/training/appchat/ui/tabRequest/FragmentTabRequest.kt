@@ -1,7 +1,6 @@
 package com.rikkei.training.appchat.ui.tabRequest
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabRequestBinding
 import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
 class FragmentTabRequest : Fragment() {
 
@@ -30,6 +30,7 @@ class FragmentTabRequest : Fragment() {
 
     private lateinit var requestAdapter: RequestFriendsAdapter
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,21 +42,20 @@ class FragmentTabRequest : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         showRequestUser()
     }
 
     private fun showRequestUser() {
-        requestAdapter = RequestFriendsAdapter(usersRequest, object : ItemUserRequest{
-            override fun getRequest(user: UsersModel) {
-
+        requestAdapter = RequestFriendsAdapter(usersRequest, object : ItemUsersRecycleView{
+            override fun getDetail(user: UsersModel) {
             }
         })
 
         binding.rvSendRequestFriend.adapter = requestAdapter
-        usersRequest.clear()
-        database.reference.child("Request").addValueEventListener(object : ValueEventListener {
+
+        database.reference.child("Request").child(firebaseAuth.uid?:"").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                usersRequest.clear()
                 for (postSnapshot in dataSnapshot.children) {
                     val user = postSnapshot.getValue(UsersModel::class.java)
                     user?.let { usersRequest.add(it) }
@@ -65,5 +65,6 @@ class FragmentTabRequest : Fragment() {
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
+
     }
 }
