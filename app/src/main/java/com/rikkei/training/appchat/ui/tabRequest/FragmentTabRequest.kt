@@ -46,25 +46,43 @@ class FragmentTabRequest : Fragment() {
     }
 
     private fun showRequestUser() {
-        requestAdapter = RequestFriendsSentAdapter(usersRequest, object : ItemUsersRecycleView{
+        requestAdapter = RequestFriendsSentAdapter(usersRequest, object : ItemUsersRecycleView {
             override fun getDetail(user: UsersModel) {
 
             }
         })
 
         binding.rvSendRequestFriend.adapter = requestAdapter
-        database.reference.child("friendsRequest").child(firebaseAuth.uid?:"").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                usersRequest.clear()
-                for (postSnapshot in dataSnapshot.children) {
-                    val user = postSnapshot.getValue(UsersModel::class.java)
+       database.reference.child("friendsRequest").child(firebaseAuth.uid?:"")
+           .addValueEventListener(object : ValueEventListener{
+               override fun onDataChange(snapshot: DataSnapshot) {
+                   usersRequest.clear()
+                   for (postSnapshot in snapshot.children) {
+                   val user = postSnapshot.getValue(UsersModel::class.java)
+                       database.reference.child("Users").child(user?.uid.toString())
+                           .addListenerForSingleValueEvent(object : ValueEventListener{
+                               override fun onDataChange(snapshot: DataSnapshot) {
+                                   if (snapshot.exists()) {
+                                       val name = snapshot.child("name").value.toString()
+                                       val img  = snapshot.child("img").value.toString()
+
+                                       val user = UsersModel(null,null,img,name,null,null,null)
+                                       usersRequest.add(user)
+
+                                   }
+                               }
+                               override fun onCancelled(error: DatabaseError) {}
+                           })
                     user?.let { usersRequest.add(it) }
                 }
                 requestAdapter.notifyDataSetChanged()
-            }
+               }
 
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
+               override fun onCancelled(error: DatabaseError) {}
+
+           })
 
     }
+
+
 }

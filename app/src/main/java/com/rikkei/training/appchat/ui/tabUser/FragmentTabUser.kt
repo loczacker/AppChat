@@ -1,5 +1,6 @@
 package com.rikkei.training.appchat.ui.tabUser
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -28,6 +29,7 @@ class FragmentTabUser : Fragment(){
     private val users: ArrayList<UsersModel> = arrayListOf()
 
     private lateinit var usersAdapter: UserAllAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
