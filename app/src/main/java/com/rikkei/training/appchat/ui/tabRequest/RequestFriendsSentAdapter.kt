@@ -10,10 +10,10 @@ import com.rikkei.training.appchat.databinding.ItemUserRequestBinding
 import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
-class RequestFriendsAdapter(
+class RequestFriendsSentAdapter(
     private val requestList: ArrayList<UsersModel>,
     private val itemUsersRecycleView: ItemUsersRecycleView
-): RecyclerView.Adapter<RequestFriendsAdapter.RequestViewHolder>() {
+): RecyclerView.Adapter<RequestFriendsSentAdapter.RequestViewHolder>() {
 
     class RequestViewHolder(private val binding: ItemUserRequestBinding):
         RecyclerView.ViewHolder(binding.root){
@@ -28,6 +28,10 @@ class RequestFriendsAdapter(
                 itemUsersRecycleView.getDetail(user)
             }
         }
+    }
+
+    class RequestSendViewHolder {
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RequestViewHolder {

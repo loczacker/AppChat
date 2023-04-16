@@ -28,7 +28,7 @@ class FragmentTabRequest : Fragment() {
 
     private val usersRequest: ArrayList<UsersModel> = arrayListOf()
 
-    private lateinit var requestAdapter: RequestFriendsAdapter
+    private lateinit var requestAdapter: RequestFriendsSentAdapter
 
 
     override fun onCreateView(
@@ -46,14 +46,14 @@ class FragmentTabRequest : Fragment() {
     }
 
     private fun showRequestUser() {
-        requestAdapter = RequestFriendsAdapter(usersRequest, object : ItemUsersRecycleView{
+        requestAdapter = RequestFriendsSentAdapter(usersRequest, object : ItemUsersRecycleView{
             override fun getDetail(user: UsersModel) {
+
             }
         })
 
         binding.rvSendRequestFriend.adapter = requestAdapter
-
-        database.reference.child("Request").child(firebaseAuth.uid?:"").addValueEventListener(object : ValueEventListener {
+        database.reference.child("friendsRequest").child(firebaseAuth.uid?:"").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 usersRequest.clear()
                 for (postSnapshot in dataSnapshot.children) {

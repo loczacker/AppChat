@@ -29,8 +29,6 @@ class FragmentTabUser : Fragment(){
 
     private lateinit var usersAdapter: UserAllAdapter
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,15 +46,15 @@ class FragmentTabUser : Fragment(){
     private fun disPlayInfoUsers() {
         usersAdapter = UserAllAdapter(users,object: ItemUsersRecycleView{
             override fun getDetail(user: UsersModel) {
-//                val hashMap: HashMap<String, Any> = HashMap()
-//                hashMap["img"] = user.img.toString()
-//                hashMap["name"] = user.name.toString()
-//                hashMap["status"] = "Pending"
-//                database.reference.child("Request").child(firebaseAuth.uid!!).child(user.uid.toString()).updateChildren(hashMap)
-//                    .addOnSuccessListener {
-//                    }
-//                    .addOnFailureListener {
-//                    }
+
+                database.reference.child("friendsRequest").child(user.uid.toString()).child(firebaseAuth.uid?:"").child("status").setValue("received")
+                    .addOnSuccessListener {
+                        database.reference.child("friendsRequest").child(firebaseAuth.uid?:"").child(user.uid.toString()).child("status").setValue("sent")
+                            .addOnSuccessListener {
+                            }
+                            .addOnFailureListener {}
+                    }
+                    .addOnFailureListener {}
             }
         })
         binding.recyclerViewTabUser.adapter = usersAdapter
@@ -71,9 +69,6 @@ class FragmentTabUser : Fragment(){
                 }
                 usersAdapter.notifyDataSetChanged()
             }
-
-
-
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
