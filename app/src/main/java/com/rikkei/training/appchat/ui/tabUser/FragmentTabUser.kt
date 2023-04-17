@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -52,9 +53,8 @@ class FragmentTabUser : Fragment(){
                 database.reference.child("friendsRequest").child(user.uid.toString()).child(firebaseAuth.uid?:"").child("status").setValue("received")
                     .addOnSuccessListener {
                         database.reference.child("friendsRequest").child(firebaseAuth.uid?:"").child(user.uid.toString()).child("status").setValue("sent")
-                            .addOnSuccessListener {
+                            .addOnCompleteListener {
                             }
-                            .addOnFailureListener {}
                     }
                     .addOnFailureListener {}
             }

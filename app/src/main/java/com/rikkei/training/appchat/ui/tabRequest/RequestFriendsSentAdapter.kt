@@ -30,10 +30,6 @@ class RequestFriendsSentAdapter(
         }
     }
 
-    class RequestSendViewHolder {
-
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RequestViewHolder {
         return RequestViewHolder(
             DataBindingUtil.inflate(

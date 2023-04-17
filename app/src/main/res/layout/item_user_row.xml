@@ -1,85 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_home_user"
-    android:layout_width="match_parent"
-    android:layout_height="70dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_circle_home_mess"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/random3" />
 
-    <TextView
-        android:id="@+id/txt_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
-        android:fontFamily="@font/lato_bold"
-        android:text="Bạn bè"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/img_circle_home_mess"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_last_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
-        android:fontFamily="@font/lato_medium"
-        android:text="Hello"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/img_circle_home_mess"
-        app:layout_constraintTop_toBottomOf="@+id/txt_name" />
-
-    <TextView
-        android:id="@+id/txt_unread_message"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="36dp"
-        android:background="#870111"
-        android:fontFamily="@font/lato_bold"
-        android:gravity="center"
-        android:text="1"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintEnd_toEndOf="@+id/img_circle_home_mess"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
-
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Time"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/txt_name"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.235" />
-
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_home_friends"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginStart="70dp"
-        android:background="@color/white"
-        android:contentDescription="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.822" />
+        android:layout_height="70dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/img_circle_home_mess"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/random3" />
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/lato_bold"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/img_circle_home_mess"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Bạn bè" />
+
+        <TextView
+            android:id="@+id/txt_last_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/lato_medium"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/txt_name"
+            app:layout_constraintTop_toBottomOf="@+id/txt_name"
+            tools:text="Hello" />
+
+        <TextView
+            android:id="@+id/txt_unread_message"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="10dp"
+            android:background="#870111"
+            android:fontFamily="@font/lato_bold"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/img_circle_home_mess"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/txt_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.235"
+            tools:text="Time" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#D2D2D2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tv_time"
+            app:layout_constraintStart_toStartOf="@id/txt_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

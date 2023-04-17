@@ -33,8 +33,8 @@ class ProfileFragment : Fragment() {
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.ibChange.setOnClickListener {
-            val transaction = fragmentManager?.beginTransaction()
-            transaction?.replace(R.id.frame_layout, FragmentChangeProfile())?.commit()
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, FragmentChangeProfile()).commit()
         }
         binding.txtSignOut.setOnClickListener{
             firebaseAuth.signOut()
