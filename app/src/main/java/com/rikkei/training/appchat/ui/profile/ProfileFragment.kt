@@ -75,7 +75,6 @@ class ProfileFragment : Fragment() {
                     binding.tvEmailProfile.text = email
 
                     try {
-
                         Glide.with(this@ProfileFragment)
                             .load(img)
                             .placeholder(R.drawable.profile)
