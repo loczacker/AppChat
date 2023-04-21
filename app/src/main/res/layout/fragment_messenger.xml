@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bg">
+    android:background="@drawable/bg"
+    android:id="@+id/show_messenger">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_top"

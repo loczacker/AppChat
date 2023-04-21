@@ -1,6 +1,8 @@
 package com.rikkei.training.appchat.ui.tabFriends
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
 import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.ui.Messenger.ActivityMessenger
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
 class FragmentFriends : Fragment() {
@@ -47,8 +50,10 @@ class FragmentFriends : Fragment() {
     private fun showFriendsList() {
         friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRecycleView{
             override fun getDetail(user: UsersModel) {
-            }
+                val messIntent = Intent(activity, ActivityMessenger::class.java)
+                startActivity(messIntent)
 
+            }
         })
 
         binding.recyclerViewTabFriend.adapter = friendAdapter

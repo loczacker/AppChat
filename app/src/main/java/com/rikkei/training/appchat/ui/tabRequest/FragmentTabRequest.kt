@@ -6,12 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabRequestBinding
+import com.rikkei.training.appchat.databinding.ItemUserAllBinding
 import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
@@ -30,7 +32,6 @@ class FragmentTabRequest : Fragment() {
     private val usersRequest: ArrayList<UsersModel> = arrayListOf()
 
     private val sendUsersRequest: ArrayList<UsersModel> = arrayListOf()
-
 
     private lateinit var requestAdapter: RequestFriendsSentAdapter
 
@@ -62,14 +63,13 @@ class FragmentTabRequest : Fragment() {
             }
 
             override fun getFriends(user: UsersModel) {
-
                 database.reference.child("friendsRequest").child(user.uid.toString())
                     .child(firebaseAuth.uid ?: "").removeValue().addOnCompleteListener {
                         database.reference.child("friendsRequest").child(firebaseAuth.uid?:"").child(user.uid.toString()).removeValue()
                             .addOnCompleteListener {
                                 database.reference.child("Friends").child(user.uid.toString()).child(firebaseAuth.uid?:"").child("status").setValue("friend")
                                     .addOnSuccessListener {
-                                        database.reference.child("Friends").child(firebaseAuth.uid?:"").child(user.uid.toString()).child("name").setValue("friend")
+                                        database.reference.child("Friends").child(firebaseAuth.uid?:"").child(user.uid.toString()).child("status").setValue("friend")
                                             .addOnCompleteListener {
                                             }
                                     }

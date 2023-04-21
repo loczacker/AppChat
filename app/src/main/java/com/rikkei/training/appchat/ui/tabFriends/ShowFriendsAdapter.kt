@@ -1,6 +1,7 @@
 package com.rikkei.training.appchat.ui.tabFriends
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,8 @@ class ShowFriendsAdapter(
                 .transform(CenterCrop(), RoundedCorners(65))
                 .placeholder(R.drawable.profile)
                 .into(binding.imgCircleHomeMess)
+
+            binding.root.setOnClickListener { itemUsersRecycleView.getDetail(user)  }
         }
 
     }
