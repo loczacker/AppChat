@@ -8,4 +8,5 @@ data class UsersModel(
     var phone: String ?= null,
     var uid: String ?= null,
     var presence: String ?= null
+
 )

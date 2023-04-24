@@ -39,7 +39,7 @@
             android:text="Đồng ý"
             android:textColor="@color/white"
             android:textSize="9sp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_name_request_send"

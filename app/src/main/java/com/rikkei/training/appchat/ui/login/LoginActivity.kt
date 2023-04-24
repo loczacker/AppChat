@@ -131,5 +131,4 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, "You Didnt signed in", Toast.LENGTH_LONG).show()
         }
     }
-
 }

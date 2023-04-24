@@ -11,9 +11,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentProfileBinding
+import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.login.LoginActivity
 
-class ProfileFragment : Fragment() {
+class FragmentProfile : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
 
@@ -32,35 +33,26 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         binding.ibChange.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, FragmentChangeProfile()).commit()
         }
-        binding.txtSignOut.setOnClickListener{
+        binding.tvSignOut.setOnClickListener{
             firebaseAuth.signOut()
             startActivity(
-                Intent(activity, LoginActivity::class.java )
+                Intent(activity, LoginActivity::class.java)
             )
         }
-        return binding.root
     }
 
 
     private fun readData() {
-//        if (firebaseAuth.currentUser?.uid == null){
-//            return
-//        }
-//        val database = FirebaseDatabase.getInstance().getReference("Users")
-//        database.child(firebaseAuth.currentUser?.uid!!).get().addOnSuccessListener {
-//            val email = it.child("email").value
-//            val name = it.child("name").value
-//            binding.tvEmailProfile.text = email.toString()
-//            binding.tvNameProfile.text = name.toString()
-//            Log.i("firebase", "Got value ${it.value}")
-//        }.addOnFailureListener {
-//            Log.e("firebase", "Error getting data", it)
-//        }
-
         //db reference to load user info
         val ref = FirebaseDatabase.getInstance().getReference("Users")
         ref.child(firebaseAuth.uid!!)
@@ -75,12 +67,12 @@ class ProfileFragment : Fragment() {
                     binding.tvEmailProfile.text = email
 
                     try {
-                        Glide.with(this@ProfileFragment)
+                        Glide.with(this@FragmentProfile)
                             .load(img)
                             .placeholder(R.drawable.profile)
                             .into(binding.imgProfileCircle)
 
-                        Glide.with(this@ProfileFragment)
+                        Glide.with(this@FragmentProfile)
                             .load(img)
                             .placeholder(R.drawable.profile)
                             .into(binding.imgProfile)

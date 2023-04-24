@@ -10,7 +10,7 @@ import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityHomeBinding
 import com.rikkei.training.appchat.ui.tabFriends.FragmentFriendsTab
 import com.rikkei.training.appchat.ui.Messenger.FragmentMessenger
-import com.rikkei.training.appchat.ui.profile.ProfileFragment
+import com.rikkei.training.appchat.ui.profile.FragmentProfile
 
 class HomeActivity : AppCompatActivity() {
 
@@ -34,7 +34,7 @@ class HomeActivity : AppCompatActivity() {
 
                 R.id.messenger -> replaceFragment(FragmentMessenger())
                 R.id.friends -> replaceFragment(FragmentFriendsTab())
-                R.id.profile -> replaceFragment(ProfileFragment())
+                R.id.profile -> replaceFragment(FragmentProfile())
 
                 else -> {
 

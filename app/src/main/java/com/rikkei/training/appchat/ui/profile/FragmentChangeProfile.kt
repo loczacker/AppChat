@@ -73,7 +73,7 @@ class FragmentChangeProfile : Fragment() {
 
         binding.imgBackHomeProfile.setOnClickListener{
             val transaction = fragmentManager?.beginTransaction()
-            transaction?.replace(R.id.frame_layout, ProfileFragment())?.commit()
+            transaction?.replace(R.id.frame_layout, FragmentProfile())?.commit()
         }
 
         return binding.root
