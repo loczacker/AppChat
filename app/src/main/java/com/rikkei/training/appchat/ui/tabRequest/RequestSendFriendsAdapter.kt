@@ -23,9 +23,6 @@ class RequestSendFriendsAdapter(
                 .placeholder(R.drawable.profile)
                 .into(binding.imgCircleHomeRequestSend)
 
-            binding.btnCancel.setOnClickListener {
-                itemUsersRecycleView.getDetail(user)
-            }
             binding.btnAccept.setOnClickListener {
                 itemUsersRecycleView.getFriends(user)
             }

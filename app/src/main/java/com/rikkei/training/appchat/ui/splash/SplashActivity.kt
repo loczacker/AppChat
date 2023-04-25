@@ -15,20 +15,18 @@ import com.rikkei.training.appchat.ui.login.LoginActivity
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashBinding
-
-    private val firebaseAuth: FirebaseAuth by lazy {
-        FirebaseAuth.getInstance()
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.splash.alpha = 0f
         binding.splash.animate().setDuration(1500).alpha(1f).withEndAction {
-            if (firebaseAuth.currentUser?.uid != null){
+            if (FirebaseAuth.getInstance().currentUser?.uid != null){
                 startActivity(Intent(this, HomeActivity::class.java))
+                finish()
             }else{
                 startActivity(Intent(this, LoginActivity::class.java))
+                finish()
             }
             overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out)
         }

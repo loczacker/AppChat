@@ -8,24 +8,26 @@ import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemUserRequestBinding
 import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
 class RequestFriendsSentAdapter(
-    private val requestList: ArrayList<UsersModel>,
+    private val requestList: ArrayList<ItemRecyclerViewModel>,
     private val itemUsersRecycleView: ItemUsersRecycleView
 ): RecyclerView.Adapter<RequestFriendsSentAdapter.RequestViewHolder>() {
 
     class RequestViewHolder(private val binding: ItemUserRequestBinding):
         RecyclerView.ViewHolder(binding.root){
 
-        fun bind(user: UsersModel, itemUsersRecycleView: ItemUsersRecycleView){
+        fun bind(item: ItemRecyclerViewModel, itemUsersRecycleView: ItemUsersRecycleView){
+            val user = item.user
             binding.txtNameRequest.text = user.name
             Glide.with(binding.imgCircleHomeRequest.context).load(user.img)
                 .placeholder(R.drawable.profile)
                 .into(binding.imgCircleHomeRequest)
 
             binding.btnCancel.setOnClickListener {
-                itemUsersRecycleView.getDetail(user)
+                itemUsersRecycleView.getDetail(item)
             }
         }
     }

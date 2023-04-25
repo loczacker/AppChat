@@ -32,12 +32,9 @@ import com.rikkei.training.appchat.databinding.FragmentChangeProfileBinding
 class FragmentChangeProfile : Fragment() {
 
     private lateinit var binding: FragmentChangeProfileBinding
-
     //firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
-
     private var imageUri: Uri ?= null
-
     private lateinit var progressDialog: ProgressDialog
 
 
@@ -49,7 +46,7 @@ class FragmentChangeProfile : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentChangeProfileBinding.inflate(inflater, container, false)
 
@@ -60,12 +57,10 @@ class FragmentChangeProfile : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
         loadUserInfo()
 
-        //handle click, pick image form camera/gallery
         binding.imgCamera.setOnClickListener {
             showImageAttachMenu()
         }
 
-        //handle click, begin update profile
         binding.txtDone.setOnClickListener {
             validateData()
 
@@ -75,9 +70,7 @@ class FragmentChangeProfile : Fragment() {
             val transaction = fragmentManager?.beginTransaction()
             transaction?.replace(R.id.frame_layout, FragmentProfile())?.commit()
         }
-
         return binding.root
-
     }
 
     private var name = ""
@@ -94,7 +87,6 @@ class FragmentChangeProfile : Fragment() {
         }
         else {
             //name is entered
-
             if (imageUri == null){
                 // update without image
                 updateProfile("")
@@ -129,7 +121,6 @@ class FragmentChangeProfile : Fragment() {
                 progressDialog.dismiss()
                 Toast.makeText(activity, "Failed to upload profile due ", Toast.LENGTH_SHORT).show()
             }
-
     }
 
     private fun uploadImage() {
@@ -183,10 +174,7 @@ class FragmentChangeProfile : Fragment() {
 
                     }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
 
     }
@@ -197,9 +185,7 @@ class FragmentChangeProfile : Fragment() {
         popupMenu.menu.add(Menu.NONE, 0, 0, "Camera")
         popupMenu.menu.add(Menu.NONE, 1, 1, "Gallery")
         popupMenu.show()
-
         //handle popup menu item click
-
         popupMenu.setOnMenuItemClickListener { item ->
             val id = item.itemId
             if (id == 0) {
@@ -210,7 +196,6 @@ class FragmentChangeProfile : Fragment() {
                 //Gallery clicked
                 picImageGallery()
             }
-
             true
         }
     }
@@ -241,16 +226,9 @@ class FragmentChangeProfile : Fragment() {
     private val cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult(),
         ActivityResultCallback<ActivityResult> {result ->
-            //used to handle result of camera intent
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-//                imageUri = data!!.data
-
                 //set to imageview
                 binding.imgAva.setImageURI(imageUri)
-            }
-            else {
-                Toast.makeText(activity, "Cancelled", Toast.LENGTH_SHORT).show()
             }
         }
     )
@@ -266,9 +244,7 @@ class FragmentChangeProfile : Fragment() {
                 //set to imageview
                 binding.imgAva.setImageURI(imageUri)
             }
-            else {
-                Toast.makeText(activity, "Cancelled", Toast.LENGTH_SHORT).show()
-            }
+            else {}
         }
     )
 

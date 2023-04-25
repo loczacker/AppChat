@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabRequestBinding
 import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
 class FragmentTabRequest : Fragment() {
@@ -27,7 +28,7 @@ class FragmentTabRequest : Fragment() {
         FirebaseAuth.getInstance()
     }
 
-    private val usersRequest: ArrayList<UsersModel> = arrayListOf()
+    private val usersRequest: ArrayList<ItemRecyclerViewModel> = arrayListOf()
 
     private val sendUsersRequest: ArrayList<UsersModel> = arrayListOf()
 
@@ -55,9 +56,9 @@ class FragmentTabRequest : Fragment() {
             override fun getDetail(user: UsersModel) {
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["status"] = "not friend"
-                database.reference.child("friendsRequest").child(user.uid.toString())
+                database.reference.child("Friends").child(user.uid.toString())
                     .child(firebaseAuth.uid ?: "").updateChildren(hashMap).addOnSuccessListener {
-                        database.reference.child("friendsRequest").child(firebaseAuth.uid?:"")
+                        database.reference.child("Friends").child(firebaseAuth.uid?:"")
                             .child(user.uid.toString()).updateChildren(hashMap)
                     }
             }
@@ -65,9 +66,9 @@ class FragmentTabRequest : Fragment() {
             override fun getFriends(user: UsersModel) {
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["status"] = "friend"
-                database.reference.child("friendsRequest").child(user.uid.toString())
+                database.reference.child("Friends").child(user.uid.toString())
                     .child(firebaseAuth.uid ?: "").updateChildren(hashMap).addOnSuccessListener {
-                        database.reference.child("friendsRequest").child(firebaseAuth.uid ?: "")
+                        database.reference.child("Friends").child(firebaseAuth.uid ?: "")
                             .child(user.uid.toString()).updateChildren(hashMap).addOnSuccessListener {
                             }
                     }
@@ -76,7 +77,7 @@ class FragmentTabRequest : Fragment() {
         })
 
         binding.rvRequestFriend.adapter = sentAdapter
-        database.reference.child("friendsRequest").child(firebaseAuth.uid?:"").orderByChild("status").equalTo("received")
+        database.reference.child("Friends").child(firebaseAuth.uid?:"").orderByChild("status").equalTo("received")
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     sendUsersRequest.clear()
@@ -105,19 +106,19 @@ class FragmentTabRequest : Fragment() {
 
     private fun showRequestUser() {
         requestAdapter = RequestFriendsSentAdapter(usersRequest, object : ItemUsersRecycleView {
-            override fun getDetail(user: UsersModel) {
+            override fun getDetail(item: ItemRecyclerViewModel) {
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["status"] = "not friend"
-                database.reference.child("friendsRequest").child(user.uid.toString())
+                database.reference.child("Friends").child(item.user.uid.toString())
                     .child(firebaseAuth.uid ?: "").updateChildren(hashMap).addOnSuccessListener {
-                        database.reference.child("friendsRequest").child(firebaseAuth.uid?:"")
-                            .child(user.uid.toString()).updateChildren(hashMap)
+                        database.reference.child("Friends").child(firebaseAuth.uid?:"")
+                            .child(item.user.uid.toString()).updateChildren(hashMap)
                     }
             }
         })
 
         binding.rvSendRequestFriend.adapter = requestAdapter
-       database.reference.child("friendsRequest").child(firebaseAuth.uid?:"").orderByChild("status").equalTo("sent")
+       database.reference.child("Friends").child(firebaseAuth.uid?:"").orderByChild("status").equalTo("sent")
            .addValueEventListener(object : ValueEventListener{
                @SuppressLint("SuspiciousIndentation")
                override fun onDataChange(snapshot: DataSnapshot) {
@@ -132,7 +133,7 @@ class FragmentTabRequest : Fragment() {
                                        user.img  = snapshot.child("img").value.toString()
                                        user.uid = snapshot.child("uid").value.toString()
                                    }
-                                   user?.let { usersRequest.add(it) }
+                                   user?.let { usersRequest.add(ItemRecyclerViewModel(it)) }
                                    requestAdapter.notifyDataSetChanged()
                                }
                                override fun onCancelled(error: DatabaseError) {}

@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
 import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.Messenger.ActivityMessenger
+import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
 class FragmentFriends : Fragment() {
@@ -29,7 +30,7 @@ class FragmentFriends : Fragment() {
         FirebaseAuth.getInstance()
     }
 
-    private val friends: ArrayList<UsersModel> = arrayListOf()
+    private val friends: ArrayList<ItemRecyclerViewModel> = arrayListOf()
 
     private lateinit var friendAdapter: ShowFriendsAdapter
 
@@ -49,7 +50,7 @@ class FragmentFriends : Fragment() {
 
     private fun showFriendsList() {
         friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRecycleView{
-            override fun getDetail(user: UsersModel) {
+            override fun getDetail(user: ItemRecyclerViewModel) {
                 val messIntent = Intent(activity, ActivityMessenger::class.java)
                 startActivity(messIntent)
 
@@ -57,7 +58,7 @@ class FragmentFriends : Fragment() {
         })
 
         binding.recyclerViewTabFriend.adapter = friendAdapter
-        database.reference.child("Friends").child(firebaseAuth.uid?:"")
+        database.reference.child("Friends").child(firebaseAuth.uid?:"").orderByChild("status").equalTo("friend")
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     friends.clear()
@@ -70,7 +71,7 @@ class FragmentFriends : Fragment() {
                                         user!!.name = snapshot.child("name").value.toString()
                                         user.img  = snapshot.child("img").value.toString()
                                     }
-                                    user?.let { friends.add(it) }
+                                    user?.let { friends.add(ItemRecyclerViewModel(it)) }
                                     friendAdapter.notifyDataSetChanged()
                                 }
                                 override fun onCancelled(error: DatabaseError) {}

@@ -14,13 +14,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        startSplash()
-
 }
-
-    private fun startSplash() {
-        val intentSplashActivity = Intent(this, SplashActivity::class.java)
-        startActivity(intentSplashActivity)
-    }
 
 }
