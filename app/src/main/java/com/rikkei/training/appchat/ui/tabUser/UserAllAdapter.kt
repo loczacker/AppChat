@@ -26,24 +26,30 @@ class UserAllAdapter(
                 .placeholder(R.drawable.profile)
                 .into(binding.imgCircleHomeMess)
 
+            binding.btnAdd.setOnClickListener {
+                itemUsersRecycleView.getDetail(item)
+            }
+
             when (item.statusButton) {
                 "not_friend" -> {
                     binding.btnAdd.isVisible = true
                 }
+
                 "friend" -> {
                     binding.btnAdd.isVisible = false
                 }
+
                 "sent" -> {
                     binding.btnAdd.isVisible = false
                 }
+
                 "received" -> {
                     binding.btnAdd.isVisible = true
                 }
-                else -> {binding.btnAdd.isVisible = true}
-            }
 
-            binding.btnAdd.setOnClickListener {
-                itemUsersRecycleView.getDetail(item)
+                else -> {
+                    binding.btnAdd.isVisible = true
+                }
             }
         }
     }

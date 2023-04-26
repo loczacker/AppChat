@@ -1,11 +1,11 @@
 package com.rikkei.training.appchat.ui.tabUser
 
-import android.content.ClipData.Item
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -50,29 +50,58 @@ class FragmentTabUser : Fragment() {
                 database.reference.child("Friends").child(item.user.uid.toString())
                     .child(firebaseAuth.uid ?: "").child("status").setValue("received")
                     .addOnSuccessListener {
-                        item.statusButton = "sent"
                         database.reference.child("Friends").child(firebaseAuth.uid ?: "")
                             .child(item.user.uid.toString()).child("status").setValue("sent")
                             .addOnSuccessListener {
                             }
                     }
-                    .addOnFailureListener {}
+                    .addOnFailureListener {
+                    }
             }
         })
         binding.recyclerViewTabUser.adapter = usersAdapter
-        items.clear()
         database.reference.child("Users")
-            .addValueEventListener(object : ValueEventListener {
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     items.clear()
                     for (postSnapshot in dataSnapshot.children) {
                         val user = postSnapshot.getValue(UsersModel::class.java)
-                        if (user?.uid != firebaseAuth.uid) {
-                            user?.let { items.add(ItemRecyclerViewModel(it)) }
+                        val userUid = user?.uid
+                        if (userUid != firebaseAuth.uid) {
+                            database.reference.child("Friends")
+                                .child(firebaseAuth.uid?:"").addListenerForSingleValueEvent(object : ValueEventListener{
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        if (snapshot.hasChild(userUid.toString()))
+                                        {
+                                            database.reference
+                                                .child("Friends")
+                                                .child(firebaseAuth.uid ?: "")
+                                                .child(userUid.toString())
+                                                .child("status")
+                                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                                        val status = snapshot.value
+                                                            user?.let { items.add(ItemRecyclerViewModel(it, status.toString())) }
+                                                        usersAdapter.notifyDataSetChanged()
+                                                    }
+
+                                                    override fun onCancelled(error: DatabaseError) {}
+                                                })
+                                        } else
+                                        {
+
+                                        }
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        TODO("Not yet implemented")
+                                    }
+
+                                })
                         }
                     }
-                    usersAdapter.notifyDataSetChanged()
                 }
+
                 override fun onCancelled(databaseError: DatabaseError) {}
             })
     }

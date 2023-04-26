@@ -55,7 +55,7 @@ class FragmentTabRequest : Fragment() {
         sentAdapter = RequestSendFriendsAdapter(sendUsersRequest, object : ItemSentUsers{
             override fun getDetail(user: UsersModel) {
                 val hashMap: HashMap<String, Any> = HashMap()
-                hashMap["status"] = "not friend"
+                hashMap["status"] = "not_friend"
                 database.reference.child("Friends").child(user.uid.toString())
                     .child(firebaseAuth.uid ?: "").updateChildren(hashMap).addOnSuccessListener {
                         database.reference.child("Friends").child(firebaseAuth.uid?:"")
@@ -108,7 +108,7 @@ class FragmentTabRequest : Fragment() {
         requestAdapter = RequestFriendsSentAdapter(usersRequest, object : ItemUsersRecycleView {
             override fun getDetail(item: ItemRecyclerViewModel) {
                 val hashMap: HashMap<String, Any> = HashMap()
-                hashMap["status"] = "not friend"
+                hashMap["status"] = "not_friend"
                 database.reference.child("Friends").child(item.user.uid.toString())
                     .child(firebaseAuth.uid ?: "").updateChildren(hashMap).addOnSuccessListener {
                         database.reference.child("Friends").child(firebaseAuth.uid?:"")
