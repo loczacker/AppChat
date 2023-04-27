@@ -18,5 +18,6 @@ class FragmentMessenger : Fragment() {
     ): View {
         binding = FragmentMessengerBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 }

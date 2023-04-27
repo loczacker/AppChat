@@ -1,5 +1,6 @@
 package com.rikkei.training.appchat.ui.tabUser
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,10 +26,8 @@ class FragmentTabUser : Fragment() {
     private val firebaseAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
-
     private val listUser: ArrayList<ItemRecyclerViewModel> = arrayListOf()
     private val listFriend = hashMapOf<String, String>()
-
     private lateinit var usersAdapter: UserAllAdapter
 
     override fun onCreateView(
@@ -43,6 +42,10 @@ class FragmentTabUser : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         disPlayInfoUsers()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
     }
 
     fun sendRequest(uid: String) {
@@ -110,7 +113,6 @@ class FragmentTabUser : Fragment() {
         usersAdapter.notifyItemInserted(listUser.size)
     }
 
-    fun getUserId() = firebaseAuth.uid ?: ""
     private fun getAllFriendRelation() {
         database.reference.child("Friends").child(firebaseAuth.uid ?: "")
             .addChildEventListener(object : ChildEventListener {
