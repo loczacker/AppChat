@@ -15,6 +15,7 @@ import com.rikkei.training.appchat.databinding.FragmentTabRequestBinding
 import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
+import com.rikkei.training.appchat.ui.tabUser.UserAllAdapter
 
 class FragmentTabRequest : Fragment() {
 

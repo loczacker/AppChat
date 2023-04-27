@@ -13,8 +13,7 @@ import com.rikkei.training.appchat.databinding.ItemUserAllBinding
 class UserAllAdapter(
     private val itemList: ArrayList<ItemRecyclerViewModel>,
     private val itemUsersRecycleView: ItemUsersRecycleView
-) :
-    RecyclerView.Adapter<UserViewHolder>() {
+) : RecyclerView.Adapter<UserViewHolder>() {
 
     class UserViewHolder(private val binding: ItemUserAllBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -51,8 +50,9 @@ class UserAllAdapter(
                     binding.btnAdd.isVisible = true
                 }
             }
+
         }
-    }
+        }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {

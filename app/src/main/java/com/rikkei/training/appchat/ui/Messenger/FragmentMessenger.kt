@@ -15,7 +15,7 @@ class FragmentMessenger : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMessengerBinding.inflate(inflater, container, false)
         return binding.root
     }
