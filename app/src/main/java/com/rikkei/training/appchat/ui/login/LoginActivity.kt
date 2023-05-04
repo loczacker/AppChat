@@ -72,7 +72,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startSignUp() {
         val intentSignUp = Intent(this, RegisterActivity::class.java)
+        intentSignUp.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intentSignUp)
+        finish()
     }
 
 

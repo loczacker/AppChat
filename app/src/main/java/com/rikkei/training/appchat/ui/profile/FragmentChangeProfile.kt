@@ -63,7 +63,6 @@ class FragmentChangeProfile : Fragment() {
 
         binding.txtDone.setOnClickListener {
             validateData()
-
         }
 
         binding.imgBackHomeProfile.setOnClickListener{

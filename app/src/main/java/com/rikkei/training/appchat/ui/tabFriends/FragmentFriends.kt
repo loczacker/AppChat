@@ -50,10 +50,13 @@ class FragmentFriends : Fragment() {
 
     private fun showFriendsList() {
         friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRecycleView{
-            override fun getDetail(user: ItemRecyclerViewModel) {
+            override fun getDetail(itemUser: ItemRecyclerViewModel) {
                 val messIntent = Intent(activity, ActivityMessenger::class.java)
+                messIntent.putExtra("name", itemUser.user.name)
+                messIntent.putExtra("img", itemUser.user.img)
+                messIntent.putExtra("uid", itemUser.user.uid)
+                messIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(messIntent)
-
             }
         })
 
@@ -70,6 +73,7 @@ class FragmentFriends : Fragment() {
                                     if (snapshot.exists()) {
                                         user!!.name = snapshot.child("name").value.toString()
                                         user.img  = snapshot.child("img").value.toString()
+                                        user.uid = snapshot.child("uid").value.toString()
                                     }
                                     user?.let { friends.add(ItemRecyclerViewModel(it)) }
                                     friendAdapter.notifyDataSetChanged()

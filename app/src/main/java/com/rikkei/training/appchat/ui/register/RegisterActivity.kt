@@ -163,6 +163,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun loginBack() {
         val intentLoginActivity = Intent(this, LoginActivity::class.java)
+        intentLoginActivity.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intentLoginActivity)
     }
 
