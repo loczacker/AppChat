@@ -4,6 +4,5 @@ data class MessengerModel(
     var messengerId: String ?= null,
     var messenger: String? = null,
     var senderId: String ?= null,
-    var imgUrl: String? = null,
-    var timeStamp: Long = 0
+    var imgUrl: String? = null
 )

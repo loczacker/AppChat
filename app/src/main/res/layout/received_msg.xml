@@ -20,14 +20,17 @@
             android:id="@+id/im_mess_chat"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:layout_margin="5dp"
             android:src="@drawable/profile_avatar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_mess"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/receiver_drawable"
             android:fontFamily="@font/lato_bold"
             android:padding="10dp"
@@ -36,8 +39,7 @@
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/im_mess_chat"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Ko biết làm. Tí tôi qua nhà bà chép..."
-            android:layout_marginHorizontal="12dp" />
+            tools:text="Ko biết làm. Tí tôi qua nhà bà chép..." />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView

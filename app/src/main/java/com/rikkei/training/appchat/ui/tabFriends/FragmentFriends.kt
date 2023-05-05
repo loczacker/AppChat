@@ -13,10 +13,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
+import com.rikkei.training.appchat.model.Room
 import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.Messenger.ActivityMessenger
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
+import java.util.Date
 
 class FragmentFriends : Fragment() {
 
@@ -51,12 +53,8 @@ class FragmentFriends : Fragment() {
     private fun showFriendsList() {
         friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRecycleView{
             override fun getDetail(itemUser: ItemRecyclerViewModel) {
-                val messIntent = Intent(activity, ActivityMessenger::class.java)
-                messIntent.putExtra("name", itemUser.user.name)
-                messIntent.putExtra("img", itemUser.user.img)
-                messIntent.putExtra("uid", itemUser.user.uid)
-                messIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(messIntent)
+                goMessenger(itemUser)
+                createRoom(itemUser)
             }
         })
 
@@ -86,5 +84,25 @@ class FragmentFriends : Fragment() {
 
                 override fun onCancelled(error: DatabaseError) {}
             })
+    }
+
+    private fun createRoom(itemUser: ItemRecyclerViewModel) {
+
+        val date = Date()
+        val randomKey = database.reference.push().key
+        val roomChat = Room(randomKey, null,null,null,0,null,date.time.toString())
+        database.reference.child("Room").child(firebaseAuth.uid?:"")
+            .child(randomKey.toString()).setValue(roomChat)
+
+    }
+
+    private fun goMessenger(itemUser: ItemRecyclerViewModel) {
+        val messIntent = Intent(activity, ActivityMessenger::class.java)
+        messIntent.putExtra("name", itemUser.user.name)
+        messIntent.putExtra("img", itemUser.user.img)
+        messIntent.putExtra("uid", itemUser.user.uid)
+        messIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(messIntent)
+
     }
 }

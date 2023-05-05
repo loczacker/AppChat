@@ -42,6 +42,13 @@ class ActivityMessenger : AppCompatActivity() {
             .child(firebaseAuth.uid?:"").child("presence").setValue("Online")
         infoUserChat()
         backHome()
+        sendMessenger(String(), String(), toString())
+    }
+
+    private fun sendMessenger(senderId: String, receiverId: String, messenger: String) {
+        binding.ivSend.setOnClickListener{
+
+        }
     }
 
     private fun backHome() {
