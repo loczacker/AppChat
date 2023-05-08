@@ -2,7 +2,6 @@ package com.rikkei.training.appchat.ui.tabFriends
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.Messenger.ActivityMessenger
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
-import java.util.Date
 
 class FragmentFriends : Fragment() {
 
@@ -81,21 +79,26 @@ class FragmentFriends : Fragment() {
                     }
                     friendAdapter.notifyDataSetChanged()
                 }
-
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
 
     private fun createRoom(itemUser: ItemRecyclerViewModel) {
+        val uidFriend = itemUser.user.uid ?: ""
+        val myUid = firebaseAuth.uid ?: ""
+        val room = if (myUid > uidFriend) {
+            "$myUid$uidFriend"
+        } else {
+            "$uidFriend$myUid"
+        }
 
-        val date = Date()
-        val randomKey = database.reference.push().key
-        val roomChat = Room(randomKey, null,null,null,0,null,date.time.toString())
-        database.reference.child("Room").child(firebaseAuth.uid?:"")
-            .child(randomKey.toString()).setValue(roomChat)
-
+        database.reference.child("Room").child(room).child("member").child(myUid).setValue("member")
+            .addOnSuccessListener {
+                database.reference.child("Room").child(room).child("member").child(uidFriend).setValue("member")
     }
 
+
+    }
     private fun goMessenger(itemUser: ItemRecyclerViewModel) {
         val messIntent = Intent(activity, ActivityMessenger::class.java)
         messIntent.putExtra("name", itemUser.user.name)
@@ -103,6 +106,6 @@ class FragmentFriends : Fragment() {
         messIntent.putExtra("uid", itemUser.user.uid)
         messIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(messIntent)
-
     }
 }
+

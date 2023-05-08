@@ -62,7 +62,8 @@
             android:id="@+id/rv_mes_home_mes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="15dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

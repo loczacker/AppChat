@@ -10,6 +10,7 @@ import com.rikkei.training.appchat.databinding.ActivityHomeBinding
 import com.rikkei.training.appchat.ui.tabFriends.FragmentFriendsTab
 import com.rikkei.training.appchat.ui.Messenger.FragmentMessenger
 import com.rikkei.training.appchat.ui.profile.FragmentProfile
+import com.rikkei.training.appchat.ui.tabFriends.FragmentFriends
 
 class HomeActivity : AppCompatActivity() {
 
@@ -41,6 +42,7 @@ class HomeActivity : AppCompatActivity() {
             }
             true
         }
+
     }
 
     override fun onResume() {
