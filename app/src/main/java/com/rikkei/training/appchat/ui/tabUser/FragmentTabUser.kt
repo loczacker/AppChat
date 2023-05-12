@@ -44,10 +44,6 @@ class FragmentTabUser : Fragment() {
         disPlayInfoUsers()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     fun sendRequest(uid: String) {
         database.reference.child("Friends").child(uid)
             .child(firebaseAuth.uid ?: "").child("status").setValue("received")

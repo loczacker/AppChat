@@ -12,9 +12,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
-import com.rikkei.training.appchat.model.Room
 import com.rikkei.training.appchat.model.UsersModel
-import com.rikkei.training.appchat.ui.Messenger.ActivityMessenger
+import com.rikkei.training.appchat.ui.message.ActivityMessage
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
@@ -52,7 +51,6 @@ class FragmentFriends : Fragment() {
         friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRecycleView{
             override fun getDetail(itemUser: ItemRecyclerViewModel) {
                 goMessenger(itemUser)
-                createRoom(itemUser)
             }
         })
 
@@ -82,25 +80,8 @@ class FragmentFriends : Fragment() {
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
-
-    private fun createRoom(itemUser: ItemRecyclerViewModel) {
-        val uidFriend = itemUser.user.uid ?: ""
-        val myUid = firebaseAuth.uid ?: ""
-        val room = if (myUid > uidFriend) {
-            "$myUid$uidFriend"
-        } else {
-            "$uidFriend$myUid"
-        }
-
-        database.reference.child("Room").child(room).child("member").child(myUid).setValue("member")
-            .addOnSuccessListener {
-                database.reference.child("Room").child(room).child("member").child(uidFriend).setValue("member")
-    }
-
-
-    }
     private fun goMessenger(itemUser: ItemRecyclerViewModel) {
-        val messIntent = Intent(activity, ActivityMessenger::class.java)
+        val messIntent = Intent(activity, ActivityMessage::class.java)
         messIntent.putExtra("name", itemUser.user.name)
         messIntent.putExtra("img", itemUser.user.img)
         messIntent.putExtra("uid", itemUser.user.uid)

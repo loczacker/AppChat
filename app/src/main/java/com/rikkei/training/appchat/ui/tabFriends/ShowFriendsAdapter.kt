@@ -1,7 +1,6 @@
 package com.rikkei.training.appchat.ui.tabFriends
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +9,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemUserFriendRowBinding
-import com.rikkei.training.appchat.databinding.ItemUserRowBinding
-import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
 
