@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:layout_gravity="start"
     android:gravity="start"
-    android:layout_margin="15dp">
+    android:layout_margin="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_mess"
@@ -18,8 +18,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/im_mess_chat"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_margin="5dp"
             tools:src="@drawable/profile_avatar"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,9 +28,10 @@
         <TextView
             android:id="@+id/tv_mess"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/receiver_drawable"
             android:fontFamily="@font/lato_bold"
             android:padding="10dp"

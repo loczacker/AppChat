@@ -76,7 +76,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:stackFromEnd="true"
+                android:clipToPadding="false"/>
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -18,10 +18,9 @@ import com.rikkei.training.appchat.databinding.ActivityMessengerBinding
 import com.rikkei.training.appchat.model.MessageModel
 import com.rikkei.training.appchat.model.MessageRecyclerViewModel
 import com.rikkei.training.appchat.ui.home.HomeActivity
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
 import java.util.ArrayList
-import java.util.Calendar
+import java.util.Date
 
 
 class ActivityMessage : AppCompatActivity() {
@@ -37,7 +36,6 @@ class ActivityMessage : AppCompatActivity() {
     }
 
     private val messageList: ArrayList<MessageRecyclerViewModel> = arrayListOf()
-    private val messMap = hashMapOf<String, Int>()
     private lateinit var messageAdapter: MessageAdapter
 
 
@@ -90,38 +88,42 @@ class ActivityMessage : AppCompatActivity() {
             }
     }
 
-//    private fun updateRoomInfo(roomId: String, content: String) {
-//        val hashMap: HashMap<String, Any> = HashMap()
-//        hashMap["lastMessage"] = binding.etSend.text.toString()
-//        hashMap["unreadMessage"] = 1
-//        database.reference.child("Room").child(roomId).updateChildren(hashMap)
-//
-//    }
+    private fun updateRoomInfo(roomId: String, timeStamp: Long, imgProfile: String?) {
+        val hashMap: HashMap<String, Any> = HashMap()
+        hashMap["lastMessage"] = binding.etSend.text.toString()
+        hashMap["unreadMessage"] = 1
+        database.reference.child("Room").child(roomId).updateChildren(hashMap)
 
-    private fun sendMessage(roomId: String) {
+    }
+
+    private fun sendMessage(roomId: String, timeStamp: Long) {
         binding.ivSend.setOnClickListener{
-            val timeNow = Calendar.getInstance().time
-            val now = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd-MM")
+            fun convertLongToTime(timeNow: Long): String {
+                val date = Date(timeNow)
+                val format = SimpleDateFormat("dd.MM HH:mm")
+                return format.format(date)
+            }
             val content = binding.etSend.text.toString()
-            val mess = MessageModel(content, firebaseAuth.uid, timeNow.toString(), null )
+            val mess = MessageModel(null,content, firebaseAuth.uid, convertLongToTime(timeStamp),null)
             database.reference.child("Message").child(roomId).push().setValue(mess)
             binding.etSend.text.clear()
         }
     }
 
-    private fun getAllMess(roomId: String) {
+    private fun getAllMess(roomId: String, imgProfile: String?) {
         database.reference.child("Message").child(roomId)
             .addValueEventListener(object: ValueEventListener{
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
+                     messageList.clear()
                     for (snap in snapshot.children){
                         val senderId = snap.child("senderId").getValue(String::class.java)
                         val myUid = firebaseAuth.uid?:""
                         val mess = snap.getValue(MessageModel::class.java)
                         if (senderId == myUid) {
                             mess?.let { messageList.add(MessageRecyclerViewModel(it, 0, "")) }
-                        } else if (senderId != myUid) {
+                        } else {
+                            mess?.imgFriend = imgProfile
                             mess?.let { messageList.add(MessageRecyclerViewModel(it, 1, "" )) }
                         }
                     }
@@ -132,6 +134,8 @@ class ActivityMessage : AppCompatActivity() {
 
             })
     }
+
+
 
     override fun onPause() {
         super.onPause()
@@ -150,17 +154,18 @@ class ActivityMessage : AppCompatActivity() {
         val uidUser = intent.getStringExtra("uid")
         val uidFriend = uidUser.toString()
         val myUid = firebaseAuth.uid ?: ""
-
+        val timeStamp = System.currentTimeMillis()
         val roomId = if (myUid > uidFriend) {
             "$myUid$uidFriend"
         } else {
             "$uidFriend$myUid"
         }
-        getAllMess(roomId)
+        getAllMess(roomId, imgProfile)
         infoUserProfile(name, imgProfile, uidUser)
         createRoom(myUid,uidFriend, roomId)
-//        updateRoomInfo(roomId, content)
-        sendMessage(roomId)
+        updateRoomInfo(roomId, timeStamp, imgProfile)
+        sendMessage(roomId, timeStamp)
+
     }
 
 }

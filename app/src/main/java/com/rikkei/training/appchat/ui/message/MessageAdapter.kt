@@ -33,6 +33,9 @@ class MessageAdapter(
         fun bind(messReceived: MessageRecyclerViewModel){
             binding.tvMess.text = messReceived.message.content
             binding.tvTimeReceived.text = messReceived.message.time
+            Glide.with(binding.imMessChat.context).load(messReceived.message.imgFriend)
+                .placeholder(R.drawable.profile)
+                .into(binding.imMessChat)
         }
     }
 
