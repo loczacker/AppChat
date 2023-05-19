@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
+import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -18,6 +18,8 @@ import com.rikkei.training.appchat.databinding.ActivityMessengerBinding
 import com.rikkei.training.appchat.model.MessageModel
 import com.rikkei.training.appchat.model.MessageRecyclerViewModel
 import com.rikkei.training.appchat.ui.home.HomeActivity
+import com.rikkei.training.appchat.ui.tabIcon.FragmentIcon
+import com.rikkei.training.appchat.ui.tabPhoto.FragmentGallery
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Date
@@ -43,6 +45,7 @@ class ActivityMessage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMessengerBinding.inflate(layoutInflater)
+        binding.frameLayoutMess.visibility = View.GONE
         setContentView(binding.root)
     }
 
@@ -110,6 +113,31 @@ class ActivityMessage : AppCompatActivity() {
         }
     }
 
+    private fun sendImageIcon() {
+
+        fragmentPhoto()
+
+        binding.ivLibrary.setOnClickListener {
+
+            if (binding.frameLayoutMess.visibility == View.VISIBLE)
+            {
+                binding.frameLayoutMess.visibility = View.GONE
+            } else {
+                binding.frameLayoutMess.visibility = View.VISIBLE
+            }
+        }
+
+        binding.ivIcon.setOnClickListener {
+            fragmentIcon()
+            if (binding.frameLayoutMess.visibility == View.VISIBLE)
+            {
+                binding.frameLayoutMess.visibility = View.GONE
+            } else {
+                binding.frameLayoutMess.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun getAllMess(roomId: String, imgProfile: String?) {
         database.reference.child("Message").child(roomId)
             .addValueEventListener(object: ValueEventListener{
@@ -133,6 +161,24 @@ class ActivityMessage : AppCompatActivity() {
                 override fun onCancelled(error: DatabaseError) {}
 
             })
+    }
+
+    private fun fragmentPhoto() {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentGallery = FragmentGallery()
+        fragmentTransaction.replace(R.id.frame_layout_mess, fragmentGallery)
+       fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
+
+    private fun fragmentIcon() {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentIcon = FragmentIcon()
+        fragmentTransaction.replace(R.id.frame_layout_mess, fragmentIcon)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
 
@@ -165,7 +211,6 @@ class ActivityMessage : AppCompatActivity() {
         createRoom(myUid,uidFriend, roomId)
         updateRoomInfo(roomId, timeStamp, imgProfile)
         sendMessage(roomId, timeStamp)
-
+        sendImageIcon()
     }
-
 }
