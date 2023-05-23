@@ -7,32 +7,36 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemIconBinding
-import com.rikkei.training.appchat.databinding.ItemUserRowBinding
-import com.rikkei.training.appchat.model.RoomModel
-import com.rikkei.training.appchat.ui.roomMessage.RoomItem
 import java.util.ArrayList
 
 class IconAdapter(
-    private val iconList: ArrayList<RoomModel>,
-): RecyclerView.Adapter<IconAdapter.RoomViewHolder>() {
-    class RoomViewHolder(private val binding: ItemIconBinding):
+    private val iconList: ArrayList<IconModel>,
+    private val iconItemInterface: IconItemInterface
+): RecyclerView.Adapter<IconAdapter.IconViewHolder>() {
+    class IconViewHolder(private val binding: ItemIconBinding):
     RecyclerView.ViewHolder(binding.root){
-        fun bind(room: RoomModel) {
+        fun bind(icon: IconModel, iconItemInterface: IconItemInterface) {
+            Glide.with(binding.ivSticker).load(icon.imageSource)
+                .placeholder(R.drawable.profile)
+                .into(binding.ivSticker)
+            itemView.setOnClickListener{
+                iconItemInterface.getIcon(icon)
+            }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
-        return RoomViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconViewHolder {
+        return IconViewHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.item_user_row, parent, false
+                R.layout.item_icon, parent, false
             )
         )
     }
 
     override fun getItemCount(): Int = iconList.size
 
-    override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
-        holder.bind(iconList[position])
+    override fun onBindViewHolder(holder: IconViewHolder, position: Int) {
+        holder.bind(iconList[position], iconItemInterface )
     }
 }

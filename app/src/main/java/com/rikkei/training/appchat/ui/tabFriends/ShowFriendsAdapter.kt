@@ -10,18 +10,18 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemUserFriendRowBinding
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
-import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
+import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class ShowFriendsAdapter(
     private val friendsList: ArrayList<ItemRecyclerViewModel>,
-    private val itemUsersRecycleView: ItemUsersRecycleView
+    private val itemUsersRVInterface: ItemUsersRVInterface
 ) :
     RecyclerView.Adapter<ShowFriendsAdapter.FriendsViewHolder>() {
 
     class FriendsViewHolder(private val binding: ItemUserFriendRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ItemRecyclerViewModel, itemUsersRecycleView: ItemUsersRecycleView) {
+        fun bind(item: ItemRecyclerViewModel, itemUsersRVInterface: ItemUsersRVInterface) {
             val user = item.user
             binding.tvName.text = user.name
             Glide.with(binding.imgCircleHomeMess.context)
@@ -30,7 +30,7 @@ class ShowFriendsAdapter(
                 .placeholder(R.drawable.profile)
                 .into(binding.imgCircleHomeMess)
 
-            binding.root.setOnClickListener { itemUsersRecycleView.getDetail(item)  }
+            binding.root.setOnClickListener { itemUsersRVInterface.getDetail(item)  }
         }
 
     }
@@ -48,6 +48,6 @@ class ShowFriendsAdapter(
     override fun getItemCount(): Int = friendsList.size
 
     override fun onBindViewHolder(holder: FriendsViewHolder, position: Int) {
-        holder.bind(friendsList[position], itemUsersRecycleView)
+        holder.bind(friendsList[position], itemUsersRVInterface)
     }
 }

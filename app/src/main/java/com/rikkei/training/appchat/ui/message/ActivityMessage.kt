@@ -2,6 +2,7 @@ package com.rikkei.training.appchat.ui.message
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -15,8 +16,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityMessengerBinding
-import com.rikkei.training.appchat.model.MessageModel
-import com.rikkei.training.appchat.model.MessageRecyclerViewModel
 import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.tabIcon.FragmentIcon
 import com.rikkei.training.appchat.ui.tabPhoto.FragmentGallery
@@ -39,8 +38,6 @@ class ActivityMessage : AppCompatActivity() {
 
     private val messageList: ArrayList<MessageRecyclerViewModel> = arrayListOf()
     private lateinit var messageAdapter: MessageAdapter
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,26 +110,26 @@ class ActivityMessage : AppCompatActivity() {
         }
     }
 
-    private fun sendImageIcon() {
-
-        fragmentPhoto()
-
+    private fun sendImageIcon(roomId: String, uidFriend: String) {
         binding.ivLibrary.setOnClickListener {
 
             if (binding.frameLayoutMess.visibility == View.VISIBLE)
             {
+                fragmentPhoto(roomId, uidFriend)
                 binding.frameLayoutMess.visibility = View.GONE
             } else {
+                fragmentPhoto(roomId, uidFriend)
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
 
         binding.ivIcon.setOnClickListener {
-            fragmentIcon()
             if (binding.frameLayoutMess.visibility == View.VISIBLE)
             {
+                fragmentIcon(roomId, uidFriend)
                 binding.frameLayoutMess.visibility = View.GONE
             } else {
+                fragmentIcon(roomId, uidFriend)
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
@@ -163,7 +160,7 @@ class ActivityMessage : AppCompatActivity() {
             })
     }
 
-    private fun fragmentPhoto() {
+    private fun fragmentPhoto(roomId: String, uidFriend: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragmentGallery = FragmentGallery()
@@ -172,7 +169,7 @@ class ActivityMessage : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    private fun fragmentIcon() {
+    private fun fragmentIcon(roomId: String, uidFriend: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragmentIcon = FragmentIcon()
@@ -180,8 +177,6 @@ class ActivityMessage : AppCompatActivity() {
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
-
-
 
     override fun onPause() {
         super.onPause()
@@ -206,11 +201,27 @@ class ActivityMessage : AppCompatActivity() {
         } else {
             "$uidFriend$myUid"
         }
+
         getAllMess(roomId, imgProfile)
         infoUserProfile(name, imgProfile, uidUser)
         createRoom(myUid,uidFriend, roomId)
         updateRoomInfo(roomId, timeStamp, imgProfile)
         sendMessage(roomId, timeStamp)
-        sendImageIcon()
+        sendImageIcon(roomId, uidFriend )
+        showKeyboardListener()
+    }
+
+    private fun showKeyboardListener() {
+        window.decorView.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = Rect()
+            window.decorView.getWindowVisibleDisplayFrame(r)
+
+            val height = window.decorView.height
+            if (height - r.bottom > height * 0.1399) {
+                binding.frameLayoutMess.visibility = View.GONE
+            } else {
+                //keyboard is close
+            }
+        }
     }
 }

@@ -12,10 +12,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
-import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.ui.tabUser.UsersModel
 import com.rikkei.training.appchat.ui.message.ActivityMessage
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
-import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
+import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class FragmentFriends : Fragment() {
 
@@ -25,7 +25,7 @@ class FragmentFriends : Fragment() {
         FirebaseDatabase.getInstance()
     }
 
-    private val firebaseAuth: FirebaseAuth by lazy {
+    private val firebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
 
@@ -48,7 +48,7 @@ class FragmentFriends : Fragment() {
     }
 
     private fun showFriendsList() {
-        friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRecycleView{
+        friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRVInterface{
             override fun getDetail(itemUser: ItemRecyclerViewModel) {
                 goMessenger(itemUser)
             }

@@ -7,19 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemUserRequestBinding
-import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
-import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
+import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class RequestFriendsSentAdapter(
     private val requestList: ArrayList<ItemRecyclerViewModel>,
-    private val itemUsersRecycleView: ItemUsersRecycleView
+    private val itemUsersRVInterface: ItemUsersRVInterface
 ): RecyclerView.Adapter<RequestFriendsSentAdapter.RequestViewHolder>() {
 
     class RequestViewHolder(private val binding: ItemUserRequestBinding):
         RecyclerView.ViewHolder(binding.root){
 
-        fun bind(item: ItemRecyclerViewModel, itemUsersRecycleView: ItemUsersRecycleView){
+        fun bind(item: ItemRecyclerViewModel, itemUsersRVInterface: ItemUsersRVInterface){
             val user = item.user
             binding.txtNameRequest.text = user.name
             Glide.with(binding.imgCircleHomeRequest.context).load(user.img)
@@ -27,7 +26,7 @@ class RequestFriendsSentAdapter(
                 .into(binding.imgCircleHomeRequest)
 
             binding.btnCancel.setOnClickListener {
-                itemUsersRecycleView.getDetail(item)
+                itemUsersRVInterface.getDetail(item)
             }
         }
     }
@@ -44,7 +43,7 @@ class RequestFriendsSentAdapter(
     override fun getItemCount(): Int = requestList.size
 
     override fun onBindViewHolder(holder: RequestViewHolder, position: Int) {
-        holder.bind(requestList[position], itemUsersRecycleView)
+        holder.bind(requestList[position], itemUsersRVInterface)
     }
 }
 

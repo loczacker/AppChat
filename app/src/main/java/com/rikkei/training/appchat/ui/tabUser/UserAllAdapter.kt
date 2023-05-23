@@ -12,13 +12,13 @@ import com.rikkei.training.appchat.databinding.ItemUserAllBinding
 
 class UserAllAdapter(
     private val itemList: ArrayList<ItemRecyclerViewModel>,
-    private val itemUsersRecycleView: ItemUsersRecycleView
+    private val itemUsersRVInterface: ItemUsersRVInterface
 ) : RecyclerView.Adapter<UserViewHolder>() {
 
     class UserViewHolder(private val binding: ItemUserAllBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ItemRecyclerViewModel, itemUsersRecycleView: ItemUsersRecycleView) {
+        fun bind(item: ItemRecyclerViewModel, itemUsersRVInterface: ItemUsersRVInterface) {
             val user = item.user
             binding.txtName.text = user.name
             Glide.with(binding.imgCircleHomeMess.context).load(user.img)
@@ -26,7 +26,7 @@ class UserAllAdapter(
                 .into(binding.imgCircleHomeMess)
 
             binding.btnAdd.setOnClickListener {
-                itemUsersRecycleView.getDetail(item)
+                itemUsersRVInterface.getDetail(item)
             }
 
             when (item.statusButton) {
@@ -67,6 +67,6 @@ class UserAllAdapter(
     override fun getItemCount(): Int = itemList.size
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(itemList[position], itemUsersRecycleView)
+        holder.bind(itemList[position], itemUsersRVInterface)
     }
 }

@@ -1,8 +1,8 @@
 package com.rikkei.training.appchat.ui.tabRequest
 
-import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.ui.tabUser.UsersModel
 
-interface ItemSentUsers {
+interface ItemSentUsersInterface {
 
     fun getDetail(user: UsersModel)
 

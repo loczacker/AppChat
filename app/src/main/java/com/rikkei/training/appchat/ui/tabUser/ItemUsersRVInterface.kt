@@ -1,6 +1,6 @@
 package com.rikkei.training.appchat.ui.tabUser
 
 
-interface ItemUsersRecycleView {
+interface ItemUsersRVInterface {
     fun getDetail(user: ItemRecyclerViewModel)
 }

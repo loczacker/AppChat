@@ -1,15 +1,14 @@
 package com.rikkei.training.appchat.ui.message
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.rikkei.training.appchat.R
-import com.rikkei.training.appchat.databinding.ReceivedMsgBinding
-import com.rikkei.training.appchat.databinding.SendMsgBinding
-import com.rikkei.training.appchat.model.MessageRecyclerViewModel
+import com.rikkei.training.appchat.databinding.ItemReceivedMsgBinding
+import com.rikkei.training.appchat.databinding.ItemSendMsgBinding
 
 class MessageAdapter(
     private var messenger: ArrayList<MessageRecyclerViewModel>,
@@ -19,23 +18,64 @@ class MessageAdapter(
     private val SECOND_VIEW = 1
 
 
-    class SentMsgHolder(private val binding: SendMsgBinding):
+    class SentMsgHolder(private val binding: ItemSendMsgBinding):
         RecyclerView.ViewHolder(binding.root){
         fun bind(messSend: MessageRecyclerViewModel){
-            binding.tvMyMessage.text = messSend.message.content
-            binding.tvTimeSend.text = messSend.message.time
+            if (messSend.message.imgUrl.isNullOrEmpty() && messSend.message.imgIcon.isNullOrEmpty())
+            {
+                binding.tvMyMessage.text = messSend.message.content
+                binding.tvTimeSend.text = messSend.message.time
+                binding.ivImSent.visibility = View.GONE
+            } else if (messSend.message.content.isNullOrEmpty() && messSend.message.imgUrl.isNullOrEmpty())
+            {
+                binding.tvMyMessage.visibility = View.GONE
+                Glide.with(binding.ivImSent).load(messSend.message.imgIcon)
+                    .placeholder(R.drawable.profile)
+                    .into(binding.ivImSent)
+                binding.tvTimeSend.text = messSend.message.time
+            } else
+            {
+                binding.tvMyMessage.visibility = View.GONE
+                Glide.with(binding.ivImSent).load(messSend.message.imgUrl)
+                    .placeholder(R.drawable.profile)
+                    .into(binding.ivImSent)
+                binding.tvTimeSend.text = messSend.message.time
+            }
         }
     }
 
-    class ReceiveMsgHolder(private val binding: ReceivedMsgBinding):
+    class ReceiveMsgHolder(private val binding: ItemReceivedMsgBinding):
         RecyclerView.ViewHolder(binding.root){
 
         fun bind(messReceived: MessageRecyclerViewModel){
-            binding.tvMess.text = messReceived.message.content
-            binding.tvTimeReceived.text = messReceived.message.time
-            Glide.with(binding.imMessChat.context).load(messReceived.message.imgFriend)
-                .placeholder(R.drawable.profile)
-                .into(binding.imMessChat)
+            if (messReceived.message.imgUrl.isNullOrEmpty() && messReceived.message.imgIcon.isNullOrEmpty())
+            {
+                binding.tvMess.text = messReceived.message.content
+                binding.tvTimeReceived.text = messReceived.message.time
+                Glide.with(binding.imMessChat.context).load(messReceived.message.imgFriend)
+                    .placeholder(R.drawable.profile)
+                    .into(binding.imMessChat)
+                binding.ivImReceived.visibility = View.GONE
+            } else if (messReceived.message.content.isNullOrEmpty() && messReceived.message.imgUrl.isNullOrEmpty())
+            {
+                Glide.with(binding.ivImReceived).load(messReceived.message.imgIcon)
+                    .placeholder(R.drawable.profile)
+                    .into(binding.ivImReceived)
+                binding.tvTimeReceived.text = messReceived.message.time
+                Glide.with(binding.imMessChat.context).load(messReceived.message.imgFriend)
+                    .placeholder(R.drawable.profile)
+                    .into(binding.imMessChat)
+                binding.tvMess.visibility = View.GONE
+            } else
+            {
+                Glide.with(binding.ivImReceived).load(messReceived.message.imgUrl)
+                    .placeholder(R.drawable.profile)
+                    .into(binding.ivImReceived)
+                binding.tvTimeReceived.text = messReceived.message.time
+                Glide.with(binding.imMessChat.context).load(messReceived.message.imgFriend)
+                    .placeholder(R.drawable.profile)
+                    .into(binding.imMessChat)
+            }
         }
     }
 
@@ -47,8 +87,8 @@ class MessageAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            FIRST_VIEW -> SentMsgHolder(SendMsgBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            SECOND_VIEW -> ReceiveMsgHolder(ReceivedMsgBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            FIRST_VIEW -> SentMsgHolder(ItemSendMsgBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            SECOND_VIEW -> ReceiveMsgHolder(ItemReceivedMsgBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> throw IllegalArgumentException("invalid item type")
         }
     }

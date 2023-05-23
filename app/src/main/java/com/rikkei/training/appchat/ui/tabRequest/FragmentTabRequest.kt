@@ -12,9 +12,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabRequestBinding
-import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.ui.tabUser.UsersModel
 import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
-import com.rikkei.training.appchat.ui.tabUser.ItemUsersRecycleView
+import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class FragmentTabRequest : Fragment() {
 
@@ -52,7 +52,7 @@ class FragmentTabRequest : Fragment() {
     }
 
     private fun showSendUser() {
-        sentAdapter = RequestSendFriendsAdapter(sendUsersRequest, object : ItemSentUsers{
+        sentAdapter = RequestSendFriendsAdapter(sendUsersRequest, object : ItemSentUsersInterface{
             override fun getDetail(user: UsersModel) {
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["status"] = "not_friend"
@@ -105,7 +105,7 @@ class FragmentTabRequest : Fragment() {
     }
 
     private fun showRequestUser() {
-        requestAdapter = RequestFriendsSentAdapter(usersRequest, object : ItemUsersRecycleView {
+        requestAdapter = RequestFriendsSentAdapter(usersRequest, object : ItemUsersRVInterface {
             override fun getDetail(item: ItemRecyclerViewModel) {
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["status"] = "not_friend"

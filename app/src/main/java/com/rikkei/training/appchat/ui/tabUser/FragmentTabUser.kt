@@ -1,6 +1,5 @@
 package com.rikkei.training.appchat.ui.tabUser
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.rikkei.training.appchat.databinding.FragmentTabUserBinding
-import com.rikkei.training.appchat.model.UsersModel
 import java.util.ArrayList
 
 class FragmentTabUser : Fragment() {
@@ -153,7 +151,7 @@ class FragmentTabUser : Fragment() {
     }
 
     private fun disPlayInfoUsers() {
-        usersAdapter = UserAllAdapter(listUser, object : ItemUsersRecycleView {
+        usersAdapter = UserAllAdapter(listUser, object : ItemUsersRVInterface {
             override fun getDetail(item: ItemRecyclerViewModel) {
                 sendRequest(item.user.uid.toString())
             }

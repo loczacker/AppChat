@@ -110,7 +110,7 @@
                 <EditText
                     android:id="@+id/et_send"
                     android:layout_width="185dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:autofillHints="name"
                     android:background="@null"
@@ -128,8 +128,7 @@
                     android:id="@+id/iv_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@null"
-                    android:padding="14dp"
+                    android:paddingEnd="10dp"
                     android:src="@drawable/smile_1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -154,6 +153,11 @@
         android:id="@+id/frame_layout_mess"
         android:layout_width="match_parent"
         android:layout_height="300dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 

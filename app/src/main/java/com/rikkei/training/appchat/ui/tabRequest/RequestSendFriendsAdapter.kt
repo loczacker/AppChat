@@ -7,17 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemUserSendRequestBinding
-import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.ui.tabUser.UsersModel
 
 class RequestSendFriendsAdapter(
     private val requestSendUserList: ArrayList<UsersModel>,
-    private val itemSentUsers: ItemSentUsers
+    private val itemSentUsersInterface: ItemSentUsersInterface
 ): RecyclerView.Adapter<RequestSendFriendsAdapter.RequestSendViewHolder>() {
 
     class RequestSendViewHolder(private val binding: ItemUserSendRequestBinding):
         RecyclerView.ViewHolder(binding.root){
 
-        fun bind(user: UsersModel, itemUsersRecycleView: ItemSentUsers){
+        fun bind(user: UsersModel, itemUsersRecycleView: ItemSentUsersInterface){
             binding.txtNameRequestSend.text = user.name
             Glide.with(binding.imgCircleHomeRequestSend.context).load(user.img)
                 .placeholder(R.drawable.profile)
@@ -39,7 +39,7 @@ class RequestSendFriendsAdapter(
     }
 
     override fun onBindViewHolder(holder: RequestSendViewHolder, position: Int) {
-        holder.bind(requestSendUserList[position], itemSentUsers)
+        holder.bind(requestSendUserList[position], itemSentUsersInterface)
     }
 
     override fun getItemCount(): Int = requestSendUserList.size

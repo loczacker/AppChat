@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.model
+package com.rikkei.training.appchat.ui.tabUser
 
 data class UsersModel(
     var birthday: String ?= null,
