@@ -13,17 +13,18 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@drawable/send_drawable"
+            android:id="@+id/sentText"
             android:layout_margin="5dp"
             android:padding="15dp">
             <TextView
                 android:id="@+id/tv_myMessage"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:fontFamily="@font/lato_bold"
                 android:textAlignment="textStart"
-                tools:text="Ko biết làm. Tí tôi qua nhà bà chép..."/>
+                tools:text="Ko biết làm. Tía nhà bà chép..."/>
         </LinearLayout>
 
         <ImageView

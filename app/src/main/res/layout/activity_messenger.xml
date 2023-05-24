@@ -90,8 +90,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_library"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_gravity="center"
                 android:src="@drawable/add_photo"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -99,8 +99,8 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
+                android:layout_width="270dp"
+                android:layout_height="50dp"
                 android:background="@drawable/edit_text_mess"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_send"
@@ -109,26 +109,27 @@
 
                 <EditText
                     android:id="@+id/et_send"
-                    android:layout_width="185dp"
-                    android:layout_height="50dp"
+                    android:layout_width="205dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:autofillHints="name"
                     android:background="@null"
                     android:fontFamily="@font/lato_bold"
                     android:hint="Nhập tin nhắn..."
+                    android:backgroundTint="@null"
                     android:paddingVertical="10dp"
-                    android:singleLine="true"
                     android:textColor="#676767"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/iv_icon"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/iv_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingEnd="10dp"
+                    android:paddingEnd="15dp"
                     android:src="@drawable/smile_1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -138,8 +139,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_send"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:background="@color/white"
 

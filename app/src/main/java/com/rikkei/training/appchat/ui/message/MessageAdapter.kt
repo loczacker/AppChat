@@ -3,7 +3,7 @@ package com.rikkei.training.appchat.ui.message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
@@ -25,26 +25,28 @@ class MessageAdapter(
             {
                 binding.tvMyMessage.text = messSend.message.content
                 binding.tvTimeSend.text = messSend.message.time
-                binding.ivImSent.visibility = View.GONE
+                binding.ivImSent.isVisible = false
             } else if (messSend.message.content.isNullOrEmpty() && messSend.message.imgUrl.isNullOrEmpty())
             {
-                binding.tvMyMessage.visibility = View.GONE
                 Glide.with(binding.ivImSent).load(messSend.message.imgIcon)
                     .placeholder(R.drawable.profile)
                     .into(binding.ivImSent)
                 binding.tvTimeSend.text = messSend.message.time
+                binding.sentText.isVisible = false
             } else
             {
-                binding.tvMyMessage.visibility = View.GONE
                 Glide.with(binding.ivImSent).load(messSend.message.imgUrl)
                     .placeholder(R.drawable.profile)
                     .into(binding.ivImSent)
                 binding.tvTimeSend.text = messSend.message.time
+                binding.sentText.isVisible = false
             }
         }
     }
 
-    class ReceiveMsgHolder(private val binding: ItemReceivedMsgBinding):
+    class ReceiveMsgHolder(
+        private val binding: ItemReceivedMsgBinding
+    ):
         RecyclerView.ViewHolder(binding.root){
 
         fun bind(messReceived: MessageRecyclerViewModel){

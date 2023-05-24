@@ -18,6 +18,7 @@ import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityMessengerBinding
 import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.tabIcon.FragmentIcon
+import com.rikkei.training.appchat.ui.tabIcon.IconModel
 import com.rikkei.training.appchat.ui.tabPhoto.FragmentGallery
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -37,6 +38,7 @@ class ActivityMessage : AppCompatActivity() {
     }
 
     private val messageList: ArrayList<MessageRecyclerViewModel> = arrayListOf()
+
     private lateinit var messageAdapter: MessageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,15 +112,15 @@ class ActivityMessage : AppCompatActivity() {
         }
     }
 
-    private fun sendImageIcon(roomId: String, uidFriend: String) {
+    private fun sendImageIcon(roomId: String) {
         binding.ivLibrary.setOnClickListener {
 
             if (binding.frameLayoutMess.visibility == View.VISIBLE)
             {
-                fragmentPhoto(roomId, uidFriend)
+                fragmentPhoto(roomId)
                 binding.frameLayoutMess.visibility = View.GONE
             } else {
-                fragmentPhoto(roomId, uidFriend)
+                fragmentPhoto(roomId)
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
@@ -126,10 +128,10 @@ class ActivityMessage : AppCompatActivity() {
         binding.ivIcon.setOnClickListener {
             if (binding.frameLayoutMess.visibility == View.VISIBLE)
             {
-                fragmentIcon(roomId, uidFriend)
+                fragmentIcon(roomId)
                 binding.frameLayoutMess.visibility = View.GONE
             } else {
-                fragmentIcon(roomId, uidFriend)
+                fragmentIcon(roomId)
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
@@ -153,6 +155,7 @@ class ActivityMessage : AppCompatActivity() {
                         }
                     }
                     messageAdapter.notifyDataSetChanged()
+                    binding.rvMesHomeMes.smoothScrollToPosition(messageAdapter.itemCount)
                 }
 
                 override fun onCancelled(error: DatabaseError) {}
@@ -160,19 +163,25 @@ class ActivityMessage : AppCompatActivity() {
             })
     }
 
-    private fun fragmentPhoto(roomId: String, uidFriend: String) {
+    private fun fragmentPhoto(roomId: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragmentGallery = FragmentGallery()
+        val photoBundle = Bundle()
+        photoBundle.putString("roomId",roomId)
+        fragmentGallery.arguments = photoBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, fragmentGallery)
-       fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
-    private fun fragmentIcon(roomId: String, uidFriend: String) {
+    private fun fragmentIcon(roomId: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragmentIcon = FragmentIcon()
+        val iconBundle = Bundle()
+        iconBundle.putString("roomId",roomId)
+        fragmentIcon.arguments = iconBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, fragmentIcon)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
@@ -207,7 +216,7 @@ class ActivityMessage : AppCompatActivity() {
         createRoom(myUid,uidFriend, roomId)
         updateRoomInfo(roomId, timeStamp, imgProfile)
         sendMessage(roomId, timeStamp)
-        sendImageIcon(roomId, uidFriend )
+        sendImageIcon(roomId)
         showKeyboardListener()
     }
 

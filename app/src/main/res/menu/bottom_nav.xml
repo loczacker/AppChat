@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/messenger"
         android:title="Tin nhắn"
         android:icon="@drawable/chat_fillled_messenger_2"
+        app:showAsAction="always"
+        android:actionLayout="@layout/activity_home"
         />
 
     <item android:id="@+id/friends"
         android:title="Bạn bè"
-        android:icon="@drawable/friends"/>
+        android:icon="@drawable/friends"
+        app:showAsAction="always"
+        android:actionLayout="@layout/activity_home"/>
 
     <item android:id="@+id/profile"
         android:title="Trang cá nhân"
-        android:icon="@drawable/profile"/>
+        android:icon="@drawable/profile"
+        app:showAsAction="always"
+        android:actionLayout="@layout/activity_home"/>
 </menu>

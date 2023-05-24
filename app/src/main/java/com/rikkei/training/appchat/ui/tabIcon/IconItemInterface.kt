@@ -1,5 +1,5 @@
 package com.rikkei.training.appchat.ui.tabIcon
 
 interface IconItemInterface {
-    fun getIcon(iconModel: IconModel)
+    fun getIcon(iconModel: IconModel, iconName : String)
 }

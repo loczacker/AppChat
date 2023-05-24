@@ -16,11 +16,11 @@ class IconAdapter(
     class IconViewHolder(private val binding: ItemIconBinding):
     RecyclerView.ViewHolder(binding.root){
         fun bind(icon: IconModel, iconItemInterface: IconItemInterface) {
-            Glide.with(binding.ivSticker).load(icon.imageSource)
+            Glide.with(binding.ivSticker).load(icon.iconSource)
                 .placeholder(R.drawable.profile)
                 .into(binding.ivSticker)
             itemView.setOnClickListener{
-                iconItemInterface.getIcon(icon)
+                iconItemInterface.getIcon(icon, icon.iconName.toString())
             }
         }
     }
