@@ -1,6 +1,7 @@
 package com.rikkei.training.appchat.ui.message
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -16,9 +17,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityMessengerBinding
+import com.rikkei.training.appchat.model.MessageModel
+import com.rikkei.training.appchat.model.ItemMessageRVModel
 import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.tabIcon.FragmentIcon
-import com.rikkei.training.appchat.ui.tabIcon.IconModel
+import com.rikkei.training.appchat.model.IconModel
 import com.rikkei.training.appchat.ui.tabPhoto.FragmentGallery
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -38,7 +41,7 @@ class ActivityMessage : AppCompatActivity() {
 
     private var iconList : ArrayList<IconModel> = arrayListOf()
 
-    private val messageList: ArrayList<MessageRecyclerViewModel> = arrayListOf()
+    private val messageList: ArrayList<ItemMessageRVModel> = arrayListOf()
 
     private lateinit var messageAdapter: MessageAdapter
 
@@ -69,6 +72,7 @@ class ActivityMessage : AppCompatActivity() {
         iconList.add(IconModel(R.drawable.tea_time, "tea_time"))
         iconList.add(IconModel(R.drawable.video_calling, "video_calling"))
         iconList.add(IconModel(R.drawable.watering_plants, "watering_plants"))
+
     }
 
     private fun backHome() {
@@ -78,6 +82,15 @@ class ActivityMessage : AppCompatActivity() {
             startActivity(homeIntent)
             finish()
         }
+    }
+
+    fun getIconByIconName(iconList: ArrayList<IconModel>, iconName: String): IconModel? {
+        for (icon in iconList) {
+            if (icon.iconName == iconName) {
+                return icon
+            }
+        }
+        return null
     }
 
     private fun infoUserProfile(name: String?, imgProfile: String?, uidUser: String?) {
@@ -171,14 +184,21 @@ class ActivityMessage : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                      messageList.clear()
                     for (snap in snapshot.children){
+                        val content = snap.child("content").getValue(String::class.java)
                         val senderId = snap.child("senderId").getValue(String::class.java)
                         val myUid = firebaseAuth.uid?:""
+                        val iconName = snap.child("iconName").getValue(String::class.java)
                         val mess = snap.getValue(MessageModel::class.java)
+                        mess?.imgIcon = iconName
                         if (senderId == myUid) {
-                            mess?.let { messageList.add(MessageRecyclerViewModel(it, 0, "")) }
+                            if (content != null) {
+                                mess?.let { messageList.add(ItemMessageRVModel(it, true, 1, "")) }
+                            } else {
+                            }
+
                         } else {
                             mess?.imgFriend = imgProfile
-                            mess?.let { messageList.add(MessageRecyclerViewModel(it, 1, "" )) }
+                            mess?.let { messageList.add(ItemMessageRVModel(it )) }
                         }
                     }
                     messageAdapter.notifyDataSetChanged()

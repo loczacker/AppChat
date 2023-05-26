@@ -19,7 +19,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.rikkei.training.appchat.R
-import com.rikkei.training.appchat.ui.tabUser.UsersModel
+import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.databinding.ActivityRegisterBinding
 import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.login.LoginActivity

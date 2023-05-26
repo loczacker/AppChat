@@ -12,8 +12,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabRequestBinding
-import com.rikkei.training.appchat.ui.tabUser.UsersModel
-import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
+import com.rikkei.training.appchat.model.UsersModel
+import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class FragmentTabRequest : Fragment() {
@@ -28,7 +28,7 @@ class FragmentTabRequest : Fragment() {
         FirebaseAuth.getInstance()
     }
 
-    private val usersRequest: ArrayList<ItemRecyclerViewModel> = arrayListOf()
+    private val usersRequest: ArrayList<ItemUsersRVModel> = arrayListOf()
 
     private val sendUsersRequest: ArrayList<UsersModel> = arrayListOf()
 
@@ -106,7 +106,7 @@ class FragmentTabRequest : Fragment() {
 
     private fun showRequestUser() {
         requestAdapter = RequestFriendsSentAdapter(usersRequest, object : ItemUsersRVInterface {
-            override fun getDetail(item: ItemRecyclerViewModel) {
+            override fun getDetail(item: ItemUsersRVModel) {
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["status"] = "not_friend"
                 database.reference.child("Friends").child(item.user.uid.toString())
@@ -133,7 +133,7 @@ class FragmentTabRequest : Fragment() {
                                        user.img  = snapshot.child("img").value.toString()
                                        user.uid = snapshot.child("uid").value.toString()
                                    }
-                                   user?.let { usersRequest.add(ItemRecyclerViewModel(it)) }
+                                   user?.let { usersRequest.add(ItemUsersRVModel(it)) }
                                    requestAdapter.notifyDataSetChanged()
                                }
                                override fun onCancelled(error: DatabaseError) {}

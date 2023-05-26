@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.rikkei.training.appchat.databinding.FragmentMessengerBinding
+import com.rikkei.training.appchat.model.RoomModel
 import java.util.ArrayList
 
 class FragmentRoomMessage : Fragment() {

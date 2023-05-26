@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemPhotoBinding
-import com.rikkei.training.appchat.ui.roomMessage.RoomModel
+import com.rikkei.training.appchat.model.RoomModel
 import com.rikkei.training.appchat.ui.roomMessage.RoomItem
 import java.util.ArrayList
 

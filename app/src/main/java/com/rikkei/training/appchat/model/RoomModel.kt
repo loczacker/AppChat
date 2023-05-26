@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.ui.roomMessage
+package com.rikkei.training.appchat.model
 
 data class RoomModel(
     var unreadMessage: Int = 0,

@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.ui.message
+package com.rikkei.training.appchat.model
 
 data class MessageModel(
     var imgFriend: String? = null,

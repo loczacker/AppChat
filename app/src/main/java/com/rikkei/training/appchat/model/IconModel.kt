@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.ui.tabIcon
+package com.rikkei.training.appchat.model
 
 import android.os.Parcel
 import android.os.Parcelable

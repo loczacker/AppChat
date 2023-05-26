@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemIconBinding
+import com.rikkei.training.appchat.model.IconModel
 import java.util.ArrayList
 
 class IconAdapter(

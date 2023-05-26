@@ -11,6 +11,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.rikkei.training.appchat.databinding.FragmentTabUserBinding
+import com.rikkei.training.appchat.model.ItemUsersRVModel
+import com.rikkei.training.appchat.model.UsersModel
 import java.util.ArrayList
 
 class FragmentTabUser : Fragment() {
@@ -24,7 +26,7 @@ class FragmentTabUser : Fragment() {
     private val firebaseAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
-    private val listUser: ArrayList<ItemRecyclerViewModel> = arrayListOf()
+    private val listUser: ArrayList<ItemUsersRVModel> = arrayListOf()
     private val listFriend = hashMapOf<String, String>()
     private lateinit var usersAdapter: UserAllAdapter
 
@@ -103,7 +105,7 @@ class FragmentTabUser : Fragment() {
             }
         }
         if (isHaveItem) return
-        listUser.add(ItemRecyclerViewModel(user))
+        listUser.add(ItemUsersRVModel(user))
         usersAdapter.notifyItemInserted(listUser.size)
     }
 
@@ -152,7 +154,7 @@ class FragmentTabUser : Fragment() {
 
     private fun disPlayInfoUsers() {
         usersAdapter = UserAllAdapter(listUser, object : ItemUsersRVInterface {
-            override fun getDetail(item: ItemRecyclerViewModel) {
+            override fun getDetail(item: ItemUsersRVModel) {
                 sendRequest(item.user.uid.toString())
             }
         })

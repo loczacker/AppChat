@@ -7,18 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemUserRequestBinding
-import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
+import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class RequestFriendsSentAdapter(
-    private val requestList: ArrayList<ItemRecyclerViewModel>,
+    private val requestList: ArrayList<ItemUsersRVModel>,
     private val itemUsersRVInterface: ItemUsersRVInterface
 ): RecyclerView.Adapter<RequestFriendsSentAdapter.RequestViewHolder>() {
 
     class RequestViewHolder(private val binding: ItemUserRequestBinding):
         RecyclerView.ViewHolder(binding.root){
 
-        fun bind(item: ItemRecyclerViewModel, itemUsersRVInterface: ItemUsersRVInterface){
+        fun bind(item: ItemUsersRVModel, itemUsersRVInterface: ItemUsersRVInterface){
             val user = item.user
             binding.txtNameRequest.text = user.name
             Glide.with(binding.imgCircleHomeRequest.context).load(user.img)

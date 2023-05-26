@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.ui.tabFriends
+package com.rikkei.training.appchat.model
 
 data class FriendModel (
     var id: String ?= null,

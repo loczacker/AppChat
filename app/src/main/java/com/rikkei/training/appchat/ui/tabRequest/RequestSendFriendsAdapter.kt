@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemUserSendRequestBinding
-import com.rikkei.training.appchat.ui.tabUser.UsersModel
+import com.rikkei.training.appchat.model.UsersModel
 
 class RequestSendFriendsAdapter(
     private val requestSendUserList: ArrayList<UsersModel>,

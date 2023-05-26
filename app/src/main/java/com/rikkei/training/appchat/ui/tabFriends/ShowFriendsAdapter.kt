@@ -9,11 +9,11 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemUserFriendRowBinding
-import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
+import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class ShowFriendsAdapter(
-    private val friendsList: ArrayList<ItemRecyclerViewModel>,
+    private val friendsList: ArrayList<ItemUsersRVModel>,
     private val itemUsersRVInterface: ItemUsersRVInterface
 ) :
     RecyclerView.Adapter<ShowFriendsAdapter.FriendsViewHolder>() {
@@ -21,7 +21,7 @@ class ShowFriendsAdapter(
     class FriendsViewHolder(private val binding: ItemUserFriendRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ItemRecyclerViewModel, itemUsersRVInterface: ItemUsersRVInterface) {
+        fun bind(item: ItemUsersRVModel, itemUsersRVInterface: ItemUsersRVInterface) {
             val user = item.user
             binding.tvName.text = user.name
             Glide.with(binding.imgCircleHomeMess.context)

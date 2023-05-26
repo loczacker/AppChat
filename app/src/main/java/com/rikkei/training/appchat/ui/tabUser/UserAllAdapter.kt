@@ -9,16 +9,17 @@ import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.ui.tabUser.UserAllAdapter.UserViewHolder
 import com.rikkei.training.appchat.databinding.ItemUserAllBinding
+import com.rikkei.training.appchat.model.ItemUsersRVModel
 
 class UserAllAdapter(
-    private val itemList: ArrayList<ItemRecyclerViewModel>,
+    private val itemList: ArrayList<ItemUsersRVModel>,
     private val itemUsersRVInterface: ItemUsersRVInterface
 ) : RecyclerView.Adapter<UserViewHolder>() {
 
     class UserViewHolder(private val binding: ItemUserAllBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ItemRecyclerViewModel, itemUsersRVInterface: ItemUsersRVInterface) {
+        fun bind(item: ItemUsersRVModel, itemUsersRVInterface: ItemUsersRVInterface) {
             val user = item.user
             binding.txtName.text = user.name
             Glide.with(binding.imgCircleHomeMess.context).load(user.img)

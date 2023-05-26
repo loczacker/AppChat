@@ -12,9 +12,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
-import com.rikkei.training.appchat.ui.tabUser.UsersModel
+import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.message.ActivityMessage
-import com.rikkei.training.appchat.ui.tabUser.ItemRecyclerViewModel
+import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class FragmentFriends : Fragment() {
@@ -29,7 +29,7 @@ class FragmentFriends : Fragment() {
         FirebaseAuth.getInstance()
     }
 
-    private val friends: ArrayList<ItemRecyclerViewModel> = arrayListOf()
+    private val friends: ArrayList<ItemUsersRVModel> = arrayListOf()
 
     private lateinit var friendAdapter: ShowFriendsAdapter
 
@@ -49,7 +49,7 @@ class FragmentFriends : Fragment() {
 
     private fun showFriendsList() {
         friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRVInterface{
-            override fun getDetail(itemUser: ItemRecyclerViewModel) {
+            override fun getDetail(itemUser: ItemUsersRVModel) {
                 goMessenger(itemUser)
             }
         })
@@ -69,7 +69,7 @@ class FragmentFriends : Fragment() {
                                         user.img  = snapshot.child("img").value.toString()
                                         user.uid = snapshot.child("uid").value.toString()
                                     }
-                                    user?.let { friends.add(ItemRecyclerViewModel(it)) }
+                                    user?.let { friends.add(ItemUsersRVModel(it)) }
                                     friendAdapter.notifyDataSetChanged()
                                 }
                                 override fun onCancelled(error: DatabaseError) {}
@@ -80,7 +80,7 @@ class FragmentFriends : Fragment() {
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
-    private fun goMessenger(itemUser: ItemRecyclerViewModel) {
+    private fun goMessenger(itemUser: ItemUsersRVModel) {
         val messIntent = Intent(activity, ActivityMessage::class.java)
         messIntent.putExtra("name", itemUser.user.name)
         messIntent.putExtra("img", itemUser.user.img)
