@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentIconBinding
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -43,25 +42,19 @@ class FragmentIcon : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         iconList = ArrayList()
-        iconList.add(IconModel(R.drawable.dumbbell, "dumbbell"))
-        iconList.add(IconModel(R.drawable.great_job_good_job_sticker_collection, "great_job_good_job_sticker_collection"))
-        iconList.add(IconModel(R.drawable.online_training, "online_training"))
-        iconList.add(IconModel(R.drawable.play_with_pet, "play_with_pet"))
-        iconList.add(IconModel(R.drawable.reading, "reading"))
-        iconList.add(IconModel(R.drawable.stay_at_home, "stay_at_home"))
-        iconList.add(IconModel(R.drawable.tea_time, "tea_time"))
-        iconList.add(IconModel(R.drawable.video_calling, "video_calling"))
-        iconList.add(IconModel(R.drawable.watering_plants, "watering_plants"))
-        showIcon()
+        val bundle = arguments
+        val roomId = bundle!!.getString("roomId")
+        val receivedArrayList = bundle.getParcelableArrayList<IconModel>("iconList")
+        if (receivedArrayList != null){
+            iconList.addAll(receivedArrayList)
+        }
+        showIcon(roomId)
     }
 
-    private fun showIcon() {
+    private fun showIcon(roomId: String?) {
         iconAdapter = IconAdapter(iconList, object : IconItemInterface{
 
             override fun getIcon(iconModel: IconModel, iconName: String) {
-
-                val bundle = arguments
-                val roomId = bundle!!.getString("roomId")
 
                 val timeStamp = System.currentTimeMillis()
 

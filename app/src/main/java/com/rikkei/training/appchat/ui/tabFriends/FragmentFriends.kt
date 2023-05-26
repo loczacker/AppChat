@@ -85,7 +85,7 @@ class FragmentFriends : Fragment() {
         messIntent.putExtra("name", itemUser.user.name)
         messIntent.putExtra("img", itemUser.user.img)
         messIntent.putExtra("uid", itemUser.user.uid)
-        messIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(messIntent)
     }
 }

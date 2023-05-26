@@ -3,9 +3,9 @@ package com.rikkei.training.appchat.ui.message
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -21,7 +21,6 @@ import com.rikkei.training.appchat.ui.tabIcon.FragmentIcon
 import com.rikkei.training.appchat.ui.tabIcon.IconModel
 import com.rikkei.training.appchat.ui.tabPhoto.FragmentGallery
 import java.text.SimpleDateFormat
-import java.util.ArrayList
 import java.util.Date
 
 
@@ -36,6 +35,8 @@ class ActivityMessage : AppCompatActivity() {
     private val firebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
+
+    private var iconList : ArrayList<IconModel> = arrayListOf()
 
     private val messageList: ArrayList<MessageRecyclerViewModel> = arrayListOf()
 
@@ -52,8 +53,22 @@ class ActivityMessage : AppCompatActivity() {
         super.onResume()
         database.reference.child("Users")
             .child(firebaseAuth.uid?:"").child("presence").setValue("Online")
+        addIcon()
         infoUserChat()
         backHome()
+    }
+
+    private fun addIcon() {
+        iconList = ArrayList()
+        iconList.add(IconModel(R.drawable.dumbbell, "dumbbell"))
+        iconList.add(IconModel(R.drawable.great_job_good_job_sticker_collection, "great_job_good_job_sticker_collection"))
+        iconList.add(IconModel(R.drawable.online_training, "online_training"))
+        iconList.add(IconModel(R.drawable.play_with_pet, "play_with_pet"))
+        iconList.add(IconModel(R.drawable.reading, "reading"))
+        iconList.add(IconModel(R.drawable.stay_at_home, "stay_at_home"))
+        iconList.add(IconModel(R.drawable.tea_time, "tea_time"))
+        iconList.add(IconModel(R.drawable.video_calling, "video_calling"))
+        iconList.add(IconModel(R.drawable.watering_plants, "watering_plants"))
     }
 
     private fun backHome() {
@@ -106,13 +121,13 @@ class ActivityMessage : AppCompatActivity() {
                 return format.format(date)
             }
             val content = binding.etSend.text.toString()
-            val mess = MessageModel(null,content, firebaseAuth.uid, convertLongToTime(timeStamp),null)
+            val mess = MessageModel(null,content, firebaseAuth.uid, convertLongToTime(timeStamp), null)
             database.reference.child("Message").child(roomId).push().setValue(mess)
             binding.etSend.text.clear()
         }
     }
 
-    private fun sendImageIcon(roomId: String) {
+    private fun sendImageIcon(roomId: String, iconList: ArrayList<IconModel>) {
         binding.ivLibrary.setOnClickListener {
 
             if (binding.frameLayoutMess.visibility == View.VISIBLE)
@@ -128,12 +143,24 @@ class ActivityMessage : AppCompatActivity() {
         binding.ivIcon.setOnClickListener {
             if (binding.frameLayoutMess.visibility == View.VISIBLE)
             {
-                fragmentIcon(roomId)
+                fragmentIcon(roomId, iconList)
                 binding.frameLayoutMess.visibility = View.GONE
             } else {
-                fragmentIcon(roomId)
+                fragmentIcon(roomId, iconList)
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        val fragmentManager = supportFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.frame_layout_mess)
+
+        if (fragment != null) {
+            fragmentManager.popBackStack()
+           binding.frameLayoutMess.visibility = View.GONE
+        } else {
+            super.onBackPressed()
         }
     }
 
@@ -163,6 +190,7 @@ class ActivityMessage : AppCompatActivity() {
             })
     }
 
+
     private fun fragmentPhoto(roomId: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -175,12 +203,13 @@ class ActivityMessage : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    private fun fragmentIcon(roomId: String) {
+    private fun fragmentIcon(roomId: String, iconList: ArrayList<IconModel>) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragmentIcon = FragmentIcon()
         val iconBundle = Bundle()
         iconBundle.putString("roomId",roomId)
+        iconBundle.putParcelableArrayList("iconList", iconList)
         fragmentIcon.arguments = iconBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, fragmentIcon)
         fragmentTransaction.addToBackStack(null)
@@ -210,13 +239,12 @@ class ActivityMessage : AppCompatActivity() {
         } else {
             "$uidFriend$myUid"
         }
-
         getAllMess(roomId, imgProfile)
         infoUserProfile(name, imgProfile, uidUser)
         createRoom(myUid,uidFriend, roomId)
         updateRoomInfo(roomId, timeStamp, imgProfile)
         sendMessage(roomId, timeStamp)
-        sendImageIcon(roomId)
+        sendImageIcon(roomId, iconList)
         showKeyboardListener()
     }
 

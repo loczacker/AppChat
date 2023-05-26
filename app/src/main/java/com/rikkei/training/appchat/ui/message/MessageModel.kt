@@ -6,5 +6,5 @@ data class MessageModel(
     var senderId: String? = null,
     var time: String? = null,
     var imgUrl: String? = null,
-    var imgIcon: String ?= null
+    var imgIcon: String? = null
 )
