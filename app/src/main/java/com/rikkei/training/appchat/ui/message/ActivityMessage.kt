@@ -142,7 +142,7 @@ class ActivityMessage : AppCompatActivity() {
 
     private fun sendImageIcon(roomId: String, iconList: ArrayList<IconModel>) {
         binding.ivLibrary.setOnClickListener {
-
+            showKeyboardListener()
             if (binding.frameLayoutMess.visibility == View.VISIBLE)
             {
                 fragmentPhoto(roomId)
@@ -154,6 +154,7 @@ class ActivityMessage : AppCompatActivity() {
         }
 
         binding.ivIcon.setOnClickListener {
+            showKeyboardListener()
             if (binding.frameLayoutMess.visibility == View.VISIBLE)
             {
                 fragmentIcon(roomId, iconList)
@@ -182,7 +183,6 @@ class ActivityMessage : AppCompatActivity() {
             .addValueEventListener(object: ValueEventListener{
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
-                     messageList.clear()
                     for (snap in snapshot.children){
                         val content = snap.child("content").getValue(String::class.java)
                         val senderId = snap.child("senderId").getValue(String::class.java)
@@ -194,17 +194,34 @@ class ActivityMessage : AppCompatActivity() {
                             if (content != null) {
                                 mess?.let { messageList.add(ItemMessageRVModel(it, true, 1, "")) }
                             } else {
+                                if (iconName != null)
+                                {
+                                    mess?.let { messageList.add(ItemMessageRVModel(it, true, 3, "")) }
+                                }
+                                else
+                                {
+                                    mess?.let { messageList.add(ItemMessageRVModel(it, true, 2, "")) }
+                                }
                             }
-
                         } else {
                             mess?.imgFriend = imgProfile
-                            mess?.let { messageList.add(ItemMessageRVModel(it )) }
+                            if (content != null) {
+                                mess?.let { messageList.add(ItemMessageRVModel(it, false, 1, "")) }
+                            } else {
+                                if (iconName != null)
+                                {
+                                    mess?.let { messageList.add(ItemMessageRVModel(it, false, 3, "")) }
+                                }
+                                else
+                                {
+                                    mess?.let { messageList.add(ItemMessageRVModel(it, false, 2, "")) }
+                                }
+                            }
                         }
                     }
                     messageAdapter.notifyDataSetChanged()
                     binding.rvMesHomeMes.smoothScrollToPosition(messageAdapter.itemCount)
                 }
-
                 override fun onCancelled(error: DatabaseError) {}
 
             })
@@ -265,7 +282,6 @@ class ActivityMessage : AppCompatActivity() {
         updateRoomInfo(roomId, timeStamp, imgProfile)
         sendMessage(roomId, timeStamp)
         sendImageIcon(roomId, iconList)
-        showKeyboardListener()
     }
 
     private fun showKeyboardListener() {
