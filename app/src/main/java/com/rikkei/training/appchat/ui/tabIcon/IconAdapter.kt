@@ -12,16 +12,17 @@ import java.util.ArrayList
 
 class IconAdapter(
     private val iconList: ArrayList<IconModel>,
-    private val iconItemInterface: IconItemInterface
-): RecyclerView.Adapter<IconAdapter.IconViewHolder>() {
-    class IconViewHolder(private val binding: ItemIconBinding):
-    RecyclerView.ViewHolder(binding.root){
-        fun bind(icon: IconModel, iconItemInterface: IconItemInterface) {
+    private val clickItemListener: ClickItemListener
+) : RecyclerView.Adapter<IconAdapter.IconViewHolder>() {
+    class IconViewHolder(private val binding: ItemIconBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(icon: IconModel, clickItemListener: ClickItemListener) {
             Glide.with(binding.ivSticker).load(icon.iconSource)
                 .placeholder(R.drawable.profile)
                 .into(binding.ivSticker)
-            itemView.setOnClickListener{
-                iconItemInterface.getIcon(icon, icon.iconName.toString())
+
+            itemView.setOnClickListener {
+                clickItemListener.onItemCLick(icon, icon.iconName.toString())
             }
         }
     }
@@ -38,6 +39,6 @@ class IconAdapter(
     override fun getItemCount(): Int = iconList.size
 
     override fun onBindViewHolder(holder: IconViewHolder, position: Int) {
-        holder.bind(iconList[position], iconItemInterface )
+        holder.bind(iconList[position], clickItemListener)
     }
 }

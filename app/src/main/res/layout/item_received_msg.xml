@@ -46,7 +46,7 @@
         <ImageView
             android:id="@+id/iv_im_received"
             android:layout_width="250dp"
-            android:layout_height="150dp"
+            android:layout_height="300dp"
             android:layout_gravity="start"
             android:scaleType="fitXY"
             tools:src="@drawable/wallpaper"

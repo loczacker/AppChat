@@ -5,13 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.rikkei.training.appchat.databinding.FragmentIconBinding
 import com.rikkei.training.appchat.model.IconModel
 import java.text.SimpleDateFormat
-import java.util.ArrayList
 import java.util.Date
 
 class FragmentIcon : Fragment() {
@@ -28,8 +26,7 @@ class FragmentIcon : Fragment() {
 
     private lateinit var iconAdapter: IconAdapter
 
-    private lateinit var iconList : ArrayList<IconModel>
-
+    private val iconList = arrayListOf<IconModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +39,6 @@ class FragmentIcon : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        iconList = ArrayList()
         val bundle = arguments
         val roomId = bundle!!.getString("roomId")
         val receivedArrayList = bundle.getParcelableArrayList<IconModel>("iconList")
@@ -53,12 +49,9 @@ class FragmentIcon : Fragment() {
     }
 
     private fun showIcon(roomId: String?) {
-        iconAdapter = IconAdapter(iconList, object : IconItemInterface{
-
-            override fun getIcon(iconModel: IconModel, iconName: String) {
-
+        iconAdapter = IconAdapter(iconList, object : ClickItemListener{
+            override fun onItemCLick(iconModel: IconModel, iconName: String) {
                 val timeStamp = System.currentTimeMillis()
-
                 fun convertLongToTime(timeNow: Long): String {
                     val date = Date(timeNow)
                     val format = SimpleDateFormat("dd.MM HH:mm")
@@ -72,8 +65,7 @@ class FragmentIcon : Fragment() {
                 database.reference.child("Message").child(roomId.toString()).push().updateChildren(hashMap)
             }
         })
-        binding.recyclerIcon.layoutManager = GridLayoutManager(activity,3)
-        binding.recyclerIcon.adapter = iconAdapter
+        binding.rcvIcon.adapter = iconAdapter
         iconAdapter.notifyDataSetChanged()
     }
 

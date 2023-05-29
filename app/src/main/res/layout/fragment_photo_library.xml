@@ -4,15 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/teal_200">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_photo"
+        android:id="@+id/recycler_gallery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_photo"
-        android:orientation="horizontal"
-        app:spanCount="3"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        tools:listitem="@layout/item_photo"/>
 </LinearLayout>

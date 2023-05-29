@@ -15,58 +15,64 @@ import com.rikkei.training.appchat.model.MessageType
 
 private const val MY_MESSAGE = 0
 private const val YOUR_MESSAGE = 1
+
 class MessageAdapter(
     private var messenger: ArrayList<ItemMessageRVModel>
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    class SentMsgHolder(private val binding: ItemSendMsgBinding):
-        RecyclerView.ViewHolder(binding.root){
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    class SentMsgHolder(private val binding: ItemSendMsgBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("DiscouragedApi")
-        fun bind(messSend: ItemMessageRVModel){
+        fun bind(messSend: ItemMessageRVModel) {
+            binding.tvTimeSend.text = messSend.message.time
 
-            when(messSend.messageType){
-                MessageType.TEXT ->{
-                    binding.tvMyMessage.text = messSend.message.content
-                    binding.tvTimeSend.text = messSend.message.time
-                    binding.ivImSent.isVisible = false
+            when (messSend.messageType) {
+                MessageType.TEXT -> {
+                    binding.tvMessage.isVisible = true
+                    binding.tvMessage.text = messSend.message.content
+                    binding.ivMessage.isVisible = false
                 }
 
-                MessageType.IMAGE ->{
-                    Glide.with(binding.ivImSent.context).load(messSend.message.imgUrl)
+                MessageType.IMAGE -> {
+                    binding.ivMessage.isVisible = true
+                    Glide.with(binding.ivMessage.context).load(messSend.message.imgUrl)
                         .placeholder(R.drawable.profile)
-                        .into(binding.ivImSent)
-                    binding.tvTimeSend.text = messSend.message.time
-                    binding.sentText.isVisible = false
+                        .into(binding.ivMessage)
+                    binding.tvMessage.isVisible = false
                 }
 
-                MessageType.ICON ->{
-                    val resourceId = binding.ivImSent.context.resources.getIdentifier(messSend.message.imgIcon, "drawable", binding.ivImSent.context.packageName)
-                    val drawable = ContextCompat.getDrawable(binding.ivImSent.context, resourceId)
-                    binding.ivImSent.setImageDrawable(drawable)
-                    binding.tvTimeSend.text = messSend.message.time
-                    binding.sentText.isVisible = false
+                MessageType.ICON -> {
+                    binding.ivMessage.isVisible = true
+                    val resourceId = binding.ivMessage.context.resources.getIdentifier(
+                        messSend.message.imgIcon,
+                        "drawable",
+                        binding.ivMessage.context.packageName
+                    )
+                    val drawable = ContextCompat.getDrawable(binding.ivMessage.context, resourceId)
+                    binding.ivMessage.setImageDrawable(drawable)
+                    binding.tvMessage.isVisible = false
                 }
             }
         }
     }
 
-    class ReceiveMsgHolder(private val binding: ItemReceivedMsgBinding):
-        RecyclerView.ViewHolder(binding.root){
+    class ReceiveMsgHolder(private val binding: ItemReceivedMsgBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("DiscouragedApi")
-        fun bind(messReceived: ItemMessageRVModel){
+        fun bind(messReceived: ItemMessageRVModel) {
 
             Glide.with(binding.imMessChat.context).load(messReceived.message.imgFriend)
                 .placeholder(R.drawable.profile)
                 .into(binding.imMessChat)
 
-            when(messReceived.messageType){
-                MessageType.TEXT ->{
+            when (messReceived.messageType) {
+                MessageType.TEXT -> {
                     binding.tvMess.text = messReceived.message.content
                     binding.tvTimeReceived.text = messReceived.message.time
                     binding.ivImReceived.isVisible = false
                 }
 
-                MessageType.IMAGE ->{
+                MessageType.IMAGE -> {
                     Glide.with(binding.ivImReceived.context).load(messReceived.message.imgUrl)
                         .placeholder(R.drawable.profile)
                         .into(binding.ivImReceived)
@@ -74,9 +80,14 @@ class MessageAdapter(
                     binding.tvMess.isVisible = false
                 }
 
-                MessageType.ICON ->{
-                    val resourceId = binding.ivImReceived.context.resources.getIdentifier(messReceived.message.imgIcon, "drawable", binding.ivImReceived.context.packageName)
-                    val drawable = ContextCompat.getDrawable(binding.ivImReceived.context, resourceId)
+                MessageType.ICON -> {
+                    val resourceId = binding.ivImReceived.context.resources.getIdentifier(
+                        messReceived.message.imgIcon,
+                        "drawable",
+                        binding.ivImReceived.context.packageName
+                    )
+                    val drawable =
+                        ContextCompat.getDrawable(binding.ivImReceived.context, resourceId)
                     binding.ivImReceived.setImageDrawable(drawable)
                     binding.tvTimeReceived.text = messReceived.message.time
                     binding.tvMess.isVisible = false
@@ -85,16 +96,30 @@ class MessageAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int): Int = if (messenger[position].isMyMessage){
+    override fun getItemViewType(position: Int): Int = if (messenger[position].isMyMessage) {
         MY_MESSAGE
-    }else{
+    } else {
         YOUR_MESSAGE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            MY_MESSAGE -> SentMsgHolder(ItemSendMsgBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            YOUR_MESSAGE -> ReceiveMsgHolder(ItemReceivedMsgBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            MY_MESSAGE -> SentMsgHolder(
+                ItemSendMsgBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
+            YOUR_MESSAGE -> ReceiveMsgHolder(
+                ItemReceivedMsgBinding.inflate(
+                    LayoutInflater.from(
+                        parent.context
+                    ), parent, false
+                )
+            )
+
             else -> throw IllegalArgumentException("Invalid item view type")
         }
     }

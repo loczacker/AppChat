@@ -26,7 +26,13 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(FragmentRoomMessage())
+
+        val backFragment = intent.getIntExtra("backFragment", 0)
+        if (backFragment == 1) {
+            replaceFragment(FragmentFriendsTab())
+        } else {
+            replaceFragment(FragmentRoomMessage())
+        }
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {

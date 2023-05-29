@@ -1,11 +1,12 @@
 package com.rikkei.training.appchat.ui.message
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -22,7 +23,7 @@ import com.rikkei.training.appchat.model.ItemMessageRVModel
 import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.tabIcon.FragmentIcon
 import com.rikkei.training.appchat.model.IconModel
-import com.rikkei.training.appchat.ui.tabPhoto.FragmentGallery
+import com.rikkei.training.appchat.ui.tabGallery.FragmentGallery
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -39,7 +40,7 @@ class ActivityMessage : AppCompatActivity() {
         FirebaseAuth.getInstance()
     }
 
-    private var iconList : ArrayList<IconModel> = arrayListOf()
+    private var iconList: ArrayList<IconModel> = arrayListOf()
 
     private val messageList: ArrayList<ItemMessageRVModel> = arrayListOf()
 
@@ -49,48 +50,53 @@ class ActivityMessage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMessengerBinding.inflate(layoutInflater)
         binding.frameLayoutMess.visibility = View.GONE
+        supportFragmentManager.addOnBackStackChangedListener {
+            val backStackCount = supportFragmentManager.backStackEntryCount
+            if (backStackCount == 0) {
+                // Back stack is empty, hide the FrameLayout or handle the behavior you desire
+                binding.frameLayoutMess.visibility = View.GONE
+            } else {
+                // Back stack is not empty, show the FrameLayout
+                binding.frameLayoutMess.visibility = View.VISIBLE
+            }
+        }
         setContentView(binding.root)
     }
 
     override fun onResume() {
         super.onResume()
         database.reference.child("Users")
-            .child(firebaseAuth.uid?:"").child("presence").setValue("Online")
+            .child(firebaseAuth.uid ?: "").child("presence").setValue("Online")
         addIcon()
         infoUserChat()
         backHome()
     }
 
     private fun addIcon() {
-        iconList = ArrayList()
         iconList.add(IconModel(R.drawable.dumbbell, "dumbbell"))
-        iconList.add(IconModel(R.drawable.great_job_good_job_sticker_collection, "great_job_good_job_sticker_collection"))
+        iconList.add(
+            IconModel(
+                R.drawable.great_job_good_job_sticker_collection,
+                "great_job_good_job_sticker_collection"
+            )
+        )
         iconList.add(IconModel(R.drawable.online_training, "online_training"))
         iconList.add(IconModel(R.drawable.play_with_pet, "play_with_pet"))
         iconList.add(IconModel(R.drawable.reading, "reading"))
-        iconList.add(IconModel(R.drawable.stay_at_home, "stay_at_home"))
-        iconList.add(IconModel(R.drawable.tea_time, "tea_time"))
         iconList.add(IconModel(R.drawable.video_calling, "video_calling"))
         iconList.add(IconModel(R.drawable.watering_plants, "watering_plants"))
 
     }
 
     private fun backHome() {
-        binding.imBackHome.setOnClickListener{
+        binding.imBackHome.setOnClickListener {
             val homeIntent = Intent(this, HomeActivity::class.java)
+            val backFragment = 1
+            homeIntent.putExtra("backFragment", backFragment)
             homeIntent.putExtra("currentFragment", "FragmentFriends")
             startActivity(homeIntent)
             finish()
         }
-    }
-
-    fun getIconByIconName(iconList: ArrayList<IconModel>, iconName: String): IconModel? {
-        for (icon in iconList) {
-            if (icon.iconName == iconName) {
-                return icon
-            }
-        }
-        return null
     }
 
     private fun infoUserProfile(name: String?, imgProfile: String?, uidUser: String?) {
@@ -101,10 +107,11 @@ class ActivityMessage : AppCompatActivity() {
             .placeholder(R.drawable.profile)
             .into(binding.ivImgProfile)
         database.reference.child("Users").child(uidUser.toString()).child("presence")
-            .addValueEventListener(object : ValueEventListener{
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     binding.tvPresence.text = snapshot.value.toString()
                 }
+
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
@@ -112,9 +119,11 @@ class ActivityMessage : AppCompatActivity() {
     }
 
     private fun createRoom(myUid: String, uidFriend: String, roomId: String) {
-        database.reference.child("Room").child(roomId).child("member").child(myUid).setValue("member")
+        database.reference.child("Room").child(roomId).child("member").child(myUid)
+            .setValue("member")
             .addOnSuccessListener {
-                database.reference.child("Room").child(roomId).child("member").child(uidFriend).setValue("member")
+                database.reference.child("Room").child(roomId).child("member").child(uidFriend)
+                    .setValue("member")
             }
     }
 
@@ -127,14 +136,16 @@ class ActivityMessage : AppCompatActivity() {
     }
 
     private fun sendMessage(roomId: String, timeStamp: Long) {
-        binding.ivSend.setOnClickListener{
+        binding.ivSend.setOnClickListener {
             fun convertLongToTime(timeNow: Long): String {
                 val date = Date(timeNow)
                 val format = SimpleDateFormat("dd.MM HH:mm")
                 return format.format(date)
             }
+
             val content = binding.etSend.text.toString()
-            val mess = MessageModel(null,content, firebaseAuth.uid, convertLongToTime(timeStamp), null)
+            val mess =
+                MessageModel(null, content, firebaseAuth.uid, convertLongToTime(timeStamp), null)
             database.reference.child("Message").child(roomId).push().setValue(mess)
             binding.etSend.text.clear()
         }
@@ -142,65 +153,72 @@ class ActivityMessage : AppCompatActivity() {
 
     private fun sendImageIcon(roomId: String, iconList: ArrayList<IconModel>) {
         binding.ivLibrary.setOnClickListener {
-            showKeyboardListener()
-            if (binding.frameLayoutMess.visibility == View.VISIBLE)
-            {
-                fragmentPhoto(roomId)
+            fragmentPhoto(roomId)
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.ivLibrary.windowToken, 0)
+            if (binding.frameLayoutMess.visibility == View.VISIBLE) {
                 binding.frameLayoutMess.visibility = View.GONE
             } else {
-                fragmentPhoto(roomId)
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
 
         binding.ivIcon.setOnClickListener {
-            showKeyboardListener()
-            if (binding.frameLayoutMess.visibility == View.VISIBLE)
-            {
-                fragmentIcon(roomId, iconList)
+            fragmentIcon(roomId, iconList)
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.ivIcon.windowToken, 0)
+            if (binding.frameLayoutMess.visibility == View.VISIBLE) {
                 binding.frameLayoutMess.visibility = View.GONE
             } else {
-                fragmentIcon(roomId, iconList)
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
     }
 
-    override fun onBackPressed() {
-        val fragmentManager = supportFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.frame_layout_mess)
-
-        if (fragment != null) {
-            fragmentManager.popBackStack()
-           binding.frameLayoutMess.visibility = View.GONE
-        } else {
-            super.onBackPressed()
-        }
-    }
-
     private fun getAllMess(roomId: String, imgProfile: String?) {
         database.reference.child("Message").child(roomId)
-            .addValueEventListener(object: ValueEventListener{
-                @SuppressLint("NotifyDataSetChanged")
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    for (snap in snapshot.children){
+                    // Clear messageList only when loading messages for the first time
+                    val isFirstLoad = messageList.isEmpty()
+                    if (isFirstLoad) {
+                        messageList.clear()
+                    }
+
+                    for (snap in snapshot.children) {
                         val content = snap.child("content").getValue(String::class.java)
                         val senderId = snap.child("senderId").getValue(String::class.java)
-                        val myUid = firebaseAuth.uid?:""
+                        val myUid = firebaseAuth.uid ?: ""
                         val iconName = snap.child("iconName").getValue(String::class.java)
                         val mess = snap.getValue(MessageModel::class.java)
                         mess?.imgIcon = iconName
+
                         if (senderId == myUid) {
                             if (content != null) {
                                 mess?.let { messageList.add(ItemMessageRVModel(it, true, 1, "")) }
                             } else {
-                                if (iconName != null)
-                                {
-                                    mess?.let { messageList.add(ItemMessageRVModel(it, true, 3, "")) }
-                                }
-                                else
-                                {
-                                    mess?.let { messageList.add(ItemMessageRVModel(it, true, 2, "")) }
+                                if (iconName != null) {
+                                    mess?.let {
+                                        messageList.add(
+                                            ItemMessageRVModel(
+                                                it,
+                                                true,
+                                                3,
+                                                ""
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    mess?.let {
+                                        messageList.add(
+                                            ItemMessageRVModel(
+                                                it,
+                                                true,
+                                                2,
+                                                ""
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         } else {
@@ -208,36 +226,57 @@ class ActivityMessage : AppCompatActivity() {
                             if (content != null) {
                                 mess?.let { messageList.add(ItemMessageRVModel(it, false, 1, "")) }
                             } else {
-                                if (iconName != null)
-                                {
-                                    mess?.let { messageList.add(ItemMessageRVModel(it, false, 3, "")) }
-                                }
-                                else
-                                {
-                                    mess?.let { messageList.add(ItemMessageRVModel(it, false, 2, "")) }
+                                if (iconName != null) {
+                                    mess?.let {
+                                        messageList.add(
+                                            ItemMessageRVModel(
+                                                it,
+                                                false,
+                                                3,
+                                                ""
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    mess?.let {
+                                        messageList.add(
+                                            ItemMessageRVModel(
+                                                it,
+                                                false,
+                                                2,
+                                                ""
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
+
+                    // Notify the adapter only when loading messages for the first time
+                    if (isFirstLoad) {
+                        messageAdapter = MessageAdapter(messageList)
+                        binding.rvMesHomeMes.adapter = messageAdapter
+                    }
                     messageAdapter.notifyDataSetChanged()
                     binding.rvMesHomeMes.smoothScrollToPosition(messageAdapter.itemCount)
                 }
-                override fun onCancelled(error: DatabaseError) {}
 
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
-
 
     private fun fragmentPhoto(roomId: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragmentGallery = FragmentGallery()
         val photoBundle = Bundle()
-        photoBundle.putString("roomId",roomId)
+        photoBundle.putString("roomId", roomId)
         fragmentGallery.arguments = photoBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, fragmentGallery)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+        fragmentManager.isDestroyed
     }
 
     private fun fragmentIcon(roomId: String, iconList: ArrayList<IconModel>) {
@@ -245,26 +284,21 @@ class ActivityMessage : AppCompatActivity() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragmentIcon = FragmentIcon()
         val iconBundle = Bundle()
-        iconBundle.putString("roomId",roomId)
+        iconBundle.putString("roomId", roomId)
         iconBundle.putParcelableArrayList("iconList", iconList)
         fragmentIcon.arguments = iconBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, fragmentIcon)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+        fragmentManager.isDestroyed
     }
-
     override fun onPause() {
         super.onPause()
         database.reference.child("Users")
-            .child(firebaseAuth.uid?:"").child("presence").setValue("Offline")
+            .child(firebaseAuth.uid ?: "").child("presence").setValue("Offline")
     }
 
     private fun infoUserChat() {
-
-        messageAdapter = MessageAdapter(messageList)
-        binding.rvMesHomeMes.adapter = messageAdapter
-        messageList.clear()
-
         val name = intent.getStringExtra("name")
         val imgProfile = intent.getStringExtra("img")
         val uidUser = intent.getStringExtra("uid")
@@ -276,16 +310,22 @@ class ActivityMessage : AppCompatActivity() {
         } else {
             "$uidFriend$myUid"
         }
-        getAllMess(roomId, imgProfile)
+
+        messageAdapter = MessageAdapter(messageList)
+        binding.rvMesHomeMes.adapter = messageAdapter
+        binding.rvMesHomeMes.setHasFixedSize(true)
+
+
         infoUserProfile(name, imgProfile, uidUser)
-        createRoom(myUid,uidFriend, roomId)
-        updateRoomInfo(roomId, timeStamp, imgProfile)
+        createRoom(myUid, uidFriend, roomId)
+        getAllMess(roomId, imgProfile)
         sendMessage(roomId, timeStamp)
         sendImageIcon(roomId, iconList)
+        updateRoomInfo(roomId, timeStamp, imgProfile)
     }
 
-    private fun showKeyboardListener() {
-        window.decorView.viewTreeObserver.addOnGlobalLayoutListener {
+    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
+        try {
             val r = Rect()
             window.decorView.getWindowVisibleDisplayFrame(r)
 
@@ -295,6 +335,19 @@ class ActivityMessage : AppCompatActivity() {
             } else {
                 //keyboard is close
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+    }
+    override fun onStart() {
+        super.onStart()
+
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardListener)
     }
 }
