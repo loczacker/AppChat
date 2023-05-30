@@ -12,7 +12,7 @@ import com.rikkei.training.appchat.model.IconModel
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class FragmentIcon : Fragment() {
+class IconFragment : Fragment() {
 
     private lateinit var binding: FragmentIconBinding
 

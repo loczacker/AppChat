@@ -7,9 +7,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityHomeBinding
-import com.rikkei.training.appchat.ui.tabFriends.FragmentFriendsTab
-import com.rikkei.training.appchat.ui.roomMessage.FragmentRoomMessage
-import com.rikkei.training.appchat.ui.profile.FragmentProfile
+import com.rikkei.training.appchat.ui.tabFriends.TabFriendsFragment
+import com.rikkei.training.appchat.ui.roomMessage.RoomMessageFragment
+import com.rikkei.training.appchat.ui.profile.ProfileFragment
 
 class HomeActivity : AppCompatActivity() {
 
@@ -29,17 +29,17 @@ class HomeActivity : AppCompatActivity() {
 
         val backFragment = intent.getIntExtra("backFragment", 0)
         if (backFragment == 1) {
-            replaceFragment(FragmentFriendsTab())
+            replaceFragment(TabFriendsFragment())
         } else {
-            replaceFragment(FragmentRoomMessage())
+            replaceFragment(RoomMessageFragment())
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
 
-                R.id.messenger -> replaceFragment(FragmentRoomMessage())
-                R.id.friends -> replaceFragment(FragmentFriendsTab())
-                R.id.profile -> replaceFragment(FragmentProfile())
+                R.id.messenger -> replaceFragment(RoomMessageFragment())
+                R.id.friends -> replaceFragment(TabFriendsFragment())
+                R.id.profile -> replaceFragment(ProfileFragment())
 
                 else -> {
 

@@ -31,7 +31,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="4dp"
                 android:background="@drawable/receiver_drawable"
                 android:fontFamily="@font/lato_bold"
                 android:padding="10dp"

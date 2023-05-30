@@ -15,7 +15,7 @@ import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.model.UsersModel
 import java.util.ArrayList
 
-class FragmentTabUser : Fragment() {
+class TabUserFragment : Fragment() {
 
     private lateinit var binding: FragmentTabUserBinding
 

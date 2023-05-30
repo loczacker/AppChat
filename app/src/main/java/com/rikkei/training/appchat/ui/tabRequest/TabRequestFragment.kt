@@ -16,7 +16,7 @@ import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
-class FragmentTabRequest : Fragment() {
+class TabRequestFragment : Fragment() {
 
     private lateinit var binding: FragmentTabRequestBinding
 

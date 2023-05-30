@@ -17,7 +17,6 @@ class RoomMessengerAdapter(
     class RoomViewHolder(private val binding: ItemUserRowBinding):
     RecyclerView.ViewHolder(binding.root){
         fun bind(room: RoomModel, roomItemRecyclerView: RoomItem) {
-            binding.txtUnreadMessage.text = room.unreadMessage.toString()
             binding.tvTime.text = room.timeStamp
             binding.txtLastMessage.text = room.lastMessage
             Glide.with(binding.imgCircleHomeMess.context).load(room)

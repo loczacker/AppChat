@@ -11,10 +11,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentProfileBinding
-import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.login.LoginActivity
 
-class FragmentProfile : Fragment() {
+class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
 
@@ -41,7 +40,7 @@ class FragmentProfile : Fragment() {
 
         binding.ibChange.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frame_layout, FragmentChangeProfile()).commit()
+            transaction.replace(R.id.frame_layout, ChangeProfileFragment()).commit()
         }
         binding.tvSignOut.setOnClickListener{
             firebaseAuth.signOut()
@@ -67,12 +66,12 @@ class FragmentProfile : Fragment() {
                     binding.tvEmailProfile.text = email
 
                     try {
-                        Glide.with(this@FragmentProfile)
+                        Glide.with(this@ProfileFragment)
                             .load(img)
                             .placeholder(R.drawable.profile)
                             .into(binding.imgProfileCircle)
 
-                        Glide.with(this@FragmentProfile)
+                        Glide.with(this@ProfileFragment)
                             .load(img)
                             .placeholder(R.drawable.profile)
                             .into(binding.imgProfile)

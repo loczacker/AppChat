@@ -13,11 +13,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentTabFriendsBinding
 import com.rikkei.training.appchat.model.UsersModel
-import com.rikkei.training.appchat.ui.message.ActivityMessage
+import com.rikkei.training.appchat.ui.message.MessageActivity
 import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
-class FragmentFriends : Fragment() {
+class FriendsFragment : Fragment() {
 
     private lateinit var binding: FragmentTabFriendsBinding
 
@@ -81,7 +81,7 @@ class FragmentFriends : Fragment() {
             })
     }
     private fun goMessenger(itemUser: ItemUsersRVModel) {
-        val messIntent = Intent(activity, ActivityMessage::class.java)
+        val messIntent = Intent(activity, MessageActivity::class.java)
         messIntent.putExtra("name", itemUser.user.name)
         messIntent.putExtra("img", itemUser.user.img)
         messIntent.putExtra("uid", itemUser.user.uid)

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
 import com.rikkei.training.appchat.databinding.FragmentFriendsBinding
 
-class FragmentFriendsTab : Fragment() {
+class TabFriendsFragment : Fragment() {
 
     private lateinit var binding: FragmentFriendsBinding
     override fun onCreateView(

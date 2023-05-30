@@ -11,7 +11,7 @@ import com.rikkei.training.appchat.databinding.FragmentMessengerBinding
 import com.rikkei.training.appchat.model.RoomModel
 import java.util.ArrayList
 
-class FragmentRoomMessage : Fragment() {
+class RoomMessageFragment : Fragment() {
 
     private lateinit var binding: FragmentMessengerBinding
 

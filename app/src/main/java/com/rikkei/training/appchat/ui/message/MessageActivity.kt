@@ -1,12 +1,12 @@
 package com.rikkei.training.appchat.ui.message
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
-import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -21,14 +21,14 @@ import com.rikkei.training.appchat.databinding.ActivityMessengerBinding
 import com.rikkei.training.appchat.model.MessageModel
 import com.rikkei.training.appchat.model.ItemMessageRVModel
 import com.rikkei.training.appchat.ui.home.HomeActivity
-import com.rikkei.training.appchat.ui.tabIcon.FragmentIcon
+import com.rikkei.training.appchat.ui.tabIcon.IconFragment
 import com.rikkei.training.appchat.model.IconModel
-import com.rikkei.training.appchat.ui.tabGallery.FragmentGallery
+import com.rikkei.training.appchat.ui.tabGallery.GalleryFragment
 import java.text.SimpleDateFormat
 import java.util.Date
 
 
-class ActivityMessage : AppCompatActivity() {
+class MessageActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMessengerBinding
 
@@ -46,6 +46,9 @@ class ActivityMessage : AppCompatActivity() {
 
     private lateinit var messageAdapter: MessageAdapter
 
+    private var roomId = ""
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMessengerBinding.inflate(layoutInflater)
@@ -60,6 +63,9 @@ class ActivityMessage : AppCompatActivity() {
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
+        addIcon()
+        infoUserChat()
+        backHome()
         setContentView(binding.root)
     }
 
@@ -67,9 +73,6 @@ class ActivityMessage : AppCompatActivity() {
         super.onResume()
         database.reference.child("Users")
             .child(firebaseAuth.uid ?: "").child("presence").setValue("Online")
-        addIcon()
-        infoUserChat()
-        backHome()
     }
 
     private fun addIcon() {
@@ -101,7 +104,7 @@ class ActivityMessage : AppCompatActivity() {
 
     private fun infoUserProfile(name: String?, imgProfile: String?, uidUser: String?) {
         binding.tvNameMess.text = name
-        Glide.with(this@ActivityMessage)
+        Glide.with(this@MessageActivity)
             .load(imgProfile)
             .transform(CenterCrop(), RoundedCorners(55))
             .placeholder(R.drawable.profile)
@@ -112,9 +115,7 @@ class ActivityMessage : AppCompatActivity() {
                     binding.tvPresence.text = snapshot.value.toString()
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
 
@@ -127,15 +128,14 @@ class ActivityMessage : AppCompatActivity() {
             }
     }
 
-    private fun updateRoomInfo(roomId: String, timeStamp: Long, imgProfile: String?) {
+    private fun updateRoomInfo(timeStamp: Long, imgProfile: String?) {
         val hashMap: HashMap<String, Any> = HashMap()
         hashMap["lastMessage"] = binding.etSend.text.toString()
-        hashMap["unreadMessage"] = 1
         database.reference.child("Room").child(roomId).updateChildren(hashMap)
 
     }
 
-    private fun sendMessage(roomId: String, timeStamp: Long) {
+    private fun sendMessage(timeStamp: Long) {
         binding.ivSend.setOnClickListener {
             fun convertLongToTime(timeNow: Long): String {
                 val date = Date(timeNow)
@@ -151,31 +151,39 @@ class ActivityMessage : AppCompatActivity() {
         }
     }
 
-    private fun sendImageIcon(roomId: String, iconList: ArrayList<IconModel>) {
+    private fun sendImageIcon(iconList: ArrayList<IconModel>) {
         binding.ivLibrary.setOnClickListener {
-            fragmentPhoto(roomId)
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(binding.ivLibrary.windowToken, 0)
-            if (binding.frameLayoutMess.visibility == View.VISIBLE) {
-                binding.frameLayoutMess.visibility = View.GONE
-            } else {
-                binding.frameLayoutMess.visibility = View.VISIBLE
-            }
+            storagePermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
 
         binding.ivIcon.setOnClickListener {
             fragmentIcon(roomId, iconList)
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(binding.ivIcon.windowToken, 0)
-            if (binding.frameLayoutMess.visibility == View.VISIBLE) {
-                binding.frameLayoutMess.visibility = View.GONE
-            } else {
+            if (binding.frameLayoutMess.visibility == View.GONE) {
                 binding.frameLayoutMess.visibility = View.VISIBLE
+            } else {
+                binding.frameLayoutMess.visibility = View.GONE
             }
         }
     }
 
-    private fun getAllMess(roomId: String, imgProfile: String?) {
+    private val storagePermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Log.i("Permission: ", "Granted")
+                fragmentPhoto(roomId)
+                if (binding.frameLayoutMess.visibility == View.GONE) {
+                    binding.frameLayoutMess.visibility = View.VISIBLE
+                } else {
+                    binding.frameLayoutMess.visibility = View.GONE
+                }
+            } else {
+                Log.i("Permission: ", "Denied")
+            }
+        }
+
+    private fun getAllMess(imgProfile: String?) {
         database.reference.child("Message").child(roomId)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -269,12 +277,11 @@ class ActivityMessage : AppCompatActivity() {
     private fun fragmentPhoto(roomId: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragmentGallery = FragmentGallery()
+        val galleryFragment = GalleryFragment()
         val photoBundle = Bundle()
         photoBundle.putString("roomId", roomId)
-        fragmentGallery.arguments = photoBundle
-        fragmentTransaction.replace(R.id.frame_layout_mess, fragmentGallery)
-        fragmentTransaction.addToBackStack(null)
+        galleryFragment.arguments = photoBundle
+        fragmentTransaction.replace(R.id.frame_layout_mess, galleryFragment)
         fragmentTransaction.commit()
         fragmentManager.isDestroyed
     }
@@ -282,16 +289,24 @@ class ActivityMessage : AppCompatActivity() {
     private fun fragmentIcon(roomId: String, iconList: ArrayList<IconModel>) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragmentIcon = FragmentIcon()
+        val iconFragment = IconFragment()
         val iconBundle = Bundle()
         iconBundle.putString("roomId", roomId)
         iconBundle.putParcelableArrayList("iconList", iconList)
-        fragmentIcon.arguments = iconBundle
-        fragmentTransaction.replace(R.id.frame_layout_mess, fragmentIcon)
-        fragmentTransaction.addToBackStack(null)
+        iconFragment.arguments = iconBundle
+        fragmentTransaction.replace(R.id.frame_layout_mess, iconFragment)
         fragmentTransaction.commit()
         fragmentManager.isDestroyed
     }
+
+    override fun onBackPressed() {
+        if (binding.frameLayoutMess.visibility == View.VISIBLE) {
+            binding.frameLayoutMess.visibility = View.GONE
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         database.reference.child("Users")
@@ -305,7 +320,7 @@ class ActivityMessage : AppCompatActivity() {
         val uidFriend = uidUser.toString()
         val myUid = firebaseAuth.uid ?: ""
         val timeStamp = System.currentTimeMillis()
-        val roomId = if (myUid > uidFriend) {
+        roomId = if (myUid > uidFriend) {
             "$myUid$uidFriend"
         } else {
             "$uidFriend$myUid"
@@ -318,10 +333,10 @@ class ActivityMessage : AppCompatActivity() {
 
         infoUserProfile(name, imgProfile, uidUser)
         createRoom(myUid, uidFriend, roomId)
-        getAllMess(roomId, imgProfile)
-        sendMessage(roomId, timeStamp)
-        sendImageIcon(roomId, iconList)
-        updateRoomInfo(roomId, timeStamp, imgProfile)
+        getAllMess(imgProfile)
+        sendMessage(timeStamp)
+        sendImageIcon(iconList)
+        updateRoomInfo(timeStamp, imgProfile)
     }
 
     private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
@@ -339,6 +354,7 @@ class ActivityMessage : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
     override fun onStart() {
         super.onStart()
 

@@ -4,18 +4,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemPhotoBinding
-import com.rikkei.training.appchat.model.MessageModel
 import java.util.ArrayList
 
 class GalleryAdapter(
-    private val photoList: ArrayList<MessageModel>
+    private val photoList: ArrayList<String>
 ): RecyclerView.Adapter<GalleryAdapter.ImageViewHolder>() {
+
     class ImageViewHolder(private val binding: ItemPhotoBinding):
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(message: MessageModel) {
-
+        fun bind(imagePath: String) {
+            Glide.with(binding.ivGallery.context)
+                .load(imagePath)
+                .into(binding.ivGallery)
         }
     }
 

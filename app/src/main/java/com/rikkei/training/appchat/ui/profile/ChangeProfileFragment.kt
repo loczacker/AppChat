@@ -29,7 +29,7 @@ import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentChangeProfileBinding
 
 
-class FragmentChangeProfile : Fragment() {
+class ChangeProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentChangeProfileBinding
     //firebase auth
@@ -67,7 +67,7 @@ class FragmentChangeProfile : Fragment() {
 
         binding.imgBackHomeProfile.setOnClickListener{
             val transaction = fragmentManager?.beginTransaction()
-            transaction?.replace(R.id.frame_layout, FragmentProfile())?.commit()
+            transaction?.replace(R.id.frame_layout, ProfileFragment())?.commit()
         }
         return binding.root
     }
@@ -163,7 +163,7 @@ class FragmentChangeProfile : Fragment() {
 
                     try {
 
-                        Glide.with(this@FragmentChangeProfile)
+                        Glide.with(this@ChangeProfileFragment)
                             .load(img)
                             .placeholder(R.drawable.profile)
                             .into(binding.imgAva)
