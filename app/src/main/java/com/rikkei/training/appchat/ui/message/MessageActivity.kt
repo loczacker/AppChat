@@ -1,11 +1,13 @@
 package com.rikkei.training.appchat.ui.message
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -47,6 +49,8 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
 
     private var roomId = ""
+
+    private var uidFriend = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,13 +132,6 @@ class MessageActivity : AppCompatActivity() {
             }
     }
 
-    private fun updateRoomInfo(timeStamp: Long, imgProfile: String?) {
-        val hashMap: HashMap<String, Any> = HashMap()
-        hashMap["lastMessage"] = binding.etSend.text.toString()
-        database.reference.child("Room").child(roomId).updateChildren(hashMap)
-
-    }
-
     private fun sendMessage(timeStamp: Long) {
         binding.ivSend.setOnClickListener {
             fun convertLongToTime(timeNow: Long): String {
@@ -142,11 +139,15 @@ class MessageActivity : AppCompatActivity() {
                 val format = SimpleDateFormat("dd.MM HH:mm")
                 return format.format(date)
             }
-
             val content = binding.etSend.text.toString()
-            val mess =
-                MessageModel(null, content, firebaseAuth.uid, convertLongToTime(timeStamp), null)
+            val mess = MessageModel(null, content, firebaseAuth.uid, convertLongToTime(timeStamp), null)
+            val hashMap: HashMap<String, Any> = HashMap()
+            hashMap["lastMessage"] = content
+            hashMap["timeStamp"] = convertLongToTime(timeStamp)
             database.reference.child("Message").child(roomId).push().setValue(mess)
+                .addOnSuccessListener {
+                    database.reference.child("Room").child(roomId).updateChildren(hashMap)
+                }
             binding.etSend.text.clear()
         }
     }
@@ -154,10 +155,14 @@ class MessageActivity : AppCompatActivity() {
     private fun sendImageIcon(iconList: ArrayList<IconModel>) {
         binding.ivLibrary.setOnClickListener {
             storagePermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.ivLibrary.windowToken, 0)
         }
 
         binding.ivIcon.setOnClickListener {
             fragmentIcon(roomId, iconList)
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.ivLibrary.windowToken, 0)
             if (binding.frameLayoutMess.visibility == View.GONE) {
                 binding.frameLayoutMess.visibility = View.VISIBLE
             } else {
@@ -172,7 +177,7 @@ class MessageActivity : AppCompatActivity() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 Log.i("Permission: ", "Granted")
-                fragmentPhoto(roomId)
+                galleryFragment(roomId)
                 if (binding.frameLayoutMess.visibility == View.GONE) {
                     binding.frameLayoutMess.visibility = View.VISIBLE
                 } else {
@@ -274,10 +279,16 @@ class MessageActivity : AppCompatActivity() {
             })
     }
 
-    private fun fragmentPhoto(roomId: String) {
+    private fun galleryFragment(roomId: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val galleryFragment = GalleryFragment()
+        galleryFragment.galleryFragmentListener = object : GalleryFragment.GalleryFragmentListener {
+            override fun onCancelButtonClicked() {
+                // Ẩn FrameLayout khi nút "Cancel" được bấm
+                binding.frameLayoutMess.visibility = View.GONE
+            }
+        }
         val photoBundle = Bundle()
         photoBundle.putString("roomId", roomId)
         galleryFragment.arguments = photoBundle
@@ -317,7 +328,7 @@ class MessageActivity : AppCompatActivity() {
         val name = intent.getStringExtra("name")
         val imgProfile = intent.getStringExtra("img")
         val uidUser = intent.getStringExtra("uid")
-        val uidFriend = uidUser.toString()
+        uidFriend = uidUser.toString()
         val myUid = firebaseAuth.uid ?: ""
         val timeStamp = System.currentTimeMillis()
         roomId = if (myUid > uidFriend) {
@@ -336,7 +347,6 @@ class MessageActivity : AppCompatActivity() {
         getAllMess(imgProfile)
         sendMessage(timeStamp)
         sendImageIcon(iconList)
-        updateRoomInfo(timeStamp, imgProfile)
     }
 
     private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {

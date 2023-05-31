@@ -19,7 +19,7 @@ class RoomMessengerAdapter(
         fun bind(room: RoomModel, roomItemRecyclerView: RoomItem) {
             binding.tvTime.text = room.timeStamp
             binding.txtLastMessage.text = room.lastMessage
-            Glide.with(binding.imgCircleHomeMess.context).load(room)
+            Glide.with(binding.imgCircleHomeMess.context).load(room.imgRoom)
                 .placeholder(R.drawable.profile)
                 .into(binding.imgCircleHomeMess)
             binding.itemHomeFriends.setOnClickListener {

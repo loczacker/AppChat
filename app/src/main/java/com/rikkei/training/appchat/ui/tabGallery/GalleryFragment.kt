@@ -7,26 +7,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rikkei.training.appchat.databinding.FragmentPhotoLibraryBinding
-import com.rikkei.training.appchat.model.MessageModel
+import com.rikkei.training.appchat.databinding.FragmentGalleryBinding
 
 class GalleryFragment : Fragment() {
 
-    private lateinit var binding: FragmentPhotoLibraryBinding
+    private lateinit var binding: FragmentGalleryBinding
 
     private lateinit var galleryAdapter: GalleryAdapter
 
     private lateinit var galleryRecyclerView: RecyclerView
+
+    var galleryFragmentListener: GalleryFragmentListener? = null
+    interface GalleryFragmentListener {
+        fun onCancelButtonClicked()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPhotoLibraryBinding.inflate(inflater, container, false)
+        binding = FragmentGalleryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -37,18 +41,25 @@ class GalleryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnSent.isVisible = false
+        binding.btnCancel.isVisible = false
 
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (isGranted) {
-                } else {
+        binding.btnCancel.setOnClickListener {
+            galleryFragmentListener?.onCancelButtonClicked()
+        }
+
+
+        val imagesList = getAllImagesFromGallery()
+        galleryAdapter = GalleryAdapter(imagesList, object : PhotoItem{
+            override fun getPhoto(url: String) {
+                if (binding.btnSent.visibility == View.GONE || binding.btnSent.visibility == View.GONE)
+                {
+                    binding.btnSent.visibility = View.VISIBLE
+                    binding.btnCancel.visibility = View.VISIBLE
                 }
             }
 
-        val imagesList = getAllImagesFromGallery()
-        galleryAdapter = GalleryAdapter(imagesList)
+        })
 
         galleryRecyclerView = binding.recyclerGallery
         galleryRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
