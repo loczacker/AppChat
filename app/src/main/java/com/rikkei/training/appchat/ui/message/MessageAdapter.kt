@@ -67,12 +67,14 @@ class MessageAdapter(
 
             when (messReceived.messageType) {
                 MessageType.TEXT -> {
+                    binding.tvMess.isVisible = true
                     binding.tvMess.text = messReceived.message.content
                     binding.tvTimeReceived.text = messReceived.message.time
                     binding.ivImReceived.isVisible = false
                 }
 
                 MessageType.IMAGE -> {
+                    binding.tvMess.isVisible = true
                     Glide.with(binding.ivImReceived.context).load(messReceived.message.imgUrl)
                         .placeholder(R.drawable.profile)
                         .into(binding.ivImReceived)
@@ -81,6 +83,7 @@ class MessageAdapter(
                 }
 
                 MessageType.ICON -> {
+                    binding.tvMess.isVisible = true
                     val resourceId = binding.ivImReceived.context.resources.getIdentifier(
                         messReceived.message.imgIcon,
                         "drawable",

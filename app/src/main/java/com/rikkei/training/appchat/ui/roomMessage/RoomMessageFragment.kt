@@ -47,7 +47,7 @@ class RoomMessageFragment : Fragment() {
     }
 
     private fun showRoomInfo() {
-        roomAdapter = RoomMessengerAdapter(listRoom, object : RoomItem{
+        roomAdapter = RoomMessengerAdapter(listRoom, object : RoomItemClick{
             override fun getRoomInfo(roomModel: RoomModel) {
                 val messIntent = Intent(activity, MessageActivity::class.java)
                 Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -61,9 +61,8 @@ class RoomMessageFragment : Fragment() {
                     listRoom.clear()
                     for (snapshotRoom in snapshot.children) {
                         val room = snapshotRoom.getValue(RoomModel::class.java)
-                        room!!.imgRoom = snapshotRoom.child("").value.toString()
-                        room.lastMessage = snapshotRoom.child("lastMessage").value.toString()
-                        room.timeStamp = snapshotRoom.child("timeStamp").value.toString()
+                        room!!.lastMessage = snapshot.child("lastMessage").value.toString()
+                        room.timeStamp = snapshot.child("timeStamp").value.toString()
                         listRoom.add(room)
                     }
                 }

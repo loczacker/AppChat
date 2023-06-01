@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.ui.tabIcon
+package com.rikkei.training.appchat.ui.tabSticker
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,7 +12,7 @@ import com.rikkei.training.appchat.model.IconModel
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class IconFragment : Fragment() {
+class StickerFragment : Fragment() {
 
     private lateinit var binding: FragmentIconBinding
 
@@ -24,7 +24,7 @@ class IconFragment : Fragment() {
         FirebaseAuth.getInstance()
     }
 
-    private lateinit var iconAdapter: IconAdapter
+    private lateinit var stickerAdapter: StickerAdapter
 
     private val iconList = arrayListOf<IconModel>()
 
@@ -49,7 +49,7 @@ class IconFragment : Fragment() {
     }
 
     private fun showIcon(roomId: String?) {
-        iconAdapter = IconAdapter(iconList, object : ClickItemListener{
+        stickerAdapter = StickerAdapter(iconList, object : ClickItemListener{
             override fun onItemCLick(iconModel: IconModel, iconName: String) {
                 val timeStamp = System.currentTimeMillis()
                 fun convertLongToTime(timeNow: Long): String {
@@ -65,8 +65,8 @@ class IconFragment : Fragment() {
                 database.reference.child("Message").child(roomId.toString()).push().updateChildren(hashMap)
             }
         })
-        binding.rcvIcon.adapter = iconAdapter
-        iconAdapter.notifyDataSetChanged()
+        binding.rcvIcon.adapter = stickerAdapter
+        stickerAdapter.notifyDataSetChanged()
     }
 
 }

@@ -12,18 +12,18 @@ import java.util.ArrayList
 
 class RoomMessengerAdapter(
     private val roomList: ArrayList<RoomModel>,
-    private val roomItem: RoomItem
+    private val roomItemClick: RoomItemClick
 ): RecyclerView.Adapter<RoomMessengerAdapter.RoomViewHolder>() {
     class RoomViewHolder(private val binding: ItemUserRowBinding):
     RecyclerView.ViewHolder(binding.root){
-        fun bind(room: RoomModel, roomItemRecyclerView: RoomItem) {
+        fun bind(room: RoomModel, roomItemClickRecyclerView: RoomItemClick) {
             binding.tvTime.text = room.timeStamp
             binding.txtLastMessage.text = room.lastMessage
             Glide.with(binding.imgCircleHomeMess.context).load(room.imgRoom)
                 .placeholder(R.drawable.profile)
                 .into(binding.imgCircleHomeMess)
             binding.itemHomeFriends.setOnClickListener {
-                roomItemRecyclerView.getRoomInfo(room)
+                roomItemClickRecyclerView.getRoomInfo(room)
             }
         }
     }
@@ -40,6 +40,6 @@ class RoomMessengerAdapter(
     override fun getItemCount(): Int = roomList.size
 
     override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
-        holder.bind(roomList[position], roomItem)
+        holder.bind(roomList[position], roomItemClick)
     }
 }

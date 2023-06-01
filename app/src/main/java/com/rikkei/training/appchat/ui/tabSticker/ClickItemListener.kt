@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.ui.tabIcon
+package com.rikkei.training.appchat.ui.tabSticker
 
 import com.rikkei.training.appchat.model.IconModel
 

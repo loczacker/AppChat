@@ -1,4 +1,4 @@
-package com.rikkei.training.appchat.ui.tabIcon
+package com.rikkei.training.appchat.ui.tabSticker
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,10 +10,10 @@ import com.rikkei.training.appchat.databinding.ItemIconBinding
 import com.rikkei.training.appchat.model.IconModel
 import java.util.ArrayList
 
-class IconAdapter(
+class StickerAdapter(
     private val iconList: ArrayList<IconModel>,
     private val clickItemListener: ClickItemListener
-) : RecyclerView.Adapter<IconAdapter.IconViewHolder>() {
+) : RecyclerView.Adapter<StickerAdapter.IconViewHolder>() {
     class IconViewHolder(private val binding: ItemIconBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(icon: IconModel, clickItemListener: ClickItemListener) {

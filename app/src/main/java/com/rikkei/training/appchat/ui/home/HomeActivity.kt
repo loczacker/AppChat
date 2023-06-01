@@ -22,9 +22,15 @@ class HomeActivity : AppCompatActivity() {
     private val firebaseAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
+        val roomId = intent.getStringExtra("roomId")
+        val uidFriend = intent.getStringExtra("uidFriend")
+        print(roomId)
+        print(uidFriend)
         setContentView(binding.root)
 
         val backFragment = intent.getIntExtra("backFragment", 0)
@@ -65,7 +71,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
-
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout,fragment)

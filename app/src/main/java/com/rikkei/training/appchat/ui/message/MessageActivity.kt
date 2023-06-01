@@ -3,6 +3,7 @@ package com.rikkei.training.appchat.ui.message
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -23,7 +24,7 @@ import com.rikkei.training.appchat.databinding.ActivityMessengerBinding
 import com.rikkei.training.appchat.model.MessageModel
 import com.rikkei.training.appchat.model.ItemMessageRVModel
 import com.rikkei.training.appchat.ui.home.HomeActivity
-import com.rikkei.training.appchat.ui.tabIcon.IconFragment
+import com.rikkei.training.appchat.ui.tabSticker.StickerFragment
 import com.rikkei.training.appchat.model.IconModel
 import com.rikkei.training.appchat.ui.tabGallery.GalleryFragment
 import java.text.SimpleDateFormat
@@ -52,6 +53,8 @@ class MessageActivity : AppCompatActivity() {
 
     private var uidFriend = ""
 
+    private val timeStamp = System.currentTimeMillis()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +63,8 @@ class MessageActivity : AppCompatActivity() {
         supportFragmentManager.addOnBackStackChangedListener {
             val backStackCount = supportFragmentManager.backStackEntryCount
             if (backStackCount == 0) {
-                // Back stack is empty, hide the FrameLayout or handle the behavior you desire
                 binding.frameLayoutMess.visibility = View.GONE
             } else {
-                // Back stack is not empty, show the FrameLayout
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
@@ -154,7 +155,11 @@ class MessageActivity : AppCompatActivity() {
 
     private fun sendImageIcon(iconList: ArrayList<IconModel>) {
         binding.ivLibrary.setOnClickListener {
-            storagePermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                storagePermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
+            } else {
+                storagePermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(binding.ivLibrary.windowToken, 0)
         }
@@ -177,7 +182,7 @@ class MessageActivity : AppCompatActivity() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 Log.i("Permission: ", "Granted")
-                galleryFragment(roomId)
+                galleryFragment(roomId, timeStamp)
                 if (binding.frameLayoutMess.visibility == View.GONE) {
                     binding.frameLayoutMess.visibility = View.VISIBLE
                 } else {
@@ -203,34 +208,22 @@ class MessageActivity : AppCompatActivity() {
                         val senderId = snap.child("senderId").getValue(String::class.java)
                         val myUid = firebaseAuth.uid ?: ""
                         val iconName = snap.child("iconName").getValue(String::class.java)
+                        val url = snap.child("imgUrl").getValue(String::class.java)
                         val mess = snap.getValue(MessageModel::class.java)
                         mess?.imgIcon = iconName
-
+                        mess?.imgUrl = url
                         if (senderId == myUid) {
                             if (content != null) {
                                 mess?.let { messageList.add(ItemMessageRVModel(it, true, 1, "")) }
                             } else {
-                                if (iconName != null) {
-                                    mess?.let {
-                                        messageList.add(
-                                            ItemMessageRVModel(
-                                                it,
-                                                true,
-                                                3,
-                                                ""
-                                            )
-                                        )
-                                    }
-                                } else {
-                                    mess?.let {
-                                        messageList.add(
-                                            ItemMessageRVModel(
-                                                it,
-                                                true,
-                                                2,
-                                                ""
-                                            )
-                                        )
+                                if (iconName != null)
+                                {
+                                    mess?.let { messageList.add(ItemMessageRVModel(it, true, 3, "")) }
+                                }
+                                else
+                                {
+                                    if (url != null) {
+                                        mess?.let { messageList.add(ItemMessageRVModel(it, true, 2, "")) }
                                     }
                                 }
                             }
@@ -251,15 +244,17 @@ class MessageActivity : AppCompatActivity() {
                                         )
                                     }
                                 } else {
-                                    mess?.let {
-                                        messageList.add(
-                                            ItemMessageRVModel(
-                                                it,
-                                                false,
-                                                2,
-                                                ""
+                                    if (url != null) {
+                                        mess?.let {
+                                            messageList.add(
+                                                ItemMessageRVModel(
+                                                    it,
+                                                    false,
+                                                    2,
+                                                    ""
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                                 }
                             }
@@ -279,18 +274,18 @@ class MessageActivity : AppCompatActivity() {
             })
     }
 
-    private fun galleryFragment(roomId: String) {
+    private fun galleryFragment(roomId: String, timeStamp: Long) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val galleryFragment = GalleryFragment()
         galleryFragment.galleryFragmentListener = object : GalleryFragment.GalleryFragmentListener {
             override fun onCancelButtonClicked() {
-                // Ẩn FrameLayout khi nút "Cancel" được bấm
                 binding.frameLayoutMess.visibility = View.GONE
             }
         }
         val photoBundle = Bundle()
         photoBundle.putString("roomId", roomId)
+        photoBundle.putLong("timeStamp", timeStamp)
         galleryFragment.arguments = photoBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, galleryFragment)
         fragmentTransaction.commit()
@@ -300,12 +295,12 @@ class MessageActivity : AppCompatActivity() {
     private fun fragmentIcon(roomId: String, iconList: ArrayList<IconModel>) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val iconFragment = IconFragment()
+        val stickerFragment = StickerFragment()
         val iconBundle = Bundle()
         iconBundle.putString("roomId", roomId)
         iconBundle.putParcelableArrayList("iconList", iconList)
-        iconFragment.arguments = iconBundle
-        fragmentTransaction.replace(R.id.frame_layout_mess, iconFragment)
+        stickerFragment.arguments = iconBundle
+        fragmentTransaction.replace(R.id.frame_layout_mess, stickerFragment)
         fragmentTransaction.commit()
         fragmentManager.isDestroyed
     }
@@ -330,7 +325,6 @@ class MessageActivity : AppCompatActivity() {
         val uidUser = intent.getStringExtra("uid")
         uidFriend = uidUser.toString()
         val myUid = firebaseAuth.uid ?: ""
-        val timeStamp = System.currentTimeMillis()
         roomId = if (myUid > uidFriend) {
             "$myUid$uidFriend"
         } else {

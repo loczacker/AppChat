@@ -9,30 +9,33 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ItemPhotoBinding
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 class GalleryAdapter(
     private val photoList: ArrayList<String>,
-    private val photoItem: PhotoItem
+    private val photoItemClick: PhotoItemClick
 ): RecyclerView.Adapter<GalleryAdapter.ImageViewHolder>() {
+    class ImageViewHolder(private val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    class ImageViewHolder(private val binding: ItemPhotoBinding):
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(imagePath: String, photoItem: PhotoItem) {
-            binding.tvClick.isVisible = false
+        private val selectedItems = ArrayList<String>()
+        fun bind(imagePath: String, photoItemClick: PhotoItemClick) {
+            binding.tvClick.isVisible = selectedItems.contains(imagePath)
             Glide.with(binding.ivGallery.context)
                 .load(imagePath)
                 .into(binding.ivGallery)
             binding.ivGallery.setOnClickListener {
-                photoItem.getPhoto(imagePath)
-                if (binding.tvClick.visibility == View.GONE){
+                photoItemClick.getPhoto(imagePath)
+                if (binding.tvClick.visibility == View.GONE) {
                     binding.tvClick.visibility = View.VISIBLE
+                    selectedItems.add(imagePath)
                 } else {
                     binding.tvClick.visibility = View.GONE
+                    selectedItems.remove(imagePath)
                 }
             }
         }
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         return  ImageViewHolder(
@@ -46,6 +49,6 @@ class GalleryAdapter(
     override fun getItemCount(): Int = photoList.size
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.bind(photoList[position], photoItem)
+        holder.bind(photoList[position], photoItemClick)
     }
 }

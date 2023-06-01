@@ -1,5 +1,7 @@
 package com.rikkei.training.appchat.ui.tabGallery
 
+import android.content.ContentUris
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
@@ -10,9 +12,23 @@ import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import com.rikkei.training.appchat.databinding.FragmentGalleryBinding
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class GalleryFragment : Fragment() {
+
+    private val database by lazy {
+        FirebaseDatabase.getInstance()
+    }
+
+    private val firebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
 
     private lateinit var binding: FragmentGalleryBinding
 
@@ -20,10 +36,13 @@ class GalleryFragment : Fragment() {
 
     private lateinit var galleryRecyclerView: RecyclerView
 
-    var galleryFragmentListener: GalleryFragmentListener? = null
+    private var selectedPhotoList : ArrayList<String> = arrayListOf()
+
     interface GalleryFragmentListener {
         fun onCancelButtonClicked()
     }
+
+    var galleryFragmentListener: GalleryFragmentListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,39 +60,80 @@ class GalleryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnSent.isVisible = false
-        binding.btnCancel.isVisible = false
+        val bundle = arguments
+        val roomId = bundle!!.getString("roomId")
+        val timeStamp = bundle.getLong("timeStamp")
 
+
+        binding.layoutButton.isVisible = false
         binding.btnCancel.setOnClickListener {
             galleryFragmentListener?.onCancelButtonClicked()
         }
-
-
-        val imagesList = getAllImagesFromGallery()
-        galleryAdapter = GalleryAdapter(imagesList, object : PhotoItem{
-            override fun getPhoto(url: String) {
-                if (binding.btnSent.visibility == View.GONE || binding.btnSent.visibility == View.GONE)
-                {
-                    binding.btnSent.visibility = View.VISIBLE
-                    binding.btnCancel.visibility = View.VISIBLE
+        galleryAdapter = GalleryAdapter(getAllImagesFromGallery(), object : PhotoItemClick{
+            override fun getPhoto(imagePath: String) {
+                if (selectedPhotoList.contains(imagePath)) {
+                    selectedPhotoList.remove(imagePath)
+                } else {
+                    selectedPhotoList.add(imagePath)
                 }
+                updateButtonVisibility()
             }
-
         })
 
         galleryRecyclerView = binding.recyclerGallery
         galleryRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         galleryRecyclerView.adapter = galleryAdapter
+        updateButtonVisibility()
 
+        binding.btnSent.setOnClickListener {
+            uploadImagesToFirebaseStorage(selectedPhotoList, roomId, timeStamp)
+        }
     }
+
+    private fun uploadImagesToFirebaseStorage(
+        imageList: List<String>,
+        roomId: String?,
+        timeStamp: Long
+    ) {
+        val messageId = FirebaseDatabase.getInstance().reference.child("Message").push().key
+        val storageRef = FirebaseStorage.getInstance().reference
+
+        fun convertLongToTime(timeNow: Long): String {
+            val date = Date(timeNow)
+            val format = SimpleDateFormat("dd.MM HH:mm")
+            return format.format(date)
+        }
+
+        imageList.forEachIndexed { index, imagePath ->
+            val fileUri = Uri.parse(imagePath)
+            val imageRef = storageRef.child("img/${messageId}_$index")
+
+            val uploadTask = imageRef.putFile(fileUri)
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                val uriTask: Task<Uri> = taskSnapshot.storage.downloadUrl
+                uriTask.addOnSuccessListener { downloadUri ->
+                    val uploadImageUrl = downloadUri.toString()
+                    val hashMap: HashMap<String, Any> = HashMap()
+                    hashMap["imgUrl"] = uploadImageUrl
+                    hashMap["time"] = convertLongToTime(timeStamp)
+                    hashMap["senderId"] = firebaseAuth.uid ?: ""
+
+                    database.reference.child("Message").child(roomId.toString())
+                        .push().updateChildren(hashMap)
+                }
+            }.addOnFailureListener {
+            }
+        }
+    }
+
+
 
     private fun getAllImagesFromGallery(): ArrayList<String> {
         val imagesList = arrayListOf<String>()
 
         val projection = arrayOf(
             MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.DATA
+            MediaStore.Images.Media.DISPLAY_NAME
         )
 
         val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
@@ -89,14 +149,23 @@ class GalleryFragment : Fragment() {
         )
 
         cursor?.use { cursor ->
-            val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
 
             while (cursor.moveToNext()) {
-                val path = cursor.getString(dataColumn)
+                val id = cursor.getLong(idColumn)
+                val contentUri = ContentUris.withAppendedId(queryUri, id)
+                val path = contentUri.toString()
                 imagesList.add(path)
             }
         }
-
         return imagesList
+    }
+
+    private fun updateButtonVisibility() {
+        if (selectedPhotoList.isEmpty()) {
+            binding.layoutButton.visibility = View.GONE
+        } else {
+            binding.layoutButton.visibility = View.VISIBLE
+        }
     }
 }
