@@ -99,9 +99,6 @@ class MessageActivity : AppCompatActivity() {
     private fun backHome() {
         binding.imBackHome.setOnClickListener {
             val homeIntent = Intent(this, HomeActivity::class.java)
-            val backFragment = 1
-            homeIntent.putExtra("backFragment", backFragment)
-            homeIntent.putExtra("currentFragment", "FragmentFriends")
             startActivity(homeIntent)
             finish()
         }
@@ -122,15 +119,6 @@ class MessageActivity : AppCompatActivity() {
 
                 override fun onCancelled(error: DatabaseError) {}
             })
-    }
-
-    private fun createRoom(myUid: String, uidFriend: String, roomId: String) {
-        database.reference.child("Room").child(roomId).child("member").child(myUid)
-            .setValue("member")
-            .addOnSuccessListener {
-                database.reference.child("Room").child(roomId).child("member").child(uidFriend)
-                    .setValue("member")
-            }
     }
 
     private fun sendMessage(timeStamp: Long) {
@@ -202,7 +190,6 @@ class MessageActivity : AppCompatActivity() {
                     if (isFirstLoad) {
                         messageList.clear()
                     }
-
                     for (snap in snapshot.children) {
                         val content = snap.child("content").getValue(String::class.java)
                         val senderId = snap.child("senderId").getValue(String::class.java)
@@ -213,7 +200,7 @@ class MessageActivity : AppCompatActivity() {
                         mess?.imgIcon = iconName
                         mess?.imgUrl = url
                         if (senderId == myUid) {
-                            if (content != null) {
+                            if (content != null && iconName == null && url == null) {
                                 mess?.let { messageList.add(ItemMessageRVModel(it, true, 1, "")) }
                             } else {
                                 if (iconName != null)
@@ -267,7 +254,7 @@ class MessageActivity : AppCompatActivity() {
                         binding.rvMesHomeMes.adapter = messageAdapter
                     }
                     messageAdapter.notifyDataSetChanged()
-                    binding.rvMesHomeMes.smoothScrollToPosition(messageAdapter.itemCount)
+                    binding.rvMesHomeMes.scrollToPosition(messageList.size - 1 )
                 }
 
                 override fun onCancelled(error: DatabaseError) {}
@@ -337,7 +324,6 @@ class MessageActivity : AppCompatActivity() {
 
 
         infoUserProfile(name, imgProfile, uidUser)
-        createRoom(myUid, uidFriend, roomId)
         getAllMess(imgProfile)
         sendMessage(timeStamp)
         sendImageIcon(iconList)
@@ -361,13 +347,11 @@ class MessageActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardListener)
     }
 
     override fun onStop() {
         super.onStop()
-
         binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardListener)
     }
 }

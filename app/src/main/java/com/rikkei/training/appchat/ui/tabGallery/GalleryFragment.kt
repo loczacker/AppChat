@@ -1,5 +1,6 @@
 package com.rikkei.training.appchat.ui.tabGallery
 
+import GalleryAdapter
 import android.content.ContentUris
 import android.net.Uri
 import android.os.Bundle
@@ -87,6 +88,9 @@ class GalleryFragment : Fragment() {
 
         binding.btnSent.setOnClickListener {
             uploadImagesToFirebaseStorage(selectedPhotoList, roomId, timeStamp)
+            galleryAdapter.clearSelections()
+            selectedPhotoList.clear()
+            updateButtonVisibility()
         }
     }
 

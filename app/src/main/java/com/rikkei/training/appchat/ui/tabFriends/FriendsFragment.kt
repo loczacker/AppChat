@@ -33,6 +33,8 @@ class FriendsFragment : Fragment() {
 
     private lateinit var friendAdapter: ShowFriendsAdapter
 
+    private var  roomId = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,8 +50,17 @@ class FriendsFragment : Fragment() {
     }
 
     private fun showFriendsList() {
+        val myUid = firebaseAuth.uid?:""
         friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRVInterface{
             override fun getDetail(itemUser: ItemUsersRVModel) {
+                val uidFriend = itemUser.user.uid.toString()
+
+                roomId = if (myUid > uidFriend) {
+                    "$myUid$uidFriend"
+                } else {
+                    "$uidFriend$myUid"
+                }
+                createRoom(myUid, uidFriend, roomId)
                 goMessenger(itemUser)
             }
         })
@@ -87,6 +98,15 @@ class FriendsFragment : Fragment() {
         messIntent.putExtra("uid", itemUser.user.uid)
         Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(messIntent)
+    }
+
+    private fun createRoom(myUid: String, uidFriend: String, roomId: String) {
+        database.reference.child("Room").child(roomId).child("member").child(myUid)
+            .setValue("member")
+            .addOnSuccessListener {
+                database.reference.child("Room").child(roomId).child("member").child(uidFriend)
+                    .setValue("member")
+            }
     }
 }
 
