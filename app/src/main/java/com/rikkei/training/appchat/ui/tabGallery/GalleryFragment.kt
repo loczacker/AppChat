@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentGalleryBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -121,9 +122,14 @@ class GalleryFragment : Fragment() {
                     hashMap["imgUrl"] = uploadImageUrl
                     hashMap["time"] = convertLongToTime(timeStamp)
                     hashMap["senderId"] = firebaseAuth.uid ?: ""
-
                     database.reference.child("Message").child(roomId.toString())
                         .push().updateChildren(hashMap)
+
+                    val roomHashMap: HashMap<String, Any> = HashMap()
+                    roomHashMap["lastMessage"] = getString(R.string.image)
+                    roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
+                    database.reference.child("Room").child(roomId.toString())
+                        .updateChildren(roomHashMap)
                 }
             }.addOnFailureListener {
             }

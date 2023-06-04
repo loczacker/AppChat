@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentIconBinding
 import com.rikkei.training.appchat.model.IconModel
 import java.text.SimpleDateFormat
@@ -63,6 +64,11 @@ class StickerFragment : Fragment() {
                 hashMap["time"] = convertLongToTime(timeStamp)
                 hashMap["iconName"] = iconName
                 database.reference.child("Message").child(roomId.toString()).push().updateChildren(hashMap)
+
+                val roomHashMap : HashMap<String, Any> = HashMap()
+                roomHashMap["lastMessage"] = getString(R.string.sticker)
+                roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
+                database.reference.child("Room").child(roomId.toString()).updateChildren(roomHashMap)
             }
         })
         binding.rcvIcon.adapter = stickerAdapter

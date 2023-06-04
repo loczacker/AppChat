@@ -12,7 +12,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentRoomMessengerBinding
 import com.rikkei.training.appchat.model.RoomModel
@@ -53,7 +52,9 @@ class RoomMessageFragment : Fragment() {
         roomAdapter = RoomMessengerAdapter(listRoom, object : RoomItemClick {
             override fun getRoomInfo(roomModel: RoomModel) {
                 val messIntent = Intent(activity, MessageActivity::class.java)
-                Intent.FLAG_ACTIVITY_SINGLE_TOP
+                messIntent.putExtra("name", roomModel.nameRoom)
+                messIntent.putExtra("img", roomModel.imgRoom)
+                messIntent.putExtra("uid", roomModel.uidFriend)
                 startActivity(messIntent)
             }
         })
@@ -67,19 +68,19 @@ class RoomMessageFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 listRoom.clear()
                 for (snapshot in dataSnapshot.children) {
-                    val roomId = snapshot.key
-                    val uidFriend = roomId?.substringAfter(myUid)
+                     val roomId = snapshot.key.toString()
+                    val content = snapshot.child("content").getValue(String::class.java)
+                    val iconName = snapshot.child("iconName").getValue(String::class.java)
+                    val url = snapshot.child("imgUrl").getValue(String::class.java)
                     val room = snapshot.getValue(RoomModel::class.java)
-                    if (roomId != null && roomId.contains(myUid)) {
+                    room?.uidFriend = extractUidFriend(roomId, myUid)
+                    if (roomId.contains(myUid)) {
                         room?.lastMessage = snapshot.child("lastMessage").value.toString()
                         room?.timeStamp = snapshot.child("timeStamp").value.toString()
-
-                        usersRef.child(uidFriend.toString()).addListenerForSingleValueEvent(object : ValueEventListener {
+                        usersRef.child(room?.uidFriend!!).addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(userSnapshot: DataSnapshot) {
                                 room?.imgRoom = userSnapshot.child("img").value.toString()
-
-                                room?.let { listRoom.add(it) }
-
+                                room?.nameRoom = userSnapshot.child("name").value.toString()
                                 roomAdapter.notifyDataSetChanged()
                             }
 
@@ -88,12 +89,24 @@ class RoomMessageFragment : Fragment() {
                             }
                         })
                     }
+                    room?.let { listRoom.add(it) }
                 }
+                roomAdapter.notifyDataSetChanged()
             }
+
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.e("RoomMessageFragment", "Error: ${databaseError.message}")
             }
         })
+
         binding.rvMesHomeMes.adapter = roomAdapter
+    }
+
+    private fun extractUidFriend(roomId: String, myUid: String): String {
+        return if (roomId.startsWith(myUid)) {
+            roomId.removePrefix(myUid)
+        } else {
+            roomId.substringBefore(myUid)
+        }
     }
 }

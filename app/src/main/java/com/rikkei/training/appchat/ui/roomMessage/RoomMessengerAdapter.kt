@@ -17,10 +17,12 @@ class RoomMessengerAdapter(
     class RoomViewHolder(private val binding: ItemUserRowBinding):
     RecyclerView.ViewHolder(binding.root){
         fun bind(room: RoomModel, roomItemClickRecyclerView: RoomItemClick) {
+            binding.txtName.text = room.nameRoom
             binding.tvTime.text = room.timeStamp
-            binding.txtLastMessage.text = room.lastMessage
+            binding.tvLastMess.text = room.lastMessage
             Glide.with(binding.imgCircleHomeMess.context).load(room.imgRoom)
                 .placeholder(R.drawable.profile)
+                .circleCrop()
                 .into(binding.imgCircleHomeMess)
             binding.itemHomeFriends.setOnClickListener {
                 roomItemClickRecyclerView.getRoomInfo(room)

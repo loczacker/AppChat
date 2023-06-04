@@ -7,4 +7,6 @@
     <string name="agree">đồng ý</string>
     <string name="cancel">HỦY</string>
     <string name="sent">GỬI</string>
+    <string name="image">Hình ảnh</string>
+    <string name="sticker">Sticker</string>
 </resources>

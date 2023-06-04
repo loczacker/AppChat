@@ -19,7 +19,7 @@ import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 
 class FriendsFragment : Fragment() {
 
-    private lateinit var binding: FragmentTabFriendsBinding
+    private lateinit var binding:  FragmentTabFriendsBinding
 
     private val database by lazy {
         FirebaseDatabase.getInstance()
