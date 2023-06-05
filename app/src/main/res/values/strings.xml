@@ -9,4 +9,8 @@
     <string name="sent">GỬI</string>
     <string name="image">Hình ảnh</string>
     <string name="sticker">Sticker</string>
+    <string name="not_found">Không tìm thấy kết quả phù hợp</string>
+    <string name="friend">Bạn bè</string>
+    <string name="write_to_read">Enter How Much Cookies You Want</string>
+    <string name="message">Tin nhắn</string>
 </resources>
