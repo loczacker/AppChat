@@ -66,6 +66,7 @@ class StickerFragment : Fragment() {
                 database.reference.child("Message").child(roomId.toString()).push().updateChildren(hashMap)
 
                 val roomHashMap : HashMap<String, Any> = HashMap()
+                roomHashMap["SenderId"] = firebaseAuth?:""
                 roomHashMap["lastMessage"] = getString(R.string.sticker)
                 roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
                 database.reference.child("Room").child(roomId.toString()).updateChildren(roomHashMap)

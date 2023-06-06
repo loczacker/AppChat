@@ -3,11 +3,9 @@ package com.rikkei.training.appchat.ui.home
 import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.rikkei.training.appchat.R
@@ -15,7 +13,6 @@ import com.rikkei.training.appchat.databinding.ActivityHomeBinding
 import com.rikkei.training.appchat.ui.tabFriends.TabFriendsFragment
 import com.rikkei.training.appchat.ui.roomMessage.RoomMessageFragment
 import com.rikkei.training.appchat.ui.profile.ProfileFragment
-import com.rikkei.training.appchat.ui.tabSearchMess.SearchMessageFragment
 
 class HomeActivity : AppCompatActivity() {
 

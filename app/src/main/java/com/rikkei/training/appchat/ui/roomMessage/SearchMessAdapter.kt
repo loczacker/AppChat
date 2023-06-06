@@ -1,13 +1,11 @@
-package com.rikkei.training.appchat.ui.tabSearchFriend
+package com.rikkei.training.appchat.ui.roomMessage
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.rikkei.training.appchat.R
-import com.rikkei.training.appchat.databinding.ItemSearchFriendBinding
 import com.rikkei.training.appchat.databinding.ItemSearchMessBinding
-import com.rikkei.training.appchat.databinding.ItemUserRowBinding
 import com.rikkei.training.appchat.model.MessageModel
 import java.util.ArrayList
 
@@ -20,8 +18,8 @@ class SearchMessAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchMessAdapter.SearchMessViewHolder {
-        return SearchMessAdapter.SearchMessViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchMessViewHolder {
+        return SearchMessViewHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
                 R.layout.item_search_mess, parent, false

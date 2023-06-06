@@ -126,6 +126,7 @@ class GalleryFragment : Fragment() {
                         .push().updateChildren(hashMap)
 
                     val roomHashMap: HashMap<String, Any> = HashMap()
+                    roomHashMap["SenderId"] = firebaseAuth?:""
                     roomHashMap["lastMessage"] = getString(R.string.image)
                     roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
                     database.reference.child("Room").child(roomId.toString())
