@@ -123,14 +123,14 @@ class GalleryFragment : Fragment() {
                     hashMap["time"] = convertLongToTime(timeStamp)
                     hashMap["senderId"] = firebaseAuth.uid ?: ""
                     database.reference.child("Message").child(roomId.toString())
-                        .push().updateChildren(hashMap)
-
-                    val roomHashMap: HashMap<String, Any> = HashMap()
-                    roomHashMap["SenderId"] = firebaseAuth?:""
-                    roomHashMap["lastMessage"] = getString(R.string.image)
-                    roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
-                    database.reference.child("Room").child(roomId.toString())
-                        .updateChildren(roomHashMap)
+                        .push().updateChildren(hashMap).addOnSuccessListener {
+                            val roomHashMap: HashMap<String, Any> = HashMap()
+                            roomHashMap["SenderId"] = firebaseAuth?:""
+                            roomHashMap["lastMessage"] = getString(R.string.image)
+                            roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
+                            database.reference.child("Room").child(roomId.toString())
+                                .updateChildren(roomHashMap)
+                        }
                 }
             }.addOnFailureListener {
             }

@@ -185,11 +185,7 @@ class MessageActivity : AppCompatActivity() {
         database.reference.child("Message").child(roomId)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    // Clear messageList only when loading messages for the first time
-                    val isFirstLoad = messageList.isEmpty()
-                    if (isFirstLoad) {
-                        messageList.clear()
-                    }
+                    messageList.clear()
                     for (snap in snapshot.children) {
                         val content = snap.child("content").getValue(String::class.java)
                         val senderId = snap.child("senderId").getValue(String::class.java)
@@ -246,19 +242,15 @@ class MessageActivity : AppCompatActivity() {
                                 }
                             }
                         }
+                        messageAdapter.notifyDataSetChanged()
+                        binding.rvMesHomeMes.scrollToPosition(messageList.size - 1)
                     }
-
-                    // Notify the adapter only when loading messages for the first time
-                    if (isFirstLoad) {
-                        messageAdapter = MessageAdapter(messageList)
-                        binding.rvMesHomeMes.adapter = messageAdapter
-                    }
-                    messageAdapter.notifyDataSetChanged()
-                    binding.rvMesHomeMes.scrollToPosition(messageList.size - 1 )
                 }
 
                 override fun onCancelled(error: DatabaseError) {}
             })
+        messageAdapter = MessageAdapter(messageList)
+        binding.rvMesHomeMes.adapter = messageAdapter
     }
 
     private fun galleryFragment(roomId: String, timeStamp: Long) {

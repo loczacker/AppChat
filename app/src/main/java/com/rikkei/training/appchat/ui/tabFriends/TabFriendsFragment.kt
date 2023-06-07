@@ -29,9 +29,7 @@ class TabFriendsFragment : Fragment() {
     private val firebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
-    private val searchFriendList : ArrayList<FriendModel> = arrayListOf()
 
-    private lateinit var searchFriendAdapter: SearchFriendAdapter
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

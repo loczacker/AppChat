@@ -27,12 +27,14 @@ class MessageAdapter(
 
             when (messSend.messageType) {
                 MessageType.TEXT -> {
+                    binding.ivMessage.isVisible = true
                     binding.tvMessage.isVisible = true
                     binding.tvMessage.text = messSend.message.content
                     binding.ivMessage.isVisible = false
                 }
 
                 MessageType.IMAGE -> {
+                    binding.ivMessage.isVisible = true
                     binding.ivMessage.isVisible = true
                     Glide.with(binding.ivMessage.context).load(messSend.message.imgUrl)
                         .placeholder(R.drawable.profile)
@@ -41,6 +43,7 @@ class MessageAdapter(
                 }
 
                 MessageType.ICON -> {
+                    binding.ivMessage.isVisible = true
                     binding.ivMessage.isVisible = true
                     val resourceId = binding.ivMessage.context.resources.getIdentifier(
                         messSend.message.imgIcon,
@@ -67,6 +70,7 @@ class MessageAdapter(
 
             when (messReceived.messageType) {
                 MessageType.TEXT -> {
+                    binding.ivImReceived.isVisible = true
                     binding.tvMess.isVisible = true
                     binding.tvMess.text = messReceived.message.content
                     binding.tvTimeReceived.text = messReceived.message.time
@@ -74,6 +78,7 @@ class MessageAdapter(
                 }
 
                 MessageType.IMAGE -> {
+                    binding.ivImReceived.isVisible = true
                     binding.tvMess.isVisible = true
                     Glide.with(binding.ivImReceived.context).load(messReceived.message.imgUrl)
                         .placeholder(R.drawable.profile)
@@ -83,6 +88,7 @@ class MessageAdapter(
                 }
 
                 MessageType.ICON -> {
+                    binding.ivImReceived.isVisible = true
                     binding.tvMess.isVisible = true
                     val resourceId = binding.ivImReceived.context.resources.getIdentifier(
                         messReceived.message.imgIcon,

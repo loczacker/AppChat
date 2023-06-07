@@ -10,9 +10,9 @@ import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnKeyListener
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -40,6 +40,7 @@ class RoomMessageFragment : Fragment() {
     private val listRoom: ArrayList<RoomModel> = arrayListOf()
 
     private lateinit var roomAdapter: RoomMessengerAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,6 +52,7 @@ class RoomMessageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         showRoomInfo()
         searchMessage()
     }
@@ -60,24 +62,22 @@ class RoomMessageFragment : Fragment() {
         binding.edSearchMess.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
-
             override fun afterTextChanged(s: Editable?) {
                 val searchQuery = s.toString()
-                filter(searchQuery)
+                if (searchQuery.isEmpty()) {
+                } else {
+                    filter(searchQuery)
+                }
             }
         })
     }
 
     private fun filter(searchQuery: String) {
         val myUid = firebaseAuth.uid ?: ""
-        val usersRef: DatabaseReference = database.getReference("Users")
-        val roomsRef: DatabaseReference = database.getReference("Room")
-
-        roomsRef.orderByChild("lastMessage")
-            .startAt(searchQuery).endAt(searchQuery + "\uf8ff").addValueEventListener(object : ValueEventListener {
+        val roomsMess: DatabaseReference = database.getReference("Message")
+        roomsMess.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 listRoom.clear()
                 for (snapshot in dataSnapshot.children) {
@@ -85,33 +85,48 @@ class RoomMessageFragment : Fragment() {
                     val room = snapshot.getValue(RoomModel::class.java)
                     room?.uidFriend = extractUidFriend(roomId, myUid)
                     if (roomId.contains(myUid)) {
-                        room?.lastMessage = snapshot.child("lastMessage").value.toString()
-                        room?.timeStamp = snapshot.child("timeStamp").value.toString()
-                        usersRef.child(room?.uidFriend!!)
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(userSnapshot: DataSnapshot) {
-                                    room?.imgRoom = userSnapshot.child("img").value.toString()
-                                    room?.nameRoom = userSnapshot.child("name").value.toString()
-                                    roomAdapter.notifyDataSetChanged()
-                                }
-                                override fun onCancelled(error: DatabaseError) {
-                                    Log.e("RoomMessageFragment", "Error: ${error.message}")
-                                }
-                            })
+                        checkMess(roomId, room, searchQuery)
                     }
-                    room?.let { listRoom.add(it) }
                 }
-                roomAdapter.notifyDataSetChanged()
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.e("RoomMessageFragment", "Error: ${databaseError.message}")
             }
         })
-
-        binding.rvMesHomeMes.adapter = roomAdapter
     }
+    private fun checkMess(roomId: String, room: RoomModel?, searchQuery: String) {
+        val usersRef: DatabaseReference = database.getReference("Users")
+        database.reference.child("Message").child(roomId).orderByChild("content")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val tempListRoom: ArrayList<RoomModel> = ArrayList()
+                    for (messSnapshot in snapshot.children) {
+                        val senderId = messSnapshot.child("senderId").value.toString()
+                        val content = messSnapshot.child("content").value.toString()
+                        if (content.contains(searchQuery) && senderId != (firebaseAuth.uid ?: "")) {
+                                room?.contentMess = content
+                                usersRef.child(senderId).addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(userSnapshot: DataSnapshot) {
+                                        room?.imgRoom = userSnapshot.child("img").value.toString()
+                                        room?.nameRoom = userSnapshot.child("name").value.toString()
+                                        roomAdapter.notifyDataSetChanged()
+                                    }
 
+                                    override fun onCancelled(error: DatabaseError) {
+                                        Log.e("RoomMessageFragment", "Error: ${error.message}")
+                                    }
+                                })
+                                room?.let { tempListRoom.add(it) }
+                            }
+                    }
+                    listRoom.clear()
+                    listRoom.addAll(tempListRoom)
+                    roomAdapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
 
 
     private fun buttonListener() {
@@ -119,7 +134,7 @@ class RoomMessageFragment : Fragment() {
             if (hasFocus) {
                 binding.tvClearTextFr.isVisible = true
                 binding.ivDeleteText.isVisible = true
-                listRoom.clear()
+                roomAdapter.clearList()
             } else {
                 binding.edSearchMess.hideKeyboard()
             }
@@ -128,23 +143,23 @@ class RoomMessageFragment : Fragment() {
         binding.tvClearTextFr.setOnClickListener{
             binding.tvClearTextFr.isVisible = false
             binding.ivDeleteText.isVisible = false
+            binding.edSearchMess.text?.clear()
             showRoomInfo()
             binding.edSearchMess.clearFocus()
         }
 
         binding.ivDeleteText.setOnClickListener{
             binding.edSearchMess.text?.clear()
+            binding.edSearchMess.hideKeyboard()
+            roomAdapter.clearList()
         }
 
-        binding.edSearchMess.setOnKeyListener(object : OnKeyListener{
-            override fun onKey(p0: View?, p1: Int, p2: KeyEvent?): Boolean {
-                if(p1 == KeyEvent.KEYCODE_DEL) {
-                    listRoom.clear()
-                }
-                return false
+        binding.edSearchMess.setOnKeyListener { _, p1, _ ->
+            if (p1 == KeyEvent.KEYCODE_DEL) {
+                roomAdapter.clearList()
             }
-
-        })
+            false
+        }
     }
 
     private fun View.hideKeyboard() {
@@ -176,6 +191,7 @@ class RoomMessageFragment : Fragment() {
                     val room = snapshot.getValue(RoomModel::class.java)
                     room?.uidFriend = extractUidFriend(roomId, myUid)
                     if (roomId.contains(myUid)) {
+                        room?.typeRoomMess = true
                         room?.lastMessage = snapshot.child("lastMessage").value.toString()
                         room?.timeStamp = snapshot.child("timeStamp").value.toString()
                         usersRef.child(room?.uidFriend!!)
@@ -183,6 +199,7 @@ class RoomMessageFragment : Fragment() {
                                 override fun onDataChange(userSnapshot: DataSnapshot) {
                                     room?.imgRoom = userSnapshot.child("img").value.toString()
                                     room?.nameRoom = userSnapshot.child("name").value.toString()
+                                    room?.let { listRoom.add(it) }
                                     roomAdapter.notifyDataSetChanged()
                                 }
 
@@ -191,7 +208,6 @@ class RoomMessageFragment : Fragment() {
                                 }
                             })
                     }
-                    room?.let { listRoom.add(it) }
                 }
                 roomAdapter.notifyDataSetChanged()
             }

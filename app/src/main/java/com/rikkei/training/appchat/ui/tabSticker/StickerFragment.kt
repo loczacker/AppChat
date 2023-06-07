@@ -58,18 +58,18 @@ class StickerFragment : Fragment() {
                     val format = SimpleDateFormat("dd.MM HH:mm")
                     return format.format(date)
                 }
-
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["senderId"] = firebaseAuth.uid?:""
                 hashMap["time"] = convertLongToTime(timeStamp)
                 hashMap["iconName"] = iconName
                 database.reference.child("Message").child(roomId.toString()).push().updateChildren(hashMap)
-
-                val roomHashMap : HashMap<String, Any> = HashMap()
-                roomHashMap["SenderId"] = firebaseAuth?:""
-                roomHashMap["lastMessage"] = getString(R.string.sticker)
-                roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
-                database.reference.child("Room").child(roomId.toString()).updateChildren(roomHashMap)
+                    .addOnSuccessListener {
+                        val roomHashMap : HashMap<String, Any> = HashMap()
+                        roomHashMap["SenderId"] = firebaseAuth?:""
+                        roomHashMap["lastMessage"] = getString(R.string.sticker)
+                        roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
+                        database.reference.child("Room").child(roomId.toString()).updateChildren(roomHashMap)
+                    }
             }
         })
         binding.rcvIcon.adapter = stickerAdapter
