@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -85,7 +84,7 @@ class RoomMessageFragment : Fragment() {
                     val room = snapshot.getValue(RoomModel::class.java)
                     room?.uidFriend = extractUidFriend(roomId, myUid)
                     if (roomId.contains(myUid)) {
-                        checkMess(roomId, room, searchQuery)
+                        checkMess(roomId, searchQuery)
                     }
                 }
             }
@@ -94,39 +93,51 @@ class RoomMessageFragment : Fragment() {
             }
         })
     }
-    private fun checkMess(roomId: String, room: RoomModel?, searchQuery: String) {
+    private fun checkMess(roomId: String, searchQuery: String) {
+        val myUid = firebaseAuth.uid.toString()
         val usersRef: DatabaseReference = database.getReference("Users")
-        database.reference.child("Message").child(roomId).orderByChild("content")
+        database.reference.child("Message").child(roomId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    val uniqueMessages: ArrayList<String> = ArrayList()
                     val tempListRoom: ArrayList<RoomModel> = ArrayList()
                     for (messSnapshot in snapshot.children) {
                         val senderId = messSnapshot.child("senderId").value.toString()
                         val content = messSnapshot.child("content").value.toString()
-                        if (content.contains(searchQuery) && senderId != (firebaseAuth.uid ?: "")) {
-                                room?.contentMess = content
-                                usersRef.child(senderId).addListenerForSingleValueEvent(object : ValueEventListener {
-                                    override fun onDataChange(userSnapshot: DataSnapshot) {
-                                        room?.imgRoom = userSnapshot.child("img").value.toString()
-                                        room?.nameRoom = userSnapshot.child("name").value.toString()
-                                        roomAdapter.notifyDataSetChanged()
+                        if (content.contains(searchQuery) || content == searchQuery) {
+                            if (senderId != firebaseAuth.uid) {
+                                val message = "$senderId-$content"
+                                if (!uniqueMessages.contains(message)) {
+                                    uniqueMessages.add(message)
+                                    val newRoom = RoomModel().apply {
+                                        this.contentMess = content
                                     }
-
-                                    override fun onCancelled(error: DatabaseError) {
-                                        Log.e("RoomMessageFragment", "Error: ${error.message}")
-                                    }
-                                })
-                                room?.let { tempListRoom.add(it) }
+                                    tempListRoom.add(newRoom)
+                                }
                             }
+                        }
+                    }
+                    tempListRoom.forEach { roomModel ->
+                        val senderId = extractUidFriend(roomId, myUid)
+                        usersRef.child(senderId).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(userSnapshot: DataSnapshot) {
+                                roomModel.imgRoom = userSnapshot.child("img").value.toString()
+                                roomModel.nameRoom = userSnapshot.child("name").value.toString()
+                                roomAdapter.notifyDataSetChanged()
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("RoomMessageFragment", "Error: ${error.message}")
+                            }
+                        })
                     }
                     listRoom.clear()
                     listRoom.addAll(tempListRoom)
                     roomAdapter.notifyDataSetChanged()
                 }
-
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
+
 
 
     private fun buttonListener() {

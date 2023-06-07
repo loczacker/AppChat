@@ -58,7 +58,7 @@ class TabFriendsFragment : Fragment() {
             if (hasFocus) {
                 binding.tvClearTextFr.isVisible = true
                 binding.layoutNotFound.isVisible = true
-//                listRoom.clear()
+                binding.ivDeleteTextFr.isVisible = true
             } else {
                 binding.layoutSearchFriend.hideKeyboard()
             }
@@ -67,7 +67,6 @@ class TabFriendsFragment : Fragment() {
         binding.tvClearTextFr.setOnClickListener{
             binding.tvClearTextFr.isVisible = false
             binding.layoutNotFound.isVisible = false
-//            showRoomInfo()
             binding.layoutSearchFriend.clearFocus()
         }
 
