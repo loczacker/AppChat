@@ -16,9 +16,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentFriendsBinding
 import com.rikkei.training.appchat.model.FriendModel
-import com.rikkei.training.appchat.ui.tabGallery.GalleryFragment
 
 class TabFriendsFragment : Fragment() {
 
@@ -60,6 +60,7 @@ class TabFriendsFragment : Fragment() {
                 searchFriend()
             }
         }
+
     }
 
     private fun searchFriend() {
@@ -80,10 +81,6 @@ class TabFriendsFragment : Fragment() {
     }
 
     private fun filter(searchQuery: String) {
-        val friendsFragment = FriendsFragment()
-        val frBundle = Bundle()
-        frBundle.putString("searchQuery", searchQuery)
-        friendsFragment.arguments = frBundle
         val friendData = database.getReference("Friends")
         friendData.child(firebaseAuth.uid.toString())
             .addValueEventListener(object : ValueEventListener {
@@ -122,6 +119,9 @@ class TabFriendsFragment : Fragment() {
             if (hasFocus) {
                 binding.tvClearTextFr.isVisible = true
                 binding.ivDeleteTextFr.isVisible = true
+                binding.layoutSearchFriend.isVisible = true
+                binding.vpFriends.isVisible = false
+                searchFriendFragment()
             } else {
                 binding.layoutSearchFriend.hideKeyboard()
             }
@@ -145,5 +145,17 @@ class TabFriendsFragment : Fragment() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
+
+    private fun searchFriendFragment() {
+        val fragmentManager = childFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val searchFriendFragment = SearchFriendFragment()
+        val searchFriendBundle = Bundle()
+        searchFriendBundle.putParcelableArrayList("friendSearchList", friendSearchList)
+        searchFriendFragment.arguments = searchFriendBundle
+        fragmentTransaction.replace(R.id.layout_search_fr, searchFriendFragment)
+        fragmentTransaction.commit()
+    }
+
 
 }

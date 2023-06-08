@@ -35,8 +35,6 @@ class FriendsFragment : Fragment() {
 
     private var  roomId = ""
 
-    private var searchQuery = ""
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,12 +46,10 @@ class FriendsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bundle = arguments
-        val searchQuery = bundle!!.getString("searchQuery")
-        showFriendsList(searchQuery)
+        showFriendsList()
     }
 
-    private fun showFriendsList(searchQuery: String?) {
+    private fun showFriendsList() {
         val myUid = firebaseAuth.uid?:""
         friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRVInterface{
             override fun getDetail(itemUser: ItemUsersRVModel) {
@@ -80,23 +76,11 @@ class FriendsFragment : Fragment() {
                             .addListenerForSingleValueEvent(object : ValueEventListener{
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     if (snapshot.exists()) {
-                                        val name = snapshot.child("name").value.toString()
-                                        val img  = snapshot.child("img").value.toString()
-                                        val uid = snapshot.child("uid").value.toString()
-                                        if (this@FriendsFragment.searchQuery == null) {
-                                            user!!.name = name
-                                            user.img  = img
-                                            user.uid = uid
-                                            user?.let { friends.add(ItemUsersRVModel(it)) }
-                                        } else {
-                                            if (name.contains(this@FriendsFragment.searchQuery) || name == this@FriendsFragment.searchQuery) {
-                                                user!!.name = name
-                                                user.img  = img
-                                                user.uid = uid
-                                                user?.let { friends.add(ItemUsersRVModel(it)) }
-                                            }
-                                        }
+                                        user!!.name = snapshot.child("name").value.toString()
+                                        user.img  = snapshot.child("img").value.toString()
+                                        user.uid = snapshot.child("uid").value.toString()
                                     }
+                                    user?.let { friends.add(ItemUsersRVModel(it)) }
                                     friendAdapter.notifyDataSetChanged()
                                 }
                                 override fun onCancelled(error: DatabaseError) {}
@@ -112,7 +96,7 @@ class FriendsFragment : Fragment() {
         messIntent.putExtra("name", itemUser.user.name)
         messIntent.putExtra("img", itemUser.user.img)
         messIntent.putExtra("uid", itemUser.user.uid)
-        messIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(messIntent)
     }
 
@@ -125,4 +109,3 @@ class FriendsFragment : Fragment() {
             }
     }
 }
-
