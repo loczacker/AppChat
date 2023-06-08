@@ -65,8 +65,6 @@ class GalleryFragment : Fragment() {
         val bundle = arguments
         val roomId = bundle!!.getString("roomId")
         val timeStamp = bundle.getLong("timeStamp")
-
-
         binding.layoutButton.isVisible = false
         binding.btnCancel.setOnClickListener {
             galleryFragmentListener?.onCancelButtonClicked()

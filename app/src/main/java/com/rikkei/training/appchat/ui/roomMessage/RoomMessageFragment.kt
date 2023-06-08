@@ -65,8 +65,7 @@ class RoomMessageFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {
                 val searchQuery = s.toString()
-                if (searchQuery.isEmpty()) {
-                } else {
+                if (searchQuery.isNotEmpty()) {
                     filter(searchQuery)
                 }
             }
@@ -75,7 +74,7 @@ class RoomMessageFragment : Fragment() {
 
     private fun filter(searchQuery: String) {
         val myUid = firebaseAuth.uid ?: ""
-        val roomsMess: DatabaseReference = database.getReference("Message")
+        val roomsMess = database.getReference("Message")
         roomsMess.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 listRoom.clear()
