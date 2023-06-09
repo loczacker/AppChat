@@ -85,17 +85,13 @@ class ChangeProfileFragment : Fragment() {
             Toast.makeText(activity, "Enter name", Toast.LENGTH_SHORT).show()
         }
         else {
-            //name is entered
             if (imageUri == null){
-                // update without image
                 updateProfile("")
             }else {
-                //update with image
                 uploadImage()
             }
         }
     }
-
     private fun updateProfile(uploadedImageUrl: String) {
 
         progressDialog.setMessage("Updating profile...")

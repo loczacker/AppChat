@@ -26,7 +26,6 @@ class StickerAdapter(
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconViewHolder {
         return IconViewHolder(
             DataBindingUtil.inflate(
@@ -35,7 +34,6 @@ class StickerAdapter(
             )
         )
     }
-
     override fun getItemCount(): Int = iconList.size
 
     override fun onBindViewHolder(holder: IconViewHolder, position: Int) {

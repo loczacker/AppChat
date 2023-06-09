@@ -14,6 +14,9 @@ class RequestSendFriendsAdapter(
     private val itemSentUsersInterface: ItemSentUsersInterface
 ): RecyclerView.Adapter<RequestSendFriendsAdapter.RequestSendViewHolder>() {
 
+    fun deleteItem(position: Int) {
+    }
+
     class RequestSendViewHolder(private val binding: ItemUserSendRequestBinding):
         RecyclerView.ViewHolder(binding.root){
 

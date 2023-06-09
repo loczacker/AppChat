@@ -16,10 +16,11 @@ import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.message.MessageActivity
 import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
+import java.util.*
 
 class FriendsFragment : Fragment() {
 
-    private lateinit var binding:  FragmentTabFriendsBinding
+    private lateinit var binding: FragmentTabFriendsBinding
 
     private val database by lazy {
         FirebaseDatabase.getInstance()
@@ -33,9 +34,7 @@ class FriendsFragment : Fragment() {
 
     private lateinit var friendAdapter: ShowFriendsAdapter
 
-    private var  roomId = ""
-
-    private var searchQuery = ""
+    private var roomId = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,16 +47,14 @@ class FriendsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bundle = arguments
-        val searchQuery = bundle!!.getString("searchQuery")
-        showFriendsList(searchQuery)
+        showFriendsList()
     }
 
-    private fun showFriendsList(searchQuery: String?) {
-        val myUid = firebaseAuth.uid?:""
-        friendAdapter = ShowFriendsAdapter(friends, object: ItemUsersRVInterface{
-            override fun getDetail(itemUser: ItemUsersRVModel) {
-                val uidFriend = itemUser.user.uid.toString()
+    private fun showFriendsList() {
+        val myUid = firebaseAuth.uid ?: ""
+        friendAdapter = ShowFriendsAdapter(friends, object : ItemUsersRVInterface {
+            override fun getDetail(user: ItemUsersRVModel) {
+                val uidFriend = user.user.uid.toString()
 
                 roomId = if (myUid > uidFriend) {
                     "$myUid$uidFriend"
@@ -65,48 +62,45 @@ class FriendsFragment : Fragment() {
                     "$uidFriend$myUid"
                 }
                 createRoom(myUid, uidFriend, roomId)
-                goMessenger(itemUser)
+                goMessenger(user)
             }
         })
 
         binding.recyclerViewTabFriend.adapter = friendAdapter
-        database.reference.child("Friends").child(firebaseAuth.uid?:"").orderByChild("status").equalTo("friend")
-            .addValueEventListener(object : ValueEventListener{
+        database.reference.child("Friends").child(firebaseAuth.uid ?: "")
+            .orderByChild("status").equalTo("friend")
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     friends.clear()
                     for (postSnapshot in snapshot.children) {
                         val user = postSnapshot.getValue(UsersModel::class.java)
                         database.reference.child("Users").child(postSnapshot.key.toString())
-                            .addListenerForSingleValueEvent(object : ValueEventListener{
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     if (snapshot.exists()) {
-                                        val name = snapshot.child("name").value.toString()
-                                        val img  = snapshot.child("img").value.toString()
-                                        val uid = snapshot.child("uid").value.toString()
-                                        if (this@FriendsFragment.searchQuery == null) {
-                                            user!!.name = name
-                                            user.img  = img
-                                            user.uid = uid
-                                            user?.let { friends.add(ItemUsersRVModel(it)) }
-                                        } else {
-                                            if (name.contains(this@FriendsFragment.searchQuery) || name == this@FriendsFragment.searchQuery) {
-                                                user!!.name = name
-                                                user.img  = img
-                                                user.uid = uid
-                                                user?.let { friends.add(ItemUsersRVModel(it)) }
-                                            }
-                                        }
+                                        user!!.name = snapshot.child("name").value.toString()
+                                        user.img = snapshot.child("img").value.toString()
+                                        user.uid = snapshot.child("uid").value.toString()
+                                    }
+                                    user?.let { friends.add(ItemUsersRVModel(it)) }
+
+                                    friends.sortWith { item1, item2 ->
+                                        item1.user.name!!.compareTo(item2.user.name.toString())
                                     }
                                     friendAdapter.notifyDataSetChanged()
                                 }
                                 override fun onCancelled(error: DatabaseError) {}
                             })
                     }
+                    friends.sortWith { item1, item2 ->
+                        item2.user.name!!.compareTo(item1.user.name.toString())
+                    }
                     friendAdapter.notifyDataSetChanged()
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
+
     private fun goMessenger(itemUser: ItemUsersRVModel) {
         val messIntent = Intent(activity, MessageActivity::class.java)
         messIntent.putExtra("name", itemUser.user.name)
@@ -125,4 +119,3 @@ class FriendsFragment : Fragment() {
             }
     }
 }
-

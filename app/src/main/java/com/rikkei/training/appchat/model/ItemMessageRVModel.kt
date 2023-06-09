@@ -6,8 +6,7 @@ data class ItemMessageRVModel(
     var messageType: Int,
     val profileUrl: String
 )
-
-object MessageType{
+object MessageType {
     const val TEXT = 1
     const val IMAGE = 2
     const val ICON = 3

@@ -28,9 +28,7 @@ class LoginActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "LoginActivity"
     }
-
     private lateinit var binding: ActivityLoginBinding
-
     private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,14 +37,11 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         textOneSpan()
         changeColor()
-
         binding.tvRegisterLogin.setOnClickListener{
             startSignUp()
         }
-
         firebaseAuth = FirebaseAuth.getInstance()
 
-        //login firebase
         binding.btnLogin.setOnClickListener {
             val email = binding.edEmail.text.toString()
             val password = binding.edPassword.text.toString()
@@ -56,11 +51,8 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 binding.btnLogin.visibility = View.VISIBLE
             }
-
         }
-
         binding.edEmail.addTextChangedListener()
-
     }
 
     private fun textOneSpan() {
@@ -77,8 +69,6 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-
-    //Change Color
     private fun changeColor() {
         binding.edEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}

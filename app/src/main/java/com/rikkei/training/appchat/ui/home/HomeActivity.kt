@@ -26,14 +26,9 @@ class HomeActivity : AppCompatActivity() {
         FirebaseAuth.getInstance()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
-        val roomId = intent.getStringExtra("roomId")
-        val uidFriend = intent.getStringExtra("uidFriend")
-        print(roomId)
-        print(uidFriend)
         setContentView(binding.root)
 
         val backFragment = intent.getIntExtra("backFragment", 0)
@@ -45,18 +40,12 @@ class HomeActivity : AppCompatActivity() {
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
-
                 R.id.messenger -> replaceFragment(RoomMessageFragment())
                 R.id.friends -> replaceFragment(TabFriendsFragment())
                 R.id.profile -> replaceFragment(ProfileFragment())
-
-                else -> {
-
-                }
             }
             true
         }
-
     }
 
     override fun onResume() {
@@ -65,14 +54,12 @@ class HomeActivity : AppCompatActivity() {
         database.reference.child("Users")
             .child(currentId!!).child("presence").setValue("Online")
     }
-
     override fun onPause() {
         super.onPause()
         val currentId = firebaseAuth.uid
         database.reference.child("Users")
             .child(currentId!!).child("presence").setValue("Offline")
     }
-
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -91,12 +78,10 @@ class HomeActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
     override fun onStart() {
         super.onStart()
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardListener)
     }
-
     override fun onStop() {
         super.onStop()
         binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardListener)

@@ -167,7 +167,6 @@ class RegisterActivity : AppCompatActivity() {
         finish()
     }
 
-
     private  fun register(email: String, password: String){
         val name = binding.edName.text.toString()
         val email = binding.edEmail.text.toString()

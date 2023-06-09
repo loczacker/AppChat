@@ -10,9 +10,7 @@ import com.rikkei.training.appchat.ui.tabUser.TabUserFragment
 
 class FriendsPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle): FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int = 3
-
     override fun createFragment(position: Int): Fragment {
-
         return when(position) {
             0 -> FriendsFragment()
             1 -> TabUserFragment()

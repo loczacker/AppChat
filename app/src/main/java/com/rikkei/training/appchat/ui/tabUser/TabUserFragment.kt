@@ -13,7 +13,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.rikkei.training.appchat.databinding.FragmentTabUserBinding
 import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.model.UsersModel
-import java.util.ArrayList
+import java.util.*
 
 class TabUserFragment : Fragment() {
 
@@ -26,6 +26,7 @@ class TabUserFragment : Fragment() {
     private val firebaseAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
+
     private val listUser: ArrayList<ItemUsersRVModel> = arrayListOf()
     private val listFriend = hashMapOf<String, String>()
     private lateinit var usersAdapter: UserAllAdapter
@@ -41,7 +42,7 @@ class TabUserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        disPlayInfoUsers()
+        displayUserInfo()
     }
 
     fun sendRequest(uid: String) {
@@ -56,8 +57,7 @@ class TabUserFragment : Fragment() {
             .addOnFailureListener {
             }
     }
-
-    private fun getAllUser() {
+    private fun getAllUsers() {
         database.reference.child("Users")
             .addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -66,6 +66,10 @@ class TabUserFragment : Fragment() {
                         return
                     }
                     updateOrInsertUser(user)
+                    listUser.sortWith { item1, item2 ->
+                        item1.user.name!!.compareTo(item2!!.user.name.toString())
+                    }
+                    usersAdapter.notifyDataSetChanged()
                 }
 
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
@@ -74,6 +78,10 @@ class TabUserFragment : Fragment() {
                         return
                     }
                     updateOrInsertUser(user)
+                    listUser.sortWith { item1, item2 ->
+                        item1.user.name!!.compareTo(item2.user.name.toString())
+                    }
+                    usersAdapter.notifyDataSetChanged()
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -84,13 +92,10 @@ class TabUserFragment : Fragment() {
                     listUser.removeIf {
                         it.user.uid == user.uid
                     }
+                    usersAdapter.notifyDataSetChanged()
                 }
-
-                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                }
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+                override fun onCancelled(error: DatabaseError) {}
 
             })
     }
@@ -100,16 +105,18 @@ class TabUserFragment : Fragment() {
         listUser.forEachIndexed { index, item ->
             if (item.user.uid == user.uid) {
                 item.user = user
+                item.user.name = user.name
                 usersAdapter.notifyItemChanged(index)
                 isHaveItem = true
             }
         }
         if (isHaveItem) return
-        listUser.add(ItemUsersRVModel(user))
+        val newItem = ItemUsersRVModel(user)
+        newItem.user.name = user.name
+        listUser.add(newItem)
         usersAdapter.notifyItemInserted(listUser.size)
     }
-
-    private fun getAllFriendRelation() {
+    private fun getAllFriendRelations() {
         database.reference.child("Friends").child(firebaseAuth.uid ?: "")
             .addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -117,7 +124,7 @@ class TabUserFragment : Fragment() {
                     val friendId = snapshot.key ?: ""
                     listFriend[friendId] = friendStatus
                     listUser.forEachIndexed { index, item ->
-                        if (item.user.uid == friendId){
+                        if (item.user.uid == friendId) {
                             item.statusButton = friendStatus
                             usersAdapter.notifyItemChanged(index)
                         }
@@ -133,7 +140,7 @@ class TabUserFragment : Fragment() {
                     listFriend[friendId] = friendStatus
 
                     listUser.forEachIndexed { index, item ->
-                        if (item.user.uid == friendId){
+                        if (item.user.uid == friendId) {
                             item.statusButton = friendStatus
                             usersAdapter.notifyItemChanged(index)
                         }
@@ -145,22 +152,25 @@ class TabUserFragment : Fragment() {
 
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                 }
 
             })
     }
 
-    private fun disPlayInfoUsers() {
+    private fun displayUserInfo() {
         usersAdapter = UserAllAdapter(listUser, object : ItemUsersRVInterface {
             override fun getDetail(item: ItemUsersRVModel) {
                 sendRequest(item.user.uid.toString())
             }
         })
         binding.recyclerViewTabUser.adapter = usersAdapter
-        listUser.clear()
-        getAllUser()
-        getAllFriendRelation()
+
+        getAllUsers()
+        listUser.sortWith { item1, item2 ->
+            item2.user.name?.let { item1.user.name?.compareTo(it) }!!
+        }
+        usersAdapter.notifyDataSetChanged()
+        getAllFriendRelations()
     }
 }

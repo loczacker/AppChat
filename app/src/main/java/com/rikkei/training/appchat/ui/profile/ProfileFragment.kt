@@ -34,7 +34,6 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -49,10 +48,7 @@ class ProfileFragment : Fragment() {
             )
         }
     }
-
-
     private fun readData() {
-        //db reference to load user info
         val ref = FirebaseDatabase.getInstance().getReference("Users")
         ref.child(firebaseAuth.uid!!)
             .addValueEventListener(object: ValueEventListener {

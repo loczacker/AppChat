@@ -18,7 +18,6 @@ class RoomMessengerAdapter(
     private val roomList: ArrayList<RoomModel>,
     private val roomItemClick: RoomItemClick
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     fun clearList() {
         roomList.clear()
         notifyDataSetChanged()
@@ -59,7 +58,6 @@ class RoomMessengerAdapter(
                     R.layout.item_user_row, parent, false
                 )
             )
-
             SEARCH_MESSAGE -> SearchMsgRoomHolder(
                 DataBindingUtil.inflate(
                     LayoutInflater.from(parent.context),

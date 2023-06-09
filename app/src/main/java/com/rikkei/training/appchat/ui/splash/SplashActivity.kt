@@ -32,11 +32,9 @@ class SplashActivity : AppCompatActivity() {
             overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out)
         }
         textOneSpan()
-        //setting splash
 
     }
 
-    //setting 2 form with awesome chat
     private fun textOneSpan() {
         val spannableString = SpannableString("Awesome chat")
         val styleSpan = StyleSpan(Typeface.BOLD_ITALIC )

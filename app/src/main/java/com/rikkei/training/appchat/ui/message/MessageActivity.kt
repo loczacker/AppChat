@@ -73,13 +73,11 @@ class MessageActivity : AppCompatActivity() {
         backHome()
         setContentView(binding.root)
     }
-
     override fun onResume() {
         super.onResume()
         database.reference.child("Users")
             .child(firebaseAuth.uid ?: "").child("presence").setValue("Online")
     }
-
     private fun addIcon() {
         iconList.add(IconModel(R.drawable.dumbbell, "dumbbell"))
         iconList.add(
@@ -95,15 +93,14 @@ class MessageActivity : AppCompatActivity() {
         iconList.add(IconModel(R.drawable.watering_plants, "watering_plants"))
 
     }
-
     private fun backHome() {
         binding.imBackHome.setOnClickListener {
             val homeIntent = Intent(this, HomeActivity::class.java)
             startActivity(homeIntent)
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             finish()
         }
     }
-
     private fun infoUserProfile(name: String?, imgProfile: String?, uidUser: String?) {
         binding.tvNameMess.text = name
         Glide.with(this@MessageActivity)
@@ -120,7 +117,6 @@ class MessageActivity : AppCompatActivity() {
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
-
     private fun sendMessage(timeStamp: Long) {
         binding.ivSend.setOnClickListener {
             fun convertLongToTime(timeNow: Long): String {
@@ -140,7 +136,6 @@ class MessageActivity : AppCompatActivity() {
             binding.etSend.text.clear()
         }
     }
-
     private fun sendImageIcon(iconList: ArrayList<IconModel>) {
         binding.ivLibrary.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -151,7 +146,6 @@ class MessageActivity : AppCompatActivity() {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(binding.ivLibrary.windowToken, 0)
         }
-
         binding.ivIcon.setOnClickListener {
             fragmentIcon(roomId, iconList)
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -341,7 +335,6 @@ class MessageActivity : AppCompatActivity() {
         super.onStart()
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardListener)
     }
-
     override fun onStop() {
         super.onStop()
         binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardListener)

@@ -8,7 +8,6 @@ import com.rikkei.training.appchat.ui.roomMessage.RoomMessageFragment
 
 class HomePagerAdapter(activity: HomeActivity) : FragmentStateAdapter(activity) {
     override fun getItemCount(): Int = 3
-
     override fun createFragment(position: Int): Fragment {
         return when(position) {
             0 -> RoomMessageFragment()
@@ -17,5 +16,4 @@ class HomePagerAdapter(activity: HomeActivity) : FragmentStateAdapter(activity) 
             else -> throw IllegalArgumentException("Unknown Fragment for position $position")
         }
     }
-
 }

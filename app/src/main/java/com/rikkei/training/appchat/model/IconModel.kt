@@ -12,7 +12,6 @@ data class IconModel(
         parcel.readString()
     ) {
     }
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(iconSource)
         parcel.writeString(iconName)
@@ -21,12 +20,10 @@ data class IconModel(
     override fun describeContents(): Int {
         return 0
     }
-
     companion object CREATOR : Parcelable.Creator<IconModel> {
         override fun createFromParcel(parcel: Parcel): IconModel {
             return IconModel(parcel)
         }
-
         override fun newArray(size: Int): Array<IconModel?> {
             return arrayOfNulls(size)
         }

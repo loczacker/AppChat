@@ -18,7 +18,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.databinding.FragmentFriendsBinding
 import com.rikkei.training.appchat.model.FriendModel
-import com.rikkei.training.appchat.ui.tabGallery.GalleryFragment
 
 class TabFriendsFragment : Fragment() {
 
@@ -33,6 +32,8 @@ class TabFriendsFragment : Fragment() {
     }
 
     private val friendSearchList: ArrayList<FriendModel> = arrayListOf()
+
+    private lateinit var searchFriendAdapter: SearchFriendAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,16 +55,16 @@ class TabFriendsFragment : Fragment() {
                 2 -> tab.text = "YÊU CẦU"
             }
         }.attach()
+        searchFriend()
+        setupRecyclerView()
+    }
 
-        when (binding.vpFriends.currentItem) {
-            0 -> {
-                searchFriend()
-            }
-        }
+    private fun setupRecyclerView() {
+        searchFriendAdapter = SearchFriendAdapter(friendSearchList)
+        binding.rvSearchFr.adapter = searchFriendAdapter
     }
 
     private fun searchFriend() {
-
         buttonListener()
         binding.edSearchFr.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -78,12 +79,8 @@ class TabFriendsFragment : Fragment() {
             }
         })
     }
-
     private fun filter(searchQuery: String) {
-        val friendsFragment = FriendsFragment()
-        val frBundle = Bundle()
-        frBundle.putString("searchQuery", searchQuery)
-        friendsFragment.arguments = frBundle
+        friendSearchList.clear()
         val friendData = database.getReference("Friends")
         friendData.child(firebaseAuth.uid.toString())
             .addValueEventListener(object : ValueEventListener {
@@ -109,21 +106,28 @@ class TabFriendsFragment : Fragment() {
                     val name = snapshot.child("name").value.toString()
                     val img = snapshot.child("img").value.toString()
                     val friend = FriendModel(name = name, img = img)
-                    if (name.contains(searchQuery) || name == searchQuery) {
+                    if (name.contains(searchQuery)) {
                         friendSearchList.add(friend)
                     }
+                    searchFriendAdapter.notifyDataSetChanged()
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
 
     private fun buttonListener() {
-        binding.edSearchFr.setOnFocusChangeListener { view, hasFocus ->
+        binding.edSearchFr.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.tvClearTextFr.isVisible = true
                 binding.ivDeleteTextFr.isVisible = true
+                binding.layoutViewpager.isVisible = false
+                binding.rvSearchFr.isVisible = true
             } else {
                 binding.layoutSearchFriend.hideKeyboard()
+                binding.layoutViewpager.isVisible = true
+                binding.layoutViewpager.isVisible = true
+                binding.rvSearchFr.isVisible = false
+                searchFriendAdapter.clearList()
             }
         }
 

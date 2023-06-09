@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentRoomMessengerBinding
 import com.rikkei.training.appchat.model.RoomModel
 import com.rikkei.training.appchat.ui.message.MessageActivity
@@ -51,7 +52,6 @@ class RoomMessageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         showRoomInfo()
         searchMessage()
     }
@@ -181,6 +181,7 @@ class RoomMessageFragment : Fragment() {
         roomAdapter = RoomMessengerAdapter(listRoom, object : RoomItemClick {
             override fun getRoomInfo(roomModel: RoomModel) {
                 val messIntent = Intent(activity, MessageActivity::class.java)
+                messIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                 messIntent.putExtra("name", roomModel.nameRoom)
                 messIntent.putExtra("img", roomModel.imgRoom)
                 messIntent.putExtra("uid", roomModel.uidFriend)
@@ -226,7 +227,6 @@ class RoomMessageFragment : Fragment() {
                 Log.e("RoomMessageFragment", "Error: ${databaseError.message}")
             }
         })
-
         binding.rvMesHomeMes.adapter = roomAdapter
     }
 

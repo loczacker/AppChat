@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -72,9 +73,11 @@ class TabRequestFragment : Fragment() {
                             .child(user.uid.toString()).updateChildren(hashMap).addOnSuccessListener {
                             }
                     }
-
             }
         })
+
+        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(sentAdapter))
+        itemTouchHelper.attachToRecyclerView(binding.rvRequestFriend)
 
         binding.rvRequestFriend.adapter = sentAdapter
         database.reference.child("Friends").child(firebaseAuth.uid?:"").orderByChild("status").equalTo("received")
@@ -99,7 +102,6 @@ class TabRequestFragment : Fragment() {
                     }
                     sentAdapter.notifyDataSetChanged()
                 }
-
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
