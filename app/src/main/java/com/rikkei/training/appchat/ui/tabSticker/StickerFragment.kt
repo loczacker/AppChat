@@ -37,6 +37,7 @@ class StickerFragment : Fragment() {
         binding = FragmentIconBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bundle = arguments
@@ -49,7 +50,7 @@ class StickerFragment : Fragment() {
     }
 
     private fun showIcon(roomId: String?) {
-        stickerAdapter = StickerAdapter(iconList, object : ClickItemListener{
+        stickerAdapter = StickerAdapter(iconList, object : ClickItemListener {
             override fun onItemCLick(iconModel: IconModel, iconName: String) {
                 val timeStamp = System.currentTimeMillis()
                 fun convertLongToTime(timeNow: Long): String {
@@ -57,22 +58,29 @@ class StickerFragment : Fragment() {
                     val format = SimpleDateFormat("dd.MM HH:mm")
                     return format.format(date)
                 }
-                val hashMap: HashMap<String, Any> = HashMap()
-                hashMap["senderId"] = firebaseAuth.uid?:""
-                hashMap["time"] = convertLongToTime(timeStamp)
-                hashMap["iconName"] = iconName
-                database.reference.child("Message").child(roomId.toString()).push().updateChildren(hashMap)
+                val messageHashMap: HashMap<String, Any> = HashMap()
+                messageHashMap["senderId"] = firebaseAuth.uid ?: ""
+                messageHashMap["time"] = convertLongToTime(timeStamp)
+                messageHashMap["iconName"] = iconName
+
+                val roomHashMap: HashMap<String, Any> = HashMap()
+                roomHashMap["senderId"] = firebaseAuth.uid ?: ""
+                roomHashMap["lastMessage"] = getString(R.string.sticker)
+                roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
+
+                val messageId = database.reference.child("Message").child(roomId.toString()).push().key
+
+                val updates: MutableMap<String, Any> = HashMap()
+                updates["Message/$roomId/$messageId"] = messageHashMap
+                updates["Room/$roomId"] = roomHashMap
+
+                database.reference.updateChildren(updates)
                     .addOnSuccessListener {
-                        val roomHashMap : HashMap<String, Any> = HashMap()
-                        roomHashMap["SenderId"] = firebaseAuth?:""
-                        roomHashMap["lastMessage"] = getString(R.string.sticker)
-                        roomHashMap["timeStamp"] = convertLongToTime(timeStamp)
-                        database.reference.child("Room").child(roomId.toString()).updateChildren(roomHashMap)
+                    }
+                    .addOnFailureListener {
                     }
             }
         })
         binding.rcvIcon.adapter = stickerAdapter
-        stickerAdapter.notifyDataSetChanged()
     }
-
 }

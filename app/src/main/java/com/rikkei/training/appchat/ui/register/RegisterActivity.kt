@@ -182,6 +182,7 @@ class RegisterActivity : AppCompatActivity() {
                         if (it.isSuccessful){
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
+                            finish()
                         } else {
                             Toast.makeText(this, "Something went wrong,try again", Toast.LENGTH_SHORT).show()
                         }

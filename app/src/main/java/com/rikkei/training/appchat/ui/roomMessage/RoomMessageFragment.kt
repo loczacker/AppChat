@@ -19,7 +19,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentRoomMessengerBinding
 import com.rikkei.training.appchat.model.RoomModel
 import com.rikkei.training.appchat.ui.message.MessageActivity
@@ -181,7 +180,6 @@ class RoomMessageFragment : Fragment() {
         roomAdapter = RoomMessengerAdapter(listRoom, object : RoomItemClick {
             override fun getRoomInfo(roomModel: RoomModel) {
                 val messIntent = Intent(activity, MessageActivity::class.java)
-                messIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                 messIntent.putExtra("name", roomModel.nameRoom)
                 messIntent.putExtra("img", roomModel.imgRoom)
                 messIntent.putExtra("uid", roomModel.uidFriend)
@@ -202,9 +200,11 @@ class RoomMessageFragment : Fragment() {
                     val room = snapshot.getValue(RoomModel::class.java)
                     room?.uidFriend = extractUidFriend(roomId, myUid)
                     if (roomId.contains(myUid)) {
+                        val lastMessage = snapshot.child("lastMessage").value.toString()
+                        val senderId = snapshot.child("senderId").value.toString()
                         room?.typeRoomMess = true
-                        room?.lastMessage = snapshot.child("lastMessage").value.toString()
                         room?.timeStamp = snapshot.child("timeStamp").value.toString()
+                        lastMessageCheck(lastMessage, senderId, room, snapshot)
                         usersRef.child(room?.uidFriend!!)
                             .addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(userSnapshot: DataSnapshot) {
@@ -228,6 +228,34 @@ class RoomMessageFragment : Fragment() {
             }
         })
         binding.rvMesHomeMes.adapter = roomAdapter
+    }
+
+    private fun lastMessageCheck(lastMessage: String, senderId: String, room: RoomModel?, snapshot: DataSnapshot?) {
+        if (senderId == (firebaseAuth.uid ?: "")) {
+            when (lastMessage) {
+                "Sticker" -> {
+                    room?.lastMessage = "Bạn đã gửi một Sticker"
+                }
+                "Image" -> {
+                    room?.lastMessage = "Bạn đã gửi một hình ảnh"
+                }
+                else -> {
+                    room?.lastMessage = snapshot?.child("lastMessage")?.value.toString()
+                }
+            }
+        } else {
+            when (lastMessage) {
+                "Sticker" -> {
+                    room?.lastMessage = "Bạn của bạn đã gửi một Sticker"
+                }
+                "Image" -> {
+                    room?.lastMessage = "Bạn của bạn đã gửi một hình ảnh"
+                }
+                else -> {
+                    room?.lastMessage = snapshot?.child("lastMessage")?.value.toString()
+                }
+            }
+        }
     }
 
     private fun extractUidFriend(roomId: String, myUid: String): String {

@@ -96,8 +96,8 @@ class MessageActivity : AppCompatActivity() {
     private fun backHome() {
         binding.imBackHome.setOnClickListener {
             val homeIntent = Intent(this, HomeActivity::class.java)
+            homeIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(homeIntent)
-            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             finish()
         }
     }

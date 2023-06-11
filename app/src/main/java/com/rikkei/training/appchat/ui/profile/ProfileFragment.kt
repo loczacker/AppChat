@@ -46,6 +46,7 @@ class ProfileFragment : Fragment() {
             startActivity(
                 Intent(activity, LoginActivity::class.java)
             )
+            requireActivity().finish()
         }
     }
     private fun readData() {

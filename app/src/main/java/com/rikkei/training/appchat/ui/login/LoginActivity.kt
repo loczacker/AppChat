@@ -119,6 +119,7 @@ class LoginActivity : AppCompatActivity() {
         if (account != null) {
             Toast.makeText(this, "You Signed In successfully", Toast.LENGTH_LONG).show()
             startActivity(Intent(this, HomeActivity::class.java))
+            finish()
         } else {
             Toast.makeText(this, "You Didnt signed in", Toast.LENGTH_LONG).show()
         }

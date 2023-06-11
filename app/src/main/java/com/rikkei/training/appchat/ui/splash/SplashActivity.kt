@@ -23,7 +23,6 @@ class SplashActivity : AppCompatActivity() {
         binding.splash.animate().setDuration(1500).alpha(1f).withEndAction {
             if (FirebaseAuth.getInstance().currentUser?.uid != null){
                 startActivity(Intent(this, HomeActivity::class.java))
-                Intent.FLAG_ACTIVITY_NEW_TASK
                 finish()
             }else{
                 startActivity(Intent(this, LoginActivity::class.java))

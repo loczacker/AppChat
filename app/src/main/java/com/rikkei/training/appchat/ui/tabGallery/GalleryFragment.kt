@@ -116,12 +116,21 @@ class GalleryFragment : Fragment() {
                 val uriTask: Task<Uri> = taskSnapshot.storage.downloadUrl
                 uriTask.addOnSuccessListener { downloadUri ->
                     val uploadImageUrl = downloadUri.toString()
-                    val hashMap: HashMap<String, Any> = HashMap()
-                    hashMap["imgUrl"] = uploadImageUrl
-                    hashMap["time"] = convertLongToTime(timeStamp)
-                    hashMap["senderId"] = firebaseAuth.uid ?: ""
+                    val messageHashMap: HashMap<String, Any> = HashMap()
+                    messageHashMap["imgUrl"] = uploadImageUrl
+                    messageHashMap["time"] = convertLongToTime(timeStamp)
+                    messageHashMap["senderId"] = firebaseAuth.uid ?: ""
+
+                    val roomUpdates: HashMap<String, Any> = HashMap()
+                    roomUpdates["lastMessage"] = "Image"
+                    roomUpdates["timeStamp"] = convertLongToTime(timeStamp)
+                    roomUpdates["senderId"] = firebaseAuth.uid ?: ""
+
                     database.reference.child("Message").child(roomId.toString())
-                        .push().updateChildren(hashMap)
+                        .push().updateChildren(messageHashMap)
+                    database.reference.child("Room").child(roomId.toString())
+                        .updateChildren(roomUpdates)
+
                 }
             }.addOnFailureListener {
             }

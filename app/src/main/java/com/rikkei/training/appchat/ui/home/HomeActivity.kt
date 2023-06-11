@@ -47,19 +47,6 @@ class HomeActivity : AppCompatActivity() {
             true
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        val currentId = firebaseAuth.uid
-        database.reference.child("Users")
-            .child(currentId!!).child("presence").setValue("Online")
-    }
-    override fun onPause() {
-        super.onPause()
-        val currentId = firebaseAuth.uid
-        database.reference.child("Users")
-            .child(currentId!!).child("presence").setValue("Offline")
-    }
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -71,7 +58,6 @@ class HomeActivity : AppCompatActivity() {
         try {
             val r = Rect()
             window.decorView.getWindowVisibleDisplayFrame(r)
-
             val height = window.decorView.height
             binding.bottomNavigationView.isVisible = height - r.bottom <= height * 0.1399
         } catch (e: Exception) {
@@ -80,10 +66,16 @@ class HomeActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
+        val currentId = firebaseAuth.uid
+        database.reference.child("Users")
+            .child(currentId!!).child("presence").setValue("Online")
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardListener)
     }
     override fun onStop() {
         super.onStop()
+        val currentId = firebaseAuth.uid
+        database.reference.child("Users")
+            .child(currentId!!).child("presence").setValue("Offline")
         binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardListener)
     }
 

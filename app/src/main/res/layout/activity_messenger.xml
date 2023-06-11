@@ -13,6 +13,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="3dp"
+            android:padding="3dp"
             android:layout_weight="1"
             android:background="#F6F6F6"
             android:layout_marginTop="4dp">
@@ -51,14 +53,15 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/lato_bold"
                         android:textColor="#000000"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         tools:text="Tao Tien Loc" />
 
                     <TextView
                         android:id="@+id/tv_presence"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="Online"/>
+                        tools:text="Online"
+                        android:textSize="10sp"/>
                 </LinearLayout>
 
             </LinearLayout>
