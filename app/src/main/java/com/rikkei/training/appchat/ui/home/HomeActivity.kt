@@ -26,6 +26,17 @@ class HomeActivity : AppCompatActivity() {
         FirebaseAuth.getInstance()
     }
 
+    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
+        try {
+            val r = Rect()
+            window.decorView.getWindowVisibleDisplayFrame(r)
+            val height = window.decorView.height
+            binding.bottomNavigationView.isVisible = height - r.bottom <= height * 0.1399
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -47,36 +58,34 @@ class HomeActivity : AppCompatActivity() {
             true
         }
     }
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout,fragment)
-        fragmentTransaction.commit()
-    }
 
-    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
-        try {
-            val r = Rect()
-            window.decorView.getWindowVisibleDisplayFrame(r)
-            val height = window.decorView.height
-            binding.bottomNavigationView.isVisible = height - r.bottom <= height * 0.1399
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
     override fun onStart() {
         super.onStart()
         val currentId = firebaseAuth.uid
-        database.reference.child("Users")
-            .child(currentId!!).child("presence").setValue("Online")
+        currentId?.let { userId ->
+            database.reference.child("Users")
+                .child(userId)
+                .child("presence")
+                .setValue("Online")
+        }
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardListener)
     }
+
     override fun onStop() {
-        super.onStop()
         val currentId = firebaseAuth.uid
-        database.reference.child("Users")
-            .child(currentId!!).child("presence").setValue("Offline")
+        currentId?.let { userId ->
+            database.reference.child("Users")
+                .child(userId)
+                .child("presence")
+                .setValue("Offline")
+        }
         binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardListener)
+        super.onStop()
     }
 
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frame_layout, fragment)
+            .commit()
+    }
 }

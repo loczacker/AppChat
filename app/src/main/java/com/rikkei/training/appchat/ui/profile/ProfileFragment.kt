@@ -40,6 +40,7 @@ class ProfileFragment : Fragment() {
         binding.ibChange.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, ChangeProfileFragment()).commit()
+            transaction.addToBackStack("FragmentProfileBinding")
         }
         binding.tvSignOut.setOnClickListener{
             firebaseAuth.signOut()
