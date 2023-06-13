@@ -38,7 +38,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/layout_search_friend"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/background_search_bar"
             android:orientation="horizontal"
@@ -50,7 +50,7 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/ed_search_fr"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_weight="10"
                 android:background="@null"
                 android:drawableStart="@drawable/search"

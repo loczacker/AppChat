@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_send_message"
             android:fontFamily="@font/lato_bold"
-            android:padding="16dp"
+            android:padding="18dp"
             android:textAlignment="textStart"
             android:textColor="#FFFFFF"
             android:textSize="16sp"

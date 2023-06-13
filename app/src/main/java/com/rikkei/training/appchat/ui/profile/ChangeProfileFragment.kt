@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.rikkei.training.appchat.ui.profile
 
 import android.app.Activity
@@ -14,8 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.Task
@@ -96,15 +96,15 @@ class ChangeProfileFragment : Fragment() {
 
         progressDialog.setMessage("Updating profile...")
         val hashMap: HashMap<String, Any> = HashMap()
-        hashMap["name"] = "$name"
-        hashMap["phone"] = "$phone"
-        hashMap["birthday"] = "$birthday"
+        hashMap["name"] = name
+        hashMap["phone"] = phone
+        hashMap["birthday"] = birthday
         if (imageUri!=null){
             hashMap["img"] = uploadedImageUrl
         }
 
 
-        //upadate to db
+        //update to db
         val reference = FirebaseDatabase.getInstance().getReference("Users")
         reference.child(firebaseAuth.uid!!)
             .updateChildren(hashMap)
@@ -131,7 +131,6 @@ class ChangeProfileFragment : Fragment() {
                 val uriTask: Task<Uri> = taskSnapshot.storage.downloadUrl
                 while (!uriTask.isSuccessful);
                 val uploadImageUrl = "${uriTask.result}"
-
                 updateProfile(uploadImageUrl)
 
             }
@@ -153,9 +152,9 @@ class ChangeProfileFragment : Fragment() {
                     val birthday = "${snapshot.child("birthday").value}"
                     val phone = "${snapshot.child("phone").value}"
 
-                    binding.edtChangeName.setText("$name")
-                    binding.edPhoneChange.setText("$phone")
-                    binding.edBirthdayChange.setText("$birthday")
+                    binding.edtChangeName.setText(name)
+                    binding.edPhoneChange.setText(phone)
+                    binding.edBirthdayChange.setText(birthday)
 
                     try {
 
@@ -165,7 +164,7 @@ class ChangeProfileFragment : Fragment() {
                             .into(binding.imgAva)
 
                     }
-                    catch (e: Exception) {
+                    catch (_: Exception) {
 
                     }
                 }
@@ -196,52 +195,48 @@ class ChangeProfileFragment : Fragment() {
     }
 
     private fun picImageGallery() {
-
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         galleryActivityResultLauncher.launch(intent)
-
     }
 
     private fun pickImageCamera() {
-
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "Temp_Title")
         values.put(MediaStore.Images.Media.DESCRIPTION, "Temp_Description")
-        var resolver = requireActivity().contentResolver
+        val resolver = requireActivity().contentResolver
         imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
         cameraActivityResultLauncher.launch(intent)
-
     }
 
 
     private val cameraActivityResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult(),
-        ActivityResultCallback<ActivityResult> {result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                //set to imageview
-                binding.imgAva.setImageURI(imageUri)
-            }
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            binding.imgAva.setImageURI(imageUri)
+            Glide.with(this@ChangeProfileFragment)
+                .load(imageUri)
+                .placeholder(R.drawable.profile)
+                .into(binding.imgAva)
         }
-    )
+    }
 
     private val galleryActivityResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult(),
-        ActivityResultCallback<ActivityResult> { result ->
-
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                imageUri = data!!.data
-
-                //set to imageview
-                binding.imgAva.setImageURI(imageUri)
-            }
-            else {}
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            imageUri = data!!.data
+            binding.imgAva.setImageURI(imageUri)
+            Glide.with(this@ChangeProfileFragment)
+                .load(imageUri)
+                .placeholder(R.drawable.profile)
+                .into(binding.imgAva)
         }
-    )
+    }
 
 
 }

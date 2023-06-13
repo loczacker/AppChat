@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -52,8 +53,6 @@ class MessageActivity : AppCompatActivity() {
     private var roomId = ""
 
     private var uidFriend = ""
-
-    private val timeStamp = System.currentTimeMillis()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,23 +116,28 @@ class MessageActivity : AppCompatActivity() {
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
-    private fun sendMessage(timeStamp: Long) {
+    private fun sendMessage() {
         binding.ivSend.setOnClickListener {
-            fun convertLongToTime(timeNow: Long): String {
-                val date = Date(timeNow)
-                val format = SimpleDateFormat("dd.MM HH:mm")
-                return format.format(date)
-            }
-            val content = binding.etSend.text.toString()
-            val mess = MessageModel(null, content, firebaseAuth.uid, convertLongToTime(timeStamp), null)
-            val hashMap: HashMap<String, Any> = HashMap()
-            hashMap["lastMessage"] = content
-            hashMap["timeStamp"] = convertLongToTime(timeStamp)
-            database.reference.child("Message").child(roomId).push().setValue(mess)
-                .addOnSuccessListener {
-                    database.reference.child("Room").child(roomId).updateChildren(hashMap)
+            if (binding.etSend.text.isNotEmpty()){
+                val timeStamp = System.currentTimeMillis()
+                fun convertLongToTime(timeNow: Long): String {
+                    val date = Date(timeNow)
+                    val format = SimpleDateFormat("dd.MM HH:mm")
+                    return format.format(date)
                 }
-            binding.etSend.text.clear()
+                val content = binding.etSend.text.toString()
+                val mess = MessageModel(null, content, firebaseAuth.uid, convertLongToTime(timeStamp), null)
+                val hashMap: HashMap<String, Any> = HashMap()
+                hashMap["lastMessage"] = content
+                hashMap["timeStamp"] = convertLongToTime(timeStamp)
+                database.reference.child("Message").child(roomId).push().setValue(mess)
+                    .addOnSuccessListener {
+                        database.reference.child("Room").child(roomId).updateChildren(hashMap)
+                    }
+                binding.etSend.text.clear()
+            } else {
+                Toast.makeText(this,getString(R.string.not_empty_message), Toast.LENGTH_SHORT).show()
+            }
         }
     }
     private fun sendImageIcon(iconList: ArrayList<IconModel>) {
@@ -164,7 +168,7 @@ class MessageActivity : AppCompatActivity() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 Log.i("Permission: ", "Granted")
-                galleryFragment(roomId, timeStamp)
+                galleryFragment(roomId)
                 if (binding.frameLayoutMess.visibility == View.GONE) {
                     binding.frameLayoutMess.visibility = View.VISIBLE
                 } else {
@@ -237,17 +241,15 @@ class MessageActivity : AppCompatActivity() {
                             }
                         }
                         messageAdapter.notifyDataSetChanged()
-                        binding.rvMesHomeMes.scrollToPosition(messageList.size - 1)
                     }
+                    binding.rvMesHomeMes.scrollToPosition(messageList.size - 1)
                 }
 
                 override fun onCancelled(error: DatabaseError) {}
             })
-        messageAdapter = MessageAdapter(messageList)
-        binding.rvMesHomeMes.adapter = messageAdapter
     }
 
-    private fun galleryFragment(roomId: String, timeStamp: Long) {
+    private fun galleryFragment(roomId: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val galleryFragment = GalleryFragment()
@@ -256,9 +258,20 @@ class MessageActivity : AppCompatActivity() {
                 binding.frameLayoutMess.visibility = View.GONE
             }
         }
+
+        galleryFragment.itemGalleryListener = object : GalleryFragment.ItemGalleryListener{
+
+            override fun visibleButton() {
+                binding.ivSend.visibility = View.VISIBLE
+            }
+
+            override fun notVisibleButton() {
+                binding.ivSend.visibility = View.GONE
+            }
+
+        }
         val photoBundle = Bundle()
         photoBundle.putString("roomId", roomId)
-        photoBundle.putLong("timeStamp", timeStamp)
         galleryFragment.arguments = photoBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, galleryFragment)
         fragmentTransaction.commit()
@@ -311,7 +324,7 @@ class MessageActivity : AppCompatActivity() {
 
         infoUserProfile(name, imgProfile, uidUser)
         getAllMess(imgProfile)
-        sendMessage(timeStamp)
+        sendMessage()
         sendImageIcon(iconList)
     }
 
@@ -319,12 +332,11 @@ class MessageActivity : AppCompatActivity() {
         try {
             val r = Rect()
             window.decorView.getWindowVisibleDisplayFrame(r)
-
             val height = window.decorView.height
             if (height - r.bottom > height * 0.1399) {
                 binding.frameLayoutMess.visibility = View.GONE
+                binding.rvMesHomeMes.scrollToPosition(messageList.size - 1)
             } else {
-                //keyboard is close
             }
         } catch (e: Exception) {
             e.printStackTrace()

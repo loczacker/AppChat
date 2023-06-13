@@ -40,6 +40,9 @@ class MessageAdapter(
                         .placeholder(R.drawable.profile)
                         .into(binding.ivMessage)
                     binding.tvMessage.isVisible = false
+                    binding.ivMessage.setOnClickListener{
+
+                    }
                 }
 
                 MessageType.ICON -> {

@@ -15,4 +15,5 @@
     <string name="message">Tin nhắn</string>
     <string name="cancel_text">HỦY</string>
     <string name="searchFriend">Tìm kiếm bạn bè</string>
+    <string name="not_empty_message">Không được để trống tin nhắn</string>
 </resources>

@@ -17,7 +17,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentGalleryBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -44,7 +43,15 @@ class GalleryFragment : Fragment() {
         fun onCancelButtonClicked()
     }
 
+    interface ItemGalleryListener {
+        fun visibleButton()
+
+        fun notVisibleButton()
+    }
+
     var galleryFragmentListener: GalleryFragmentListener? = null
+
+    var itemGalleryListener: ItemGalleryListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,7 +71,6 @@ class GalleryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val bundle = arguments
         val roomId = bundle!!.getString("roomId")
-        val timeStamp = bundle.getLong("timeStamp")
         binding.layoutButton.isVisible = false
         binding.btnCancel.setOnClickListener {
             galleryFragmentListener?.onCancelButtonClicked()
@@ -86,7 +92,7 @@ class GalleryFragment : Fragment() {
         updateButtonVisibility()
 
         binding.btnSent.setOnClickListener {
-            uploadImagesToFirebaseStorage(selectedPhotoList, roomId, timeStamp)
+            uploadImagesToFirebaseStorage(selectedPhotoList, roomId)
             galleryAdapter.clearSelections()
             selectedPhotoList.clear()
             updateButtonVisibility()
@@ -95,9 +101,9 @@ class GalleryFragment : Fragment() {
 
     private fun uploadImagesToFirebaseStorage(
         imageList: List<String>,
-        roomId: String?,
-        timeStamp: Long
+        roomId: String?
     ) {
+        val timeStamp = System.currentTimeMillis()
         val messageId = FirebaseDatabase.getInstance().reference.child("Message").push().key
         val storageRef = FirebaseStorage.getInstance().reference
 
@@ -172,8 +178,10 @@ class GalleryFragment : Fragment() {
     private fun updateButtonVisibility() {
         if (selectedPhotoList.isEmpty()) {
             binding.layoutButton.visibility = View.GONE
+            itemGalleryListener?.visibleButton()
         } else {
             binding.layoutButton.visibility = View.VISIBLE
+            itemGalleryListener?.notVisibleButton()
         }
     }
 }

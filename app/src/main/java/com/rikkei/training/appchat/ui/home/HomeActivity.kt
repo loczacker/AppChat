@@ -49,8 +49,8 @@ class HomeActivity : AppCompatActivity() {
             replaceFragment(RoomMessageFragment())
         }
 
-        binding.bottomNavigationView.setOnItemSelectedListener {
-            when(it.itemId) {
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
                 R.id.messenger -> replaceFragment(RoomMessageFragment())
                 R.id.friends -> replaceFragment(TabFriendsFragment())
                 R.id.profile -> replaceFragment(ProfileFragment())

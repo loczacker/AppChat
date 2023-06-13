@@ -38,7 +38,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/layout_search_mess"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
             android:background="@drawable/background_search_bar"
@@ -50,7 +50,7 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/ed_search_mess"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:padding="10dp"
                 android:drawableStart="@drawable/search"
                 android:hint="@string/search_message"
