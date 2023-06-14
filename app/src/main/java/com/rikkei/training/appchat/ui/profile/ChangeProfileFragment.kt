@@ -3,6 +3,7 @@
 package com.rikkei.training.appchat.ui.profile
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Intent
@@ -14,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,20 +29,25 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentChangeProfileBinding
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
-class ChangeProfileFragment : Fragment() {
+class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private lateinit var binding: FragmentChangeProfileBinding
+
     //firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
-    private var imageUri: Uri ?= null
+
+    private var imageUri: Uri? = null
+
     private lateinit var progressDialog: ProgressDialog
 
+    private val calendar = Calendar.getInstance()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val myFormat = SimpleDateFormat("dd-MM-yyyy", Locale.UK)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,11 +72,37 @@ class ChangeProfileFragment : Fragment() {
             validateData()
         }
 
-        binding.imgBackHomeProfile.setOnClickListener{
+        binding.edBirthdayChange.setOnClickListener{
+            binding.edBirthdayChange.setOnClickListener {
+                val datePickerDialog = DatePickerDialog(
+                    requireActivity(),
+                    this,
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+                )
+
+                datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+                datePickerDialog.show()
+            }
+
+        }
+
+        binding.imgBackHomeProfile.setOnClickListener {
             val transaction = fragmentManager?.beginTransaction()
             transaction?.replace(R.id.frame_layout, ProfileFragment())?.commit()
         }
+        
         return binding.root
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        calendar.set(year, month, dayOfMonth)
+        displayFormat(calendar.timeInMillis)
+    }
+
+    private fun displayFormat(timestamp: Long) {
+        binding.edBirthdayChange.setText(myFormat.format(timestamp))
     }
 
     private var name = ""
@@ -81,17 +114,17 @@ class ChangeProfileFragment : Fragment() {
         phone = binding.edPhoneChange.text.toString().trim()
         birthday = binding.edBirthdayChange.text.toString().trim()
 
-        if (name.isEmpty()&&phone.isEmpty()&&birthday.isEmpty()) {
+        if (name.isEmpty() && phone.isEmpty() && birthday.isEmpty()) {
             Toast.makeText(activity, "Enter name", Toast.LENGTH_SHORT).show()
-        }
-        else {
-            if (imageUri == null){
+        } else {
+            if (imageUri == null) {
                 updateProfile("")
-            }else {
+            } else {
                 uploadImage()
             }
         }
     }
+
     private fun updateProfile(uploadedImageUrl: String) {
 
         progressDialog.setMessage("Updating profile...")
@@ -99,10 +132,9 @@ class ChangeProfileFragment : Fragment() {
         hashMap["name"] = name
         hashMap["phone"] = phone
         hashMap["birthday"] = birthday
-        if (imageUri!=null){
+        if (imageUri != null) {
             hashMap["img"] = uploadedImageUrl
         }
-
 
         //update to db
         val reference = FirebaseDatabase.getInstance().getReference("Users")
@@ -122,11 +154,11 @@ class ChangeProfileFragment : Fragment() {
         progressDialog.setMessage("Uploading profile image")
         progressDialog.show()
 
-        val  filePathAndName = "img/"+firebaseAuth.uid
+        val filePathAndName = "img/" + firebaseAuth.uid
 
         val reference = FirebaseStorage.getInstance().getReference(filePathAndName)
         reference.putFile(imageUri!!)
-            .addOnSuccessListener {taskSnapshot ->
+            .addOnSuccessListener { taskSnapshot ->
 
                 val uriTask: Task<Uri> = taskSnapshot.storage.downloadUrl
                 while (!uriTask.isSuccessful);
@@ -134,7 +166,7 @@ class ChangeProfileFragment : Fragment() {
                 updateProfile(uploadImageUrl)
 
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 progressDialog.dismiss()
                 Toast.makeText(activity, "Failed to upload image due ", Toast.LENGTH_SHORT).show()
             }
@@ -144,7 +176,7 @@ class ChangeProfileFragment : Fragment() {
         //db reference to load user info
         val ref = FirebaseDatabase.getInstance().getReference("Users")
         ref.child(firebaseAuth.uid!!)
-            .addValueEventListener(object: ValueEventListener{
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     //get user info
                     val name = "${snapshot.child("name").value}"
@@ -163,19 +195,18 @@ class ChangeProfileFragment : Fragment() {
                             .placeholder(R.drawable.profile)
                             .into(binding.imgAva)
 
-                    }
-                    catch (_: Exception) {
+                    } catch (_: Exception) {
 
                     }
                 }
+
                 override fun onCancelled(error: DatabaseError) {}
             })
-
     }
 
     private fun showImageAttachMenu() {
 
-        val popupMenu = PopupMenu(activity,binding.imgCamera)
+        val popupMenu = PopupMenu(activity, binding.imgCamera)
         popupMenu.menu.add(Menu.NONE, 0, 0, "Camera")
         popupMenu.menu.add(Menu.NONE, 1, 1, "Gallery")
         popupMenu.show()
@@ -185,8 +216,7 @@ class ChangeProfileFragment : Fragment() {
             if (id == 0) {
                 // camera clicked
                 pickImageCamera()
-            }
-            else if (id == 1) {
+            } else if (id == 1) {
                 //Gallery clicked
                 picImageGallery()
             }
@@ -211,16 +241,15 @@ class ChangeProfileFragment : Fragment() {
         cameraActivityResultLauncher.launch(intent)
     }
 
-
     private val cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            binding.imgAva.setImageURI(imageUri)
             Glide.with(this@ChangeProfileFragment)
                 .load(imageUri)
                 .placeholder(R.drawable.profile)
                 .into(binding.imgAva)
+            binding.imgAva.setImageURI(imageUri)
         }
     }
 
@@ -230,13 +259,11 @@ class ChangeProfileFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             val data = result.data
             imageUri = data!!.data
-            binding.imgAva.setImageURI(imageUri)
             Glide.with(this@ChangeProfileFragment)
                 .load(imageUri)
                 .placeholder(R.drawable.profile)
                 .into(binding.imgAva)
+            binding.imgAva.setImageURI(imageUri)
         }
     }
-
-
 }

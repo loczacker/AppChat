@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_change"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_change"
     android:background="@drawable/bg"
     android:orientation="vertical"
     android:weightSum="10">
@@ -11,7 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:paddingHorizontal="10dp">
 
@@ -19,14 +20,15 @@
             android:id="@+id/img_back_home_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_back" />
+            android:background="@drawable/ic_back"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="70dp"
             android:fontFamily="@font/lato_bold"
-            android:text="Chỉnh sửa thông tin"
+            android:text="@string/change_profile"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -36,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="70dp"
             android:fontFamily="@font/lato_medium"
-            android:text="Lưu"
+            android:text="@string/save"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -45,25 +47,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8.5"
+        android:layout_weight="9"
         android:background="@drawable/custom_recycle_view"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:weightSum="6.5">
+        android:weightSum="7">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.5">
+            android:layout_weight="3"
+            tools:ignore="NestedWeights">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_ava"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
+                android:src="@drawable/profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/profile"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
@@ -89,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato_medium"
-                android:text="Họ và tên"
+                android:text="@string/name"
                 android:textColor="#363E36"
                 android:textSize="14sp" />
 
@@ -99,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_baseline_supervisor_account_24"
                 android:fontFamily="@font/lato_medium"
-                android:hint="Họ và tên" />
+                android:hint="@string/name" />
 
         </LinearLayout>
 
@@ -114,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato_medium"
-                android:text="Số điện thoại"
+                android:text="@string/phone"
                 android:textColor="#363E36"
                 android:textSize="14sp" />
 
@@ -122,10 +125,12 @@
                 android:id="@+id/ed_phone_change"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:drawableEnd="@drawable/ic_telephone"
                 android:fontFamily="@font/lato_medium"
-                android:hint="Số điện thoại"
-                android:inputType="number"/>
+                android:hint="@string/phone"
+                android:inputType="number"
+                tools:ignore="TextFields" />
         </LinearLayout>
 
         <LinearLayout
@@ -139,7 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato_medium"
-                android:text="Ngày sinh"
+                android:text="@string/date"
                 android:textColor="#363E36"
                 android:textSize="14sp" />
 
@@ -147,19 +152,13 @@
                 android:id="@+id/ed_birthday_change"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_birthday"
                 android:fontFamily="@font/lato_medium"
-                android:hint="Ngày sinh"
-                android:inputType="date"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
+                android:inputType="none"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                app:drawableEndCompat="@drawable/ic_birthday" />
         </LinearLayout>
 
     </LinearLayout>

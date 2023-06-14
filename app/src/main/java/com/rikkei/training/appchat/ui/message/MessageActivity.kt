@@ -1,5 +1,6 @@
 package com.rikkei.training.appchat.ui.message
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -8,10 +9,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -22,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityMessengerBinding
+import com.rikkei.training.appchat.databinding.DetailImageBinding
 import com.rikkei.training.appchat.model.MessageModel
 import com.rikkei.training.appchat.model.ItemMessageRVModel
 import com.rikkei.training.appchat.ui.home.HomeActivity
@@ -54,6 +58,8 @@ class MessageActivity : AppCompatActivity() {
 
     private var uidFriend = ""
 
+    private lateinit var imageDetailList: MessageModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,11 +78,13 @@ class MessageActivity : AppCompatActivity() {
         backHome()
         setContentView(binding.root)
     }
+
     override fun onResume() {
         super.onResume()
         database.reference.child("Users")
             .child(firebaseAuth.uid ?: "").child("presence").setValue("Online")
     }
+
     private fun addIcon() {
         iconList.add(IconModel(R.drawable.dumbbell, "dumbbell"))
         iconList.add(
@@ -92,6 +100,7 @@ class MessageActivity : AppCompatActivity() {
         iconList.add(IconModel(R.drawable.watering_plants, "watering_plants"))
 
     }
+
     private fun backHome() {
         binding.imBackHome.setOnClickListener {
             val homeIntent = Intent(this, HomeActivity::class.java)
@@ -100,6 +109,7 @@ class MessageActivity : AppCompatActivity() {
             finish()
         }
     }
+
     private fun infoUserProfile(name: String?, imgProfile: String?, uidUser: String?) {
         binding.tvNameMess.text = name
         Glide.with(this@MessageActivity)
@@ -116,17 +126,30 @@ class MessageActivity : AppCompatActivity() {
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
+
     private fun sendMessage() {
+        binding.etSend.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.ivSend.isVisible = true
+            }
+        }
         binding.ivSend.setOnClickListener {
-            if (binding.etSend.text.isNotEmpty()){
+            if (binding.etSend.text.isNotEmpty()) {
                 val timeStamp = System.currentTimeMillis()
                 fun convertLongToTime(timeNow: Long): String {
                     val date = Date(timeNow)
                     val format = SimpleDateFormat("dd.MM HH:mm")
                     return format.format(date)
                 }
+
                 val content = binding.etSend.text.toString()
-                val mess = MessageModel(null, content, firebaseAuth.uid, convertLongToTime(timeStamp), null)
+                val mess = MessageModel(
+                    null,
+                    content,
+                    firebaseAuth.uid,
+                    convertLongToTime(timeStamp),
+                    null
+                )
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["lastMessage"] = content
                 hashMap["timeStamp"] = convertLongToTime(timeStamp)
@@ -136,23 +159,29 @@ class MessageActivity : AppCompatActivity() {
                     }
                 binding.etSend.text.clear()
             } else {
-                Toast.makeText(this,getString(R.string.not_empty_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.not_empty_message), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
+
     private fun sendImageIcon(iconList: ArrayList<IconModel>) {
         binding.ivLibrary.setOnClickListener {
+            binding.etSend.clearFocus()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 storagePermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
             } else {
                 storagePermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
             }
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(binding.ivLibrary.windowToken, 0)
         }
         binding.ivIcon.setOnClickListener {
+            binding.etSend.clearFocus()
             fragmentIcon(roomId, iconList)
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(binding.ivLibrary.windowToken, 0)
             if (binding.frameLayoutMess.visibility == View.GONE) {
                 binding.frameLayoutMess.visibility = View.VISIBLE
@@ -191,30 +220,46 @@ class MessageActivity : AppCompatActivity() {
                         val iconName = snap.child("iconName").getValue(String::class.java)
                         val url = snap.child("imgUrl").getValue(String::class.java)
                         val mess = snap.getValue(MessageModel::class.java)
-                        mess?.imgIcon = iconName
-                        mess?.imgUrl = url
+                        imageDetailList = mess!!
+                        mess.imgIcon = iconName
+                        mess.imgUrl = url
                         if (senderId == myUid) {
                             if (content != null && iconName == null && url == null) {
-                                mess?.let { messageList.add(ItemMessageRVModel(it, true, 1, "")) }
+                                mess.let { messageList.add(ItemMessageRVModel(it, true, 1, "")) }
                             } else {
-                                if (iconName != null)
-                                {
-                                    mess?.let { messageList.add(ItemMessageRVModel(it, true, 3, "")) }
-                                }
-                                else
-                                {
+                                if (iconName != null) {
+                                    mess.let {
+                                        messageList.add(
+                                            ItemMessageRVModel(
+                                                it,
+                                                true,
+                                                3,
+                                                ""
+                                            )
+                                        )
+                                    }
+                                } else {
                                     if (url != null) {
-                                        mess?.let { messageList.add(ItemMessageRVModel(it, true, 2, "")) }
+                                        mess.let {
+                                            messageList.add(
+                                                ItemMessageRVModel(
+                                                    it,
+                                                    true,
+                                                    2,
+                                                    ""
+                                                )
+                                            )
+                                        }
                                     }
                                 }
                             }
                         } else {
-                            mess?.imgFriend = imgProfile
+                            mess.imgFriend = imgProfile
                             if (content != null) {
-                                mess?.let { messageList.add(ItemMessageRVModel(it, false, 1, "")) }
+                                mess.let { messageList.add(ItemMessageRVModel(it, false, 1, "")) }
                             } else {
                                 if (iconName != null) {
-                                    mess?.let {
+                                    mess.let {
                                         messageList.add(
                                             ItemMessageRVModel(
                                                 it,
@@ -226,7 +271,7 @@ class MessageActivity : AppCompatActivity() {
                                     }
                                 } else {
                                     if (url != null) {
-                                        mess?.let {
+                                        mess.let {
                                             messageList.add(
                                                 ItemMessageRVModel(
                                                     it,
@@ -257,9 +302,6 @@ class MessageActivity : AppCompatActivity() {
             override fun onCancelButtonClicked() {
                 binding.frameLayoutMess.visibility = View.GONE
             }
-        }
-
-        galleryFragment.itemGalleryListener = object : GalleryFragment.ItemGalleryListener{
 
             override fun visibleButton() {
                 binding.ivSend.visibility = View.VISIBLE
@@ -317,10 +359,36 @@ class MessageActivity : AppCompatActivity() {
             "$uidFriend$myUid"
         }
 
-        messageAdapter = MessageAdapter(messageList)
+        messageAdapter = MessageAdapter(messageList, object : GetDetail {
+            override fun detail(urlImg: String) {
+                val dialogBinding: DetailImageBinding = DetailImageBinding.inflate(layoutInflater)
+                val dialog = Dialog(this@MessageActivity, R.style.FullscreenDialog)
+                val layoutParams = WindowManager.LayoutParams()
+                layoutParams.copyFrom(dialog.window?.attributes)
+                layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+                layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+                layoutParams.gravity
+                dialog.window?.attributes = layoutParams
+
+                dialog.setContentView(dialogBinding.root)
+                dialog.setCancelable(true)
+                dialogBinding.ivCancel.setOnClickListener {
+                    dialog.dismiss()
+                }
+                Glide.with(this@MessageActivity)
+                    .load(imgProfile)
+                    .transform(CenterCrop(), RoundedCorners(55))
+                    .placeholder(R.drawable.profile)
+                    .load(urlImg)
+                    .centerInside()
+                    .into(dialogBinding.ivDetailIm)
+
+                dialog.show()
+            }
+
+        })
         binding.rvMesHomeMes.adapter = messageAdapter
         binding.rvMesHomeMes.setHasFixedSize(true)
-
 
         infoUserProfile(name, imgProfile, uidUser)
         getAllMess(imgProfile)
@@ -337,6 +405,7 @@ class MessageActivity : AppCompatActivity() {
                 binding.frameLayoutMess.visibility = View.GONE
                 binding.rvMesHomeMes.scrollToPosition(messageList.size - 1)
             } else {
+                binding.etSend.clearFocus()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -347,6 +416,7 @@ class MessageActivity : AppCompatActivity() {
         super.onStart()
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardListener)
     }
+
     override fun onStop() {
         super.onStop()
         binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardListener)

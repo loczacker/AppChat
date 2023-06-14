@@ -12,17 +12,19 @@ import com.rikkei.training.appchat.databinding.ItemReceivedMsgBinding
 import com.rikkei.training.appchat.databinding.ItemSendMsgBinding
 import com.rikkei.training.appchat.model.ItemMessageRVModel
 import com.rikkei.training.appchat.model.MessageType
+import com.rikkei.training.appchat.ui.roomMessage.ItemClick
 
 private const val MY_MESSAGE = 0
 private const val YOUR_MESSAGE = 1
 
 class MessageAdapter(
-    private var messenger: ArrayList<ItemMessageRVModel>
+    private var messenger: ArrayList<ItemMessageRVModel>,
+    private var getDetail: GetDetail
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class SentMsgHolder(private val binding: ItemSendMsgBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("DiscouragedApi")
-        fun bind(messSend: ItemMessageRVModel) {
+        fun bind(messSend: ItemMessageRVModel, getDetail: GetDetail) {
             binding.tvTimeSend.text = messSend.message.time
 
             when (messSend.messageType) {
@@ -41,7 +43,7 @@ class MessageAdapter(
                         .into(binding.ivMessage)
                     binding.tvMessage.isVisible = false
                     binding.ivMessage.setOnClickListener{
-
+                        messSend.message.imgUrl?.let { it1 -> getDetail.detail(urlImg = it1) }
                     }
                 }
 
@@ -65,7 +67,7 @@ class MessageAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("DiscouragedApi")
-        fun bind(messReceived: ItemMessageRVModel) {
+        fun bind(messReceived: ItemMessageRVModel, getDetail: GetDetail) {
 
             Glide.with(binding.imMessChat.context).load(messReceived.message.imgFriend)
                 .placeholder(R.drawable.profile)
@@ -88,6 +90,9 @@ class MessageAdapter(
                         .into(binding.ivImReceived)
                     binding.tvTimeReceived.text = messReceived.message.time
                     binding.tvMess.isVisible = false
+                    binding.ivImReceived.setOnClickListener{
+                        messReceived.message.imgUrl?.let { it1 -> getDetail.detail(urlImg = it1) }
+                    }
                 }
 
                 MessageType.ICON -> {
@@ -141,8 +146,8 @@ class MessageAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messenger[position]
         when (holder) {
-            is SentMsgHolder -> holder.bind(message)
-            is ReceiveMsgHolder -> holder.bind(message)
+            is SentMsgHolder -> holder.bind(message, getDetail)
+            is ReceiveMsgHolder -> holder.bind(message, getDetail)
             else -> throw IllegalArgumentException("Invalid ViewHolder")
         }
     }

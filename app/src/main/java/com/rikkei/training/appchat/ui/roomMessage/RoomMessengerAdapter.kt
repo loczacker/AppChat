@@ -16,7 +16,7 @@ private const val SEARCH_MESSAGE = 1
 
 class RoomMessengerAdapter(
     private val roomList: ArrayList<RoomModel>,
-    private val roomItemClick: RoomItemClick
+    private val ItemClick: ItemClick
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun clearList() {
         roomList.clear()
@@ -24,7 +24,7 @@ class RoomMessengerAdapter(
     }
     class RoomViewHolder(private val binding: ItemUserRowBinding):
     RecyclerView.ViewHolder(binding.root){
-        fun bind(room: RoomModel, roomItemClickRecyclerView: RoomItemClick) {
+        fun bind(room: RoomModel, itemClickRecyclerView: ItemClick) {
             binding.txtName.text = room.nameRoom
             binding.tvTime.text = room.timeStamp
             binding.tvLastMess.text = room.lastMessage
@@ -33,14 +33,14 @@ class RoomMessengerAdapter(
                 .circleCrop()
                 .into(binding.imgCircleHomeMess)
             binding.itemHomeFriends.setOnClickListener {
-                roomItemClickRecyclerView.getRoomInfo(room)
+                itemClickRecyclerView.getRoomInfo(room)
             }
         }
     }
 
     class SearchMsgRoomHolder(private val binding: ItemSearchMessBinding):
     RecyclerView.ViewHolder(binding.root){
-        fun bind(searchMess: RoomModel, roomItemClickRecyclerView: RoomItemClick){
+        fun bind(searchMess: RoomModel, itemClickRecyclerView: ItemClick){
             Glide.with(binding.imgCircleSearchMess.context).load(searchMess.imgRoom)
                 .placeholder(R.drawable.profile)
                 .circleCrop()
@@ -79,8 +79,8 @@ class RoomMessengerAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val room = roomList[position]
         when(holder) {
-            is RoomViewHolder -> holder.bind(room, roomItemClick)
-            is SearchMsgRoomHolder -> holder.bind(room, roomItemClick)
+            is RoomViewHolder -> holder.bind(room, ItemClick)
+            is SearchMsgRoomHolder -> holder.bind(room, ItemClick)
             else ->throw IllegalArgumentException("Invalid ViewHolder")
         }
     }

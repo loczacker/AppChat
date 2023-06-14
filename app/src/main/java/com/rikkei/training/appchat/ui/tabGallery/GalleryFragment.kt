@@ -41,17 +41,13 @@ class GalleryFragment : Fragment() {
 
     interface GalleryFragmentListener {
         fun onCancelButtonClicked()
-    }
 
-    interface ItemGalleryListener {
         fun visibleButton()
 
         fun notVisibleButton()
     }
 
     var galleryFragmentListener: GalleryFragmentListener? = null
-
-    var itemGalleryListener: ItemGalleryListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +69,7 @@ class GalleryFragment : Fragment() {
         val roomId = bundle!!.getString("roomId")
         binding.layoutButton.isVisible = false
         binding.btnCancel.setOnClickListener {
+            galleryFragmentListener?.visibleButton()
             galleryFragmentListener?.onCancelButtonClicked()
         }
         galleryAdapter = GalleryAdapter(getAllImagesFromGallery(), object : PhotoItemClick{
@@ -178,10 +175,10 @@ class GalleryFragment : Fragment() {
     private fun updateButtonVisibility() {
         if (selectedPhotoList.isEmpty()) {
             binding.layoutButton.visibility = View.GONE
-            itemGalleryListener?.visibleButton()
+            galleryFragmentListener?.visibleButton()
         } else {
             binding.layoutButton.visibility = View.VISIBLE
-            itemGalleryListener?.notVisibleButton()
+            galleryFragmentListener?.notVisibleButton()
         }
     }
 }

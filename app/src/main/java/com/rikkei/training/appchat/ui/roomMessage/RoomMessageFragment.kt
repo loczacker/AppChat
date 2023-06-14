@@ -177,7 +177,7 @@ class RoomMessageFragment : Fragment() {
     }
 
     private fun showRoomInfo() {
-        roomAdapter = RoomMessengerAdapter(listRoom, object : RoomItemClick {
+        roomAdapter = RoomMessengerAdapter(listRoom, object : ItemClick {
             override fun getRoomInfo(roomModel: RoomModel) {
                 val messIntent = Intent(activity, MessageActivity::class.java)
                 messIntent.putExtra("name", roomModel.nameRoom)
@@ -185,6 +185,7 @@ class RoomMessageFragment : Fragment() {
                 messIntent.putExtra("uid", roomModel.uidFriend)
                 startActivity(messIntent)
             }
+
         })
 
         val myUid = firebaseAuth.uid ?: ""

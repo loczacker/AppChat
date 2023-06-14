@@ -145,11 +145,11 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_send"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center"
                 android:background="@color/white"
-
+                android:layout_marginEnd="10dp"
                 android:src="@drawable/vector_send"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
