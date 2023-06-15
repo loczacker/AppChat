@@ -61,6 +61,7 @@ class RoomMessageFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                roomAdapter.clearList()
             }
             override fun afterTextChanged(s: Editable?) {
                 val searchQuery = s.toString()
@@ -86,9 +87,7 @@ class RoomMessageFragment : Fragment() {
                     }
                 }
             }
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.e("RoomMessageFragment", "Error: ${databaseError.message}")
-            }
+            override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
     private fun checkMess(roomId: String, searchQuery: String) {
@@ -117,18 +116,15 @@ class RoomMessageFragment : Fragment() {
                     }
                     tempListRoom.forEach { roomModel ->
                         val senderId = extractUidFriend(roomId, myUid)
-                        usersRef.child(senderId).addListenerForSingleValueEvent(object : ValueEventListener {
+                        usersRef.child(senderId).addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(userSnapshot: DataSnapshot) {
                                 roomModel.imgRoom = userSnapshot.child("img").value.toString()
                                 roomModel.nameRoom = userSnapshot.child("name").value.toString()
                                 roomAdapter.notifyDataSetChanged()
                             }
-                            override fun onCancelled(error: DatabaseError) {
-                                Log.e("RoomMessageFragment", "Error: ${error.message}")
-                            }
+                            override fun onCancelled(error: DatabaseError) {}
                         })
                     }
-                    listRoom.clear()
                     listRoom.addAll(tempListRoom)
                     roomAdapter.notifyDataSetChanged()
                 }

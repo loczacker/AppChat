@@ -21,7 +21,7 @@ class UserAllAdapter(
 
         fun bind(item: ItemUsersRVModel, itemUsersRVInterface: ItemUsersRVInterface) {
             val user = item.user
-            binding.txtName.text = user.name
+            binding.tvName.text = user.name
             Glide.with(binding.imgCircleHomeMess.context).load(user.img)
                 .placeholder(R.drawable.profile)
                 .into(binding.imgCircleHomeMess)

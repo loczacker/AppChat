@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.Task
@@ -38,7 +39,6 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private lateinit var binding: FragmentChangeProfileBinding
 
-    //firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
 
     private var imageUri: Uri? = null
@@ -68,7 +68,7 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             showImageAttachMenu()
         }
 
-        binding.txtDone.setOnClickListener {
+        binding.tvDone.setOnClickListener {
             validateData()
         }
 
@@ -81,18 +81,20 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)
                 )
-
                 datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
                 datePickerDialog.show()
             }
-
         }
 
         binding.imgBackHomeProfile.setOnClickListener {
             val transaction = fragmentManager?.beginTransaction()
             transaction?.replace(R.id.frame_layout, ProfileFragment())?.commit()
         }
-        
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            val transaction = fragmentManager?.beginTransaction()
+            transaction?.replace(R.id.frame_layout, ProfileFragment())?.commit()
+        }
         return binding.root
     }
 
@@ -126,7 +128,6 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun updateProfile(uploadedImageUrl: String) {
-
         progressDialog.setMessage("Updating profile...")
         val hashMap: HashMap<String, Any> = HashMap()
         hashMap["name"] = name
@@ -135,7 +136,6 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         if (imageUri != null) {
             hashMap["img"] = uploadedImageUrl
         }
-
         //update to db
         val reference = FirebaseDatabase.getInstance().getReference("Users")
         reference.child(firebaseAuth.uid!!)
@@ -153,9 +153,7 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private fun uploadImage() {
         progressDialog.setMessage("Uploading profile image")
         progressDialog.show()
-
         val filePathAndName = "img/" + firebaseAuth.uid
-
         val reference = FirebaseStorage.getInstance().getReference(filePathAndName)
         reference.putFile(imageUri!!)
             .addOnSuccessListener { taskSnapshot ->
@@ -173,10 +171,9 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun loadUserInfo() {
-        //db reference to load user info
         val ref = FirebaseDatabase.getInstance().getReference("Users")
         ref.child(firebaseAuth.uid!!)
-            .addValueEventListener(object : ValueEventListener {
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     //get user info
                     val name = "${snapshot.child("name").value}"
@@ -195,11 +192,8 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                             .placeholder(R.drawable.profile)
                             .into(binding.imgAva)
 
-                    } catch (_: Exception) {
-
-                    }
+                    } catch (_: Exception) {}
                 }
-
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
@@ -249,7 +243,6 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 .load(imageUri)
                 .placeholder(R.drawable.profile)
                 .into(binding.imgAva)
-            binding.imgAva.setImageURI(imageUri)
         }
     }
 
@@ -259,11 +252,12 @@ class ChangeProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         if (result.resultCode == Activity.RESULT_OK) {
             val data = result.data
             imageUri = data!!.data
-            Glide.with(this@ChangeProfileFragment)
-                .load(imageUri)
-                .placeholder(R.drawable.profile)
-                .into(binding.imgAva)
-            binding.imgAva.setImageURI(imageUri)
+            if (imageUri != null) {
+                Glide.with(this@ChangeProfileFragment)
+                    .load(imageUri)
+                    .placeholder(R.drawable.profile)
+                    .into(binding.imgAva)
+            }
         }
     }
 }

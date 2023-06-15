@@ -4,7 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_message">Tìm kiếm tin nhắn</string>
-    <string name="agree">đồng ý</string>
+    <string name="agree">Đồng ý</string>
     <string name="cancel">HỦY</string>
     <string name="sent">GỬI</string>
     <string name="image">Hình ảnh</string>
@@ -21,4 +21,8 @@
     <string name="phone">Số điện thoại</string>
     <string name="name">Họ và tên</string>
     <string name="date">Ngày sinh</string>
+    <string name="do_you_want_sign_out">Bạn có muốn đăng xuất tài khoản không</string>
+    <string name="refuse">Từ chối</string>
+    <string name="change_english">Bạn có muốn đổi sang tiếng anh không</string>
+    <string name="add_Friend">Kết bạn</string>
 </resources>

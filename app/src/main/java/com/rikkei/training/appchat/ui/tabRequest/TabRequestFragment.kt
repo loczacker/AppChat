@@ -78,7 +78,6 @@ class TabRequestFragment : Fragment() {
 
         val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(sentAdapter))
         itemTouchHelper.attachToRecyclerView(binding.rvRequestFriend)
-
         binding.rvRequestFriend.adapter = sentAdapter
         database.reference.child("Friends").child(firebaseAuth.uid?:"").orderByChild("status").equalTo("received")
             .addValueEventListener(object : ValueEventListener{

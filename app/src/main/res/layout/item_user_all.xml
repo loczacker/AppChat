@@ -19,7 +19,7 @@
             tools:src="@drawable/random3" />
 
         <TextView
-            android:id="@+id/txt_name"
+            android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -37,7 +37,7 @@
             android:layout_marginEnd="10dp"
             android:background="@drawable/button_custom_add"
             android:gravity="center"
-            android:text="Kết bạn"
+            android:text="@string/add_Friend"
             android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,8 @@
             android:layout_height="1dp"
             android:background="#D2D2D2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_name" />
+            app:layout_constraintStart_toStartOf="@id/tv_name"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

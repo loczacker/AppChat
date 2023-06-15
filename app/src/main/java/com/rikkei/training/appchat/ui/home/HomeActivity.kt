@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityHomeBinding
-import com.rikkei.training.appchat.ui.tabFriends.TabFriendsFragment
+import com.rikkei.training.appchat.ui.tabFriends.HomeFriendsFragment
 import com.rikkei.training.appchat.ui.roomMessage.RoomMessageFragment
 import com.rikkei.training.appchat.ui.profile.ProfileFragment
 
@@ -42,20 +42,47 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        badgeSetup(R.id.nav_messenger, 7)
+        badgeSetup(R.id.nav_friends, 10)
+
+
         val backFragment = intent.getIntExtra("backFragment", 0)
         if (backFragment == 1) {
-            replaceFragment(TabFriendsFragment())
+            replaceFragment(HomeFriendsFragment())
         } else {
             replaceFragment(RoomMessageFragment())
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.messenger -> replaceFragment(RoomMessageFragment())
-                R.id.friends -> replaceFragment(TabFriendsFragment())
-                R.id.profile -> replaceFragment(ProfileFragment())
+                R.id.nav_messenger -> {
+                    replaceFragment(RoomMessageFragment())
+                    badgeClear(R.id.nav_messenger)
+                }
+                R.id.nav_friends -> {
+                    replaceFragment(HomeFriendsFragment())
+                    badgeClear(R.id.nav_friends)
+                }
+                R.id.nav_profile -> replaceFragment(ProfileFragment())
             }
             true
+        }
+
+    }
+
+    private fun badgeSetup(id: Int, alerts: Int) {
+        val badge = binding.bottomNavigationView.getOrCreateBadge(id)
+        badge.isVisible = true
+        badge.number = alerts
+    }
+
+    private fun badgeClear(id: Int) {
+        val badgeDrawable = binding.bottomNavigationView.getBadge(id)
+        if (badgeDrawable != null) {
+
+            badgeDrawable.isVisible = false
+
+            badgeDrawable.clearNumber()
         }
     }
 

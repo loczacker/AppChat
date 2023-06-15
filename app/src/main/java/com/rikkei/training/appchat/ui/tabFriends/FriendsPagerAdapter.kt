@@ -12,7 +12,7 @@ class FriendsPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle
     override fun getItemCount(): Int = 3
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 -> FriendsFragment()
+            0 -> TabFriendsFragment()
             1 -> TabUserFragment()
             2 -> TabRequestFragment()
             else -> throw IllegalArgumentException("Unknown Fragment for position $position")

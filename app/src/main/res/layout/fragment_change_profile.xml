@@ -33,7 +33,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txt_done"
+            android:id="@+id/tv_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="70dp"

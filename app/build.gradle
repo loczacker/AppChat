@@ -41,6 +41,8 @@ android {
 
 dependencies {
 
+    implementation 'com.google.android.material:material:<version>'
+
     implementation 'com.github.bumptech.glide:glide:4.15.1'
     constraints {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
@@ -89,7 +91,6 @@ dependencies {
     dependencies {
         implementation 'com.google.firebase:firebase-messaging:23.1.2' // Thêm dependencies của FCM
     }
-
     apply plugin: 'com.google.gms.google-services'
 
 
