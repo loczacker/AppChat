@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
@@ -62,6 +64,7 @@ class HomeFriendsFragment : Fragment() {
         setupRecyclerView()
         countNumberList()
     }
+
 
     private fun setupRecyclerView() {
         searchFriendAdapter = SearchFriendAdapter(friendSearchList)
@@ -170,7 +173,6 @@ class HomeFriendsFragment : Fragment() {
                         userRequest?.let { requestFriendList.add(it) }
                     }
                 }
-
                 if (requestFriendList.size > 0) {
                     binding.tabFriends.getTabAt(2)?.orCreateBadge?.number = requestFriendList.size
                 } else {
@@ -181,6 +183,4 @@ class HomeFriendsFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {}
         })
     }
-
-
 }

@@ -2,6 +2,7 @@ package com.rikkei.training.appchat.ui.roomMessage
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -34,6 +35,7 @@ class RoomMessengerAdapter(
                 .into(binding.imgCircleHomeMess)
             binding.itemHomeFriends.setOnClickListener {
                 itemClickRecyclerView.getRoomInfo(room)
+                binding.tvUnreadMessage.isVisible = false
             }
         }
     }

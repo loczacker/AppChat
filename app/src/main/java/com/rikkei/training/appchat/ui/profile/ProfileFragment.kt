@@ -103,9 +103,7 @@ class ProfileFragment : Fragment() {
                             .placeholder(R.drawable.profile)
                             .into(binding.imgProfile)
 
-                    } catch (_: Exception) {
-
-                    }
+                    } catch (_: Exception) {}
                 }
 
                 override fun onCancelled(error: DatabaseError) {

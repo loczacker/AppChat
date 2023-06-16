@@ -7,9 +7,13 @@ import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityHomeBinding
+import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.tabFriends.HomeFriendsFragment
 import com.rikkei.training.appchat.ui.roomMessage.RoomMessageFragment
 import com.rikkei.training.appchat.ui.profile.ProfileFragment
@@ -26,25 +30,13 @@ class HomeActivity : AppCompatActivity() {
         FirebaseAuth.getInstance()
     }
 
-    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
-        try {
-            val r = Rect()
-            window.decorView.getWindowVisibleDisplayFrame(r)
-            val height = window.decorView.height
-            binding.bottomNavigationView.isVisible = height - r.bottom <= height * 0.1399
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+    private val requestFriendList: ArrayList<UsersModel> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        badgeSetup(R.id.nav_messenger, 7)
-        badgeSetup(R.id.nav_friends, 10)
-
+        countNumberList()
 
         val backFragment = intent.getIntExtra("backFragment", 0)
         if (backFragment == 1) {
@@ -67,7 +59,17 @@ class HomeActivity : AppCompatActivity() {
             }
             true
         }
+    }
 
+    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
+        try {
+            val r = Rect()
+            window.decorView.getWindowVisibleDisplayFrame(r)
+            val height = window.decorView.height
+            binding.bottomNavigationView.isVisible = height - r.bottom <= height * 0.1399
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun badgeSetup(id: Int, alerts: Int) {
@@ -79,9 +81,7 @@ class HomeActivity : AppCompatActivity() {
     private fun badgeClear(id: Int) {
         val badgeDrawable = binding.bottomNavigationView.getBadge(id)
         if (badgeDrawable != null) {
-
             badgeDrawable.isVisible = false
-
             badgeDrawable.clearNumber()
         }
     }
@@ -109,10 +109,32 @@ class HomeActivity : AppCompatActivity() {
         binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardListener)
         super.onStop()
     }
-
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout, fragment)
             .commit()
     }
+    private fun countNumberList() {
+        val friendsRef = database.reference.child("Friends").child(firebaseAuth.uid ?: "")
+        friendsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                requestFriendList.clear()
+                for (snap in snapshot.children) {
+                    val presence = snap.child("status").value.toString()
+                    if (presence == "received" && snap.exists()) {
+                        val userRequest = snap.getValue(UsersModel::class.java)
+                        userRequest?.presence = presence
+                        userRequest?.let { requestFriendList.add(it) }
+                    }
+                }
+                if (requestFriendList.size > 0) {
+                    badgeSetup(R.id.nav_friends, requestFriendList.size)
+                } else {
+                    badgeClear(R.id.nav_friends)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
 }

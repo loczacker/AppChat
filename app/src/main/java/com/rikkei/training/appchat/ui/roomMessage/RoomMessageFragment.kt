@@ -2,6 +2,7 @@ package com.rikkei.training.appchat.ui.roomMessage
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
@@ -261,6 +263,38 @@ class RoomMessageFragment : Fragment() {
         } else {
             roomId.substringBefore(myUid)
         }
-
     }
+
+    private  fun countChange(){
+        database.reference.child("Message")
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+
+            })
+    }
+    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
+        try {
+            val r = Rect()
+            activity?.window?.decorView?.getWindowVisibleDisplayFrame(r)
+            val height = activity?.window?.decorView?.height ?: 0
+            val rootView = view?.rootView
+            if (rootView != null) {
+                val heightDiff = rootView.height - (r.bottom - r.top)
+                val keyboardVisibleThreshold = height * 0.1399
+                if (heightDiff > keyboardVisibleThreshold) {
+                    // Bàn phím hiển thị
+                } else {
+                    // Bàn phím ẩn
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
 }
