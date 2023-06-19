@@ -17,6 +17,7 @@ import com.rikkei.training.appchat.ui.message.MessageActivity
 import com.rikkei.training.appchat.model.ItemUsersRVModel
 import com.rikkei.training.appchat.ui.tabUser.ItemUsersRVInterface
 import java.util.*
+import kotlin.collections.HashMap
 
 class TabFriendsFragment : Fragment() {
 
@@ -111,11 +112,13 @@ class TabFriendsFragment : Fragment() {
     }
 
     private fun createRoom(myUid: String, uidFriend: String, roomId: String) {
+        val hashMap: HashMap<String, Any> = HashMap()
+        hashMap["unread messages"] = 0
         database.reference.child("Room").child(roomId).child("member").child(myUid)
-            .setValue("member")
+            .updateChildren(hashMap)
             .addOnSuccessListener {
                 database.reference.child("Room").child(roomId).child("member").child(uidFriend)
-                    .setValue("member")
+                    .updateChildren(hashMap)
             }
     }
 }

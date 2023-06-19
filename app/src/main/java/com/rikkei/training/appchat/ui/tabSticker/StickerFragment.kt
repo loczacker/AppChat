@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.FragmentIconBinding
 import com.rikkei.training.appchat.model.IconModel
@@ -42,14 +45,15 @@ class StickerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val bundle = arguments
         val roomId = bundle!!.getString("roomId")
+        val uidFriend = bundle.getString("uidFriend")
         val receivedArrayList = bundle.getParcelableArrayList<IconModel>("iconList")
         if (receivedArrayList != null){
             iconList.addAll(receivedArrayList)
         }
-        showIcon(roomId)
+        showIcon(roomId, uidFriend)
     }
 
-    private fun showIcon(roomId: String?) {
+    private fun showIcon(roomId: String?, uidFriend: String?) {
         stickerAdapter = StickerAdapter(iconList, object : ClickItemListener {
             override fun onItemCLick(iconModel: IconModel, iconName: String) {
                 val timeStamp = System.currentTimeMillis()
@@ -58,6 +62,19 @@ class StickerFragment : Fragment() {
                     val format = SimpleDateFormat("dd.MM HH:mm")
                     return format.format(date)
                 }
+
+                database.reference.child("Room").child(roomId.toString()).child("member")
+                    .child(uidFriend.toString()).addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val unreadMessages = snapshot.child("unread messages").getValue(Int::class.java) ?: 0
+                            val newCount = unreadMessages + 1
+                            database.reference.child("Room").child(roomId.toString()).child("member")
+                                .child(uidFriend.toString()).child("unread messages").setValue(newCount)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
+
                 val messageHashMap: HashMap<String, Any> = HashMap()
                 messageHashMap["senderId"] = firebaseAuth.uid ?: ""
                 messageHashMap["time"] = convertLongToTime(timeStamp)

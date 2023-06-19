@@ -2,17 +2,14 @@ package com.rikkei.training.appchat.ui.roomMessage
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
@@ -62,9 +59,11 @@ class RoomMessageFragment : Fragment() {
         binding.edSearchMess.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 roomAdapter.clearList()
             }
+
             override fun afterTextChanged(s: Editable?) {
                 val searchQuery = s.toString()
                 if (searchQuery.isNotEmpty()) {
@@ -80,6 +79,7 @@ class RoomMessageFragment : Fragment() {
         roomsMess.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 listRoom.clear()
+                val tempListRoom: ArrayList<RoomModel> = ArrayList()
                 for (snapshot in dataSnapshot.children) {
                     val roomId = snapshot.key.toString()
                     val room = snapshot.getValue(RoomModel::class.java)
@@ -88,10 +88,21 @@ class RoomMessageFragment : Fragment() {
                         checkMess(roomId, searchQuery)
                     }
                 }
+                if (tempListRoom.isEmpty()) {
+                    binding.layoutNotFound.visibility = View.VISIBLE
+                } else {
+                    binding.layoutNotFound.visibility = View.GONE
+                }
+                listRoom.addAll(tempListRoom)
+                roomAdapter.notifyDataSetChanged()
             }
+
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
+
+
+
     private fun checkMess(roomId: String, searchQuery: String) {
         val myUid = firebaseAuth.uid.toString()
         val usersRef: DatabaseReference = database.getReference("Users")
@@ -124,16 +135,17 @@ class RoomMessageFragment : Fragment() {
                                 roomModel.nameRoom = userSnapshot.child("name").value.toString()
                                 roomAdapter.notifyDataSetChanged()
                             }
+
                             override fun onCancelled(error: DatabaseError) {}
                         })
                     }
                     listRoom.addAll(tempListRoom)
                     roomAdapter.notifyDataSetChanged()
                 }
+
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
-
 
 
     private fun buttonListener() {
@@ -147,7 +159,7 @@ class RoomMessageFragment : Fragment() {
             }
         }
 
-        binding.tvClearTextFr.setOnClickListener{
+        binding.tvClearTextFr.setOnClickListener {
             binding.tvClearTextFr.isVisible = false
             binding.ivDeleteText.isVisible = false
             binding.edSearchMess.text?.clear()
@@ -155,7 +167,7 @@ class RoomMessageFragment : Fragment() {
             binding.edSearchMess.clearFocus()
         }
 
-        binding.ivDeleteText.setOnClickListener{
+        binding.ivDeleteText.setOnClickListener {
             binding.edSearchMess.text?.clear()
             binding.edSearchMess.hideKeyboard()
             roomAdapter.clearList()
@@ -183,11 +195,9 @@ class RoomMessageFragment : Fragment() {
                 messIntent.putExtra("uid", roomModel.uidFriend)
                 startActivity(messIntent)
             }
-
         })
 
         val myUid = firebaseAuth.uid ?: ""
-
         val usersRef: DatabaseReference = database.getReference("Users")
         val roomsRef: DatabaseReference = database.getReference("Room")
 
@@ -203,41 +213,50 @@ class RoomMessageFragment : Fragment() {
                         val senderId = snapshot.child("senderId").value.toString()
                         room?.typeRoomMess = true
                         room?.timeStamp = snapshot.child("timeStamp").value.toString()
+                        val unreadMess = snapshot.child("member").child(firebaseAuth.uid ?: "").child("unread messages").value.toString()
+                        if (unreadMess.toIntOrNull() != null && unreadMess.toInt() != 0) {
+                            room?.unReadMessage = unreadMess
+                            room?.isNewMessage = "not_seen"
+                        } else {
+                            room?.isNewMessage = "seen"
+                        }
                         lastMessageCheck(lastMessage, senderId, room, snapshot)
-                        usersRef.child(room?.uidFriend!!)
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(userSnapshot: DataSnapshot) {
-                                    room?.imgRoom = userSnapshot.child("img").value.toString()
-                                    room?.nameRoom = userSnapshot.child("name").value.toString()
-                                    room?.let { listRoom.add(it) }
-                                    roomAdapter.notifyDataSetChanged()
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    Log.e("RoomMessageFragment", "Error: ${error.message}")
-                                }
-                            })
+                        usersRef.child(room?.uidFriend ?: "").addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(userSnapshot: DataSnapshot) {
+                                room?.imgRoom = userSnapshot.child("img").value.toString()
+                                room?.nameRoom = userSnapshot.child("name").value.toString()
+                                roomAdapter.notifyDataSetChanged()
+                            }
+                            override fun onCancelled(error: DatabaseError) {}
+                        })
                     }
+                    room?.let { listRoom.add(it) }
                 }
                 roomAdapter.notifyDataSetChanged()
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.e("RoomMessageFragment", "Error: ${databaseError.message}")
-            }
+            override fun onCancelled(databaseError: DatabaseError) {}
         })
         binding.rvMesHomeMes.adapter = roomAdapter
     }
 
-    private fun lastMessageCheck(lastMessage: String, senderId: String, room: RoomModel?, snapshot: DataSnapshot?) {
+
+    private fun lastMessageCheck(
+        lastMessage: String,
+        senderId: String,
+        room: RoomModel?,
+        snapshot: DataSnapshot?
+    ) {
         if (senderId == (firebaseAuth.uid ?: "")) {
             when (lastMessage) {
                 "Sticker" -> {
                     room?.lastMessage = "Bạn đã gửi một Sticker"
                 }
+
                 "Image" -> {
                     room?.lastMessage = "Bạn đã gửi một hình ảnh"
                 }
+
                 else -> {
                     room?.lastMessage = snapshot?.child("lastMessage")?.value.toString()
                 }
@@ -247,16 +266,17 @@ class RoomMessageFragment : Fragment() {
                 "Sticker" -> {
                     room?.lastMessage = "Bạn của bạn đã gửi một Sticker"
                 }
+
                 "Image" -> {
                     room?.lastMessage = "Bạn của bạn đã gửi một hình ảnh"
                 }
+
                 else -> {
                     room?.lastMessage = snapshot?.child("lastMessage")?.value.toString()
                 }
             }
         }
     }
-
     private fun extractUidFriend(roomId: String, myUid: String): String {
         return if (roomId.startsWith(myUid)) {
             roomId.removePrefix(myUid)
@@ -264,37 +284,4 @@ class RoomMessageFragment : Fragment() {
             roomId.substringBefore(myUid)
         }
     }
-
-    private  fun countChange(){
-        database.reference.child("Message")
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-
-            })
-    }
-    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
-        try {
-            val r = Rect()
-            activity?.window?.decorView?.getWindowVisibleDisplayFrame(r)
-            val height = activity?.window?.decorView?.height ?: 0
-            val rootView = view?.rootView
-            if (rootView != null) {
-                val heightDiff = rootView.height - (r.bottom - r.top)
-                val keyboardVisibleThreshold = height * 0.1399
-                if (heightDiff > keyboardVisibleThreshold) {
-                    // Bàn phím hiển thị
-                } else {
-                    // Bàn phím ẩn
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-
 }

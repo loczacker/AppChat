@@ -25,4 +25,6 @@
     <string name="refuse">Từ chối</string>
     <string name="change_english">Bạn có muốn đổi sang tiếng anh không</string>
     <string name="add_Friend">Kết bạn</string>
+    <string name="add_friend">Lời mời kết bạn</string>
+    <string name="sent_request_friend">Đã gửi kết bạn</string>
 </resources>

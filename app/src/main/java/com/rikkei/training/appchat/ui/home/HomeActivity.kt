@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.databinding.ActivityHomeBinding
+import com.rikkei.training.appchat.model.RoomModel
 import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.ui.tabFriends.HomeFriendsFragment
 import com.rikkei.training.appchat.ui.roomMessage.RoomMessageFragment
@@ -32,12 +33,13 @@ class HomeActivity : AppCompatActivity() {
 
     private val requestFriendList: ArrayList<UsersModel> = arrayListOf()
 
+    private val countUnReadMessRoom: ArrayList<RoomModel> = arrayListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        countListenerRoomChange()
         countNumberList()
-
         val backFragment = intent.getIntExtra("backFragment", 0)
         if (backFragment == 1) {
             replaceFragment(HomeFriendsFragment())
@@ -59,6 +61,7 @@ class HomeActivity : AppCompatActivity() {
             }
             true
         }
+        setContentView(binding.root)
     }
 
     private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
@@ -135,6 +138,44 @@ class HomeActivity : AppCompatActivity() {
             }
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
+
+    private fun countListenerRoomChange() {
+        val myUid = firebaseAuth.uid ?: ""
+        database.reference.child("Room")
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    countUnReadMessRoom.clear()
+                    for (snapshot in snapshot.children) {
+                        val roomId = snapshot.key.toString()
+                        val countRoom = snapshot.getValue(RoomModel::class.java)
+                        countRoom?.uidFriend = extractUidFriend(roomId, myUid)
+                        if (roomId.contains(myUid)) {
+                            val unreadMess = snapshot.child("member").child(myUid)
+                                .child("unread messages").value.toString()
+                            if (unreadMess.toIntOrNull() != null && unreadMess.toInt() != 0) {
+                                countRoom?.unReadMessage = unreadMess
+                                countRoom?.let { countUnReadMessRoom.add(it) }
+                            }
+                        }
+                    }
+                    if (countUnReadMessRoom.size > 0) {
+                        badgeSetup(R.id.nav_messenger, countUnReadMessRoom.size)
+                    } else {
+                        badgeClear(R.id.nav_messenger)
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {}
+
+            })
+    }
+
+    private fun extractUidFriend(roomId: String, myUid: String): String {
+        return if (roomId.startsWith(myUid)) {
+            roomId.removePrefix(myUid)
+        } else {
+            roomId.substringBefore(myUid)
+        }
     }
 
 }

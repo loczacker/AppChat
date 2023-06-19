@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:fontFamily="@font/lato_bold"
-            android:text="Bạn bè"
+            android:text="@string/friend"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/img_circle_home_mess"

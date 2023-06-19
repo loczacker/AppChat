@@ -14,17 +14,17 @@
             android:id="@+id/fl_iv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/circle_shape"
+            tools:background="@drawable/circle_shape"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_circle_home_mess"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding="4dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center"
+                android:padding="4dp"
                 tools:src="@drawable/random3" />
 
         </FrameLayout>
@@ -49,6 +49,8 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/lato_medium"
             android:textSize="16sp"
+            android:paddingBottom="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/txt_name"
             app:layout_constraintTop_toBottomOf="@+id/txt_name"
             tools:text="Hello" />
@@ -67,7 +69,6 @@
             app:layout_constraintEnd_toEndOf="@+id/fl_iv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="1"
             tools:visibility="visible" />
 
         <TextView

@@ -1,5 +1,6 @@
 package com.rikkei.training.appchat.ui.roomMessage
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -37,12 +38,27 @@ class RoomMessengerAdapter(
                 itemClickRecyclerView.getRoomInfo(room)
                 binding.tvUnreadMessage.isVisible = false
             }
+            when(room.isNewMessage) {
+                "not_seen" ->{
+                    binding.tvUnreadMessage.isVisible = true
+                    binding.tvUnreadMessage.text = room.unReadMessage
+                    binding.flIv.setBackgroundResource(R.drawable.circle_shape)
+                }
+                "seen" -> {
+                    binding.tvUnreadMessage.isVisible = false
+                    binding.flIv.setBackgroundColor(Color.TRANSPARENT)
+                }
+                else -> {
+                    binding.tvUnreadMessage.isVisible = false
+                    binding.flIv.setBackgroundColor(Color.TRANSPARENT)
+                }
+            }
         }
     }
 
     class SearchMsgRoomHolder(private val binding: ItemSearchMessBinding):
     RecyclerView.ViewHolder(binding.root){
-        fun bind(searchMess: RoomModel, itemClickRecyclerView: ItemClick){
+        fun bind(searchMess: RoomModel){
             Glide.with(binding.imgCircleSearchMess.context).load(searchMess.imgRoom)
                 .placeholder(R.drawable.profile)
                 .circleCrop()
@@ -82,7 +98,7 @@ class RoomMessengerAdapter(
         val room = roomList[position]
         when(holder) {
             is RoomViewHolder -> holder.bind(room, ItemClick)
-            is SearchMsgRoomHolder -> holder.bind(room, ItemClick)
+            is SearchMsgRoomHolder -> holder.bind(room)
             else ->throw IllegalArgumentException("Invalid ViewHolder")
         }
     }

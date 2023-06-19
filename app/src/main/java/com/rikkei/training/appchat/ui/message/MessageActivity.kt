@@ -73,6 +73,14 @@ class MessageActivity : AppCompatActivity() {
                 binding.frameLayoutMess.visibility = View.VISIBLE
             }
         }
+        database.reference.child("Room").child(roomId).child("member")
+            .child(firebaseAuth.uid?:"").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    database.reference.child("Room").child(roomId).child("member")
+                        .child(firebaseAuth.uid?:"").child("unread messages").setValue(0)
+                }
+                override fun onCancelled(error: DatabaseError) {}
+            })
         addIcon()
         infoUserChat()
         backHome()
@@ -100,7 +108,6 @@ class MessageActivity : AppCompatActivity() {
         iconList.add(IconModel(R.drawable.watering_plants, "watering_plants"))
 
     }
-
     private fun backHome() {
         binding.imBackHome.setOnClickListener {
             val homeIntent = Intent(this, HomeActivity::class.java)
@@ -153,6 +160,7 @@ class MessageActivity : AppCompatActivity() {
                 val hashMap: HashMap<String, Any> = HashMap()
                 hashMap["lastMessage"] = content
                 hashMap["timeStamp"] = convertLongToTime(timeStamp)
+                hashMap["senderId"] = firebaseAuth.uid?:""
                 database.reference.child("Message").child(roomId).push().setValue(mess)
                     .addOnSuccessListener {
                         database.reference.child("Room").child(roomId).updateChildren(hashMap)
@@ -162,6 +170,18 @@ class MessageActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.not_empty_message), Toast.LENGTH_SHORT)
                     .show()
             }
+
+            database.reference.child("Room").child(roomId).child("member")
+                .child(uidFriend).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val unreadMessages = snapshot.child("unread messages").getValue(Int::class.java) ?: 0
+                        val newCount = unreadMessages + 1
+                        database.reference.child("Room").child(roomId).child("member")
+                            .child(uidFriend).child("unread messages").setValue(newCount)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
         }
     }
 
@@ -314,6 +334,7 @@ class MessageActivity : AppCompatActivity() {
         }
         val photoBundle = Bundle()
         photoBundle.putString("roomId", roomId)
+        photoBundle.putString("uidFriend", uidFriend)
         galleryFragment.arguments = photoBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, galleryFragment)
         fragmentTransaction.commit()
@@ -326,6 +347,7 @@ class MessageActivity : AppCompatActivity() {
         val stickerFragment = StickerFragment()
         val iconBundle = Bundle()
         iconBundle.putString("roomId", roomId)
+        iconBundle.putString("uidFriend", uidFriend)
         iconBundle.putParcelableArrayList("iconList", iconList)
         stickerFragment.arguments = iconBundle
         fragmentTransaction.replace(R.id.frame_layout_mess, stickerFragment)

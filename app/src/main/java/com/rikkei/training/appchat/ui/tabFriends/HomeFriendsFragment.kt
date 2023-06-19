@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
@@ -128,12 +126,13 @@ class HomeFriendsFragment : Fragment() {
             if (hasFocus) {
                 binding.tvClearTextFr.isVisible = true
                 binding.ivDeleteTextFr.isVisible = true
-                binding.layoutViewpager.isVisible = false
+                binding.tabFriends.isVisible = false
+                binding.vpFriends.isVisible = false
                 binding.rvSearchFr.isVisible = true
             } else {
                 binding.layoutSearchFriend.hideKeyboard()
-                binding.layoutViewpager.isVisible = true
-                binding.layoutViewpager.isVisible = true
+                binding.tabFriends.isVisible = true
+                binding.vpFriends.isVisible = true
                 binding.rvSearchFr.isVisible = false
                 searchFriendAdapter.clearList()
             }

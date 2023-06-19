@@ -8,7 +8,11 @@ data class RoomModel(
     var uidFriend: String? = null,
     var contentMess: String? = null,
     var senderId : String? = null,
-    var typeRoomMess: Boolean
+    var unReadMessage: String?= null,
+    var typeRoomMess: Boolean,
+    var isNewMessage: String = "not_seen"
 ) {
-    constructor() : this(null, null, null, null, null, null, null, false)
+    constructor() : this(null, null,
+        null, null, null,
+        null, null,null, false)
 }

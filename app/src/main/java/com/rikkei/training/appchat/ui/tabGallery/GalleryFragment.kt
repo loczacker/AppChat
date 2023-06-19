@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.rikkei.training.appchat.databinding.FragmentGalleryBinding
 import java.text.SimpleDateFormat
@@ -67,6 +70,7 @@ class GalleryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val bundle = arguments
         val roomId = bundle!!.getString("roomId")
+        val uidFriend = bundle.getString("uidFriend")
         binding.layoutButton.isVisible = false
         binding.btnCancel.setOnClickListener {
             galleryFragmentListener?.visibleButton()
@@ -89,7 +93,7 @@ class GalleryFragment : Fragment() {
         updateButtonVisibility()
 
         binding.btnSent.setOnClickListener {
-            uploadImagesToFirebaseStorage(selectedPhotoList, roomId)
+            uploadImagesToFirebaseStorage(selectedPhotoList, roomId, uidFriend)
             galleryAdapter.clearSelections()
             selectedPhotoList.clear()
             updateButtonVisibility()
@@ -98,7 +102,8 @@ class GalleryFragment : Fragment() {
 
     private fun uploadImagesToFirebaseStorage(
         imageList: List<String>,
-        roomId: String?
+        roomId: String?,
+        uidFriend: String?
     ) {
         val timeStamp = System.currentTimeMillis()
         val messageId = FirebaseDatabase.getInstance().reference.child("Message").push().key
@@ -128,6 +133,19 @@ class GalleryFragment : Fragment() {
                     roomUpdates["lastMessage"] = "Image"
                     roomUpdates["timeStamp"] = convertLongToTime(timeStamp)
                     roomUpdates["senderId"] = firebaseAuth.uid ?: ""
+
+                    database.reference.child("Room").child(roomId.toString()).child("member")
+                        .child(uidFriend.toString()).addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val unreadMessages = snapshot.child("unread messages").getValue(Int::class.java) ?: 0
+                                val newCount = unreadMessages + 1
+                                database.reference.child("Room").child(roomId.toString()).child("member")
+                                    .child(uidFriend.toString()).child("unread messages").setValue(newCount)
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {}
+                        })
 
                     database.reference.child("Message").child(roomId.toString())
                         .push().updateChildren(messageHashMap)

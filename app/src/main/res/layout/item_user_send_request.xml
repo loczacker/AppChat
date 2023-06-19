@@ -6,14 +6,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/item_home_user"
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="50dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_circle_home_request_send"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/random3" />
@@ -32,8 +32,8 @@
 
         <Button
             android:id="@+id/btn_accept"
-            android:layout_width="95dp"
-            android:layout_height="40dp"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
             android:background="@drawable/button_custom_add"
             android:gravity="center"
             android:text="Đồng ý"
