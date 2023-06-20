@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -74,10 +75,22 @@ class HomeFriendsFragment : Fragment() {
         binding.edSearchFr.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
+
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (binding.edSearchFr.text!!.isEmpty()||friendSearchList.isEmpty()) {
+                    binding.layoutNotFound.visibility = View.VISIBLE
+                } else {
+                    binding.layoutNotFound.visibility = View.GONE
+                }
                 searchFriendAdapter.clearList()
             }
+
             override fun afterTextChanged(p0: Editable?) {
+                if (binding.edSearchFr.text!!.isEmpty()||friendSearchList.isEmpty()) {
+                    binding.layoutNotFound.visibility = View.VISIBLE
+                } else {
+                    binding.layoutNotFound.visibility = View.GONE
+                }
                 val searchQuery = p0.toString()
                 if (searchQuery.isNotEmpty()) {
                     filter(searchQuery)
@@ -85,6 +98,7 @@ class HomeFriendsFragment : Fragment() {
             }
         })
     }
+
     private fun filter(searchQuery: String) {
         friendSearchList.clear()
         val friendData = database.getReference("Friends")
@@ -102,6 +116,7 @@ class HomeFriendsFragment : Fragment() {
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
+
     private fun checkFriend(
         friendUid: String,
         searchQuery: String
@@ -116,7 +131,9 @@ class HomeFriendsFragment : Fragment() {
                         friendSearchList.add(friend)
                     }
                     searchFriendAdapter.notifyDataSetChanged()
+                    binding.layoutNotFound.isVisible = friendSearchList.isEmpty()
                 }
+
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
@@ -126,31 +143,38 @@ class HomeFriendsFragment : Fragment() {
             if (hasFocus) {
                 binding.tvClearTextFr.isVisible = true
                 binding.ivDeleteTextFr.isVisible = true
+                searchFriendAdapter.clearList()
                 binding.tabFriends.isVisible = false
                 binding.vpFriends.isVisible = false
                 binding.rvSearchFr.isVisible = true
             } else {
-                binding.layoutSearchFriend.hideKeyboard()
+                binding.edSearchFr.hideKeyboard()
                 binding.tabFriends.isVisible = true
                 binding.vpFriends.isVisible = true
-                binding.rvSearchFr.isVisible = false
                 searchFriendAdapter.clearList()
+                binding.rvSearchFr.isVisible = false
             }
         }
 
         binding.tvClearTextFr.setOnClickListener {
             binding.tvClearTextFr.isVisible = false
-            binding.edSearchFr.clearFocus()
             binding.ivDeleteTextFr.isVisible = false
             binding.edSearchFr.text?.clear()
-            binding.layoutSearchFriend.hideKeyboard()
+            binding.layoutNotFound.isVisible = false
+            binding.edSearchFr.clearFocus()
         }
 
-        binding.ivDeleteTextFr.setOnClickListener{
+        binding.ivDeleteTextFr.setOnClickListener {
             binding.edSearchFr.text?.clear()
             binding.edSearchFr.hideKeyboard()
-            binding.ivDeleteTextFr.isVisible = false
-            binding.edSearchFr.clearFocus()
+            searchFriendAdapter.clearList()
+        }
+
+        binding.edSearchFr.setOnKeyListener { _, p1, _ ->
+            if (p1 == KeyEvent.KEYCODE_DEL) {
+                searchFriendAdapter.clearList()
+            }
+            false
         }
     }
 

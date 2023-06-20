@@ -45,6 +45,7 @@ class RoomMessageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRoomMessengerBinding.inflate(inflater, container, false)
+        binding.layoutNotFound.isVisible = false
         return binding.root
     }
 
@@ -62,9 +63,19 @@ class RoomMessageFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 roomAdapter.clearList()
+                if (binding.edSearchMess.text!!.isEmpty()||listRoom.isEmpty()) {
+                    binding.layoutNotFound.visibility = View.VISIBLE
+                } else {
+                    binding.layoutNotFound.visibility = View.GONE
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
+                if (binding.edSearchMess.text!!.isEmpty()||listRoom.isEmpty()) {
+                    binding.layoutNotFound.visibility = View.VISIBLE
+                } else {
+                    binding.layoutNotFound.visibility = View.GONE
+                }
                 val searchQuery = s.toString()
                 if (searchQuery.isNotEmpty()) {
                     filter(searchQuery)
@@ -79,7 +90,6 @@ class RoomMessageFragment : Fragment() {
         roomsMess.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 listRoom.clear()
-                val tempListRoom: ArrayList<RoomModel> = ArrayList()
                 for (snapshot in dataSnapshot.children) {
                     val roomId = snapshot.key.toString()
                     val room = snapshot.getValue(RoomModel::class.java)
@@ -88,19 +98,11 @@ class RoomMessageFragment : Fragment() {
                         checkMess(roomId, searchQuery)
                     }
                 }
-                if (tempListRoom.isEmpty()) {
-                    binding.layoutNotFound.visibility = View.VISIBLE
-                } else {
-                    binding.layoutNotFound.visibility = View.GONE
-                }
-                listRoom.addAll(tempListRoom)
-                roomAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-
 
 
     private fun checkMess(roomId: String, searchQuery: String) {
@@ -141,6 +143,7 @@ class RoomMessageFragment : Fragment() {
                     }
                     listRoom.addAll(tempListRoom)
                     roomAdapter.notifyDataSetChanged()
+                    binding.layoutNotFound.isVisible = listRoom.isEmpty()
                 }
 
                 override fun onCancelled(error: DatabaseError) {}
@@ -163,6 +166,7 @@ class RoomMessageFragment : Fragment() {
             binding.tvClearTextFr.isVisible = false
             binding.ivDeleteText.isVisible = false
             binding.edSearchMess.text?.clear()
+            binding.layoutNotFound.isVisible = false
             showRoomInfo()
             binding.edSearchMess.clearFocus()
         }
@@ -170,6 +174,7 @@ class RoomMessageFragment : Fragment() {
         binding.ivDeleteText.setOnClickListener {
             binding.edSearchMess.text?.clear()
             binding.edSearchMess.hideKeyboard()
+            binding.layoutNotFound.isVisible = true
             roomAdapter.clearList()
         }
 
@@ -180,6 +185,7 @@ class RoomMessageFragment : Fragment() {
             false
         }
     }
+
 
     private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -229,10 +235,13 @@ class RoomMessageFragment : Fragment() {
                             }
                             override fun onCancelled(error: DatabaseError) {}
                         })
+                        room?.let { listRoom.add(it) }
                     }
-                    room?.let { listRoom.add(it) }
                 }
                 roomAdapter.notifyDataSetChanged()
+                if (listRoom.isEmpty()) {
+                    binding.layoutNotFound.isVisible = false
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -258,7 +267,7 @@ class RoomMessageFragment : Fragment() {
                 }
 
                 else -> {
-                    room?.lastMessage = snapshot?.child("lastMessage")?.value.toString()
+                    room?.lastMessage = "Bạn: " + snapshot?.child("lastMessage")?.value.toString()
                 }
             }
         } else {
@@ -277,6 +286,7 @@ class RoomMessageFragment : Fragment() {
             }
         }
     }
+
     private fun extractUidFriend(roomId: String, myUid: String): String {
         return if (roomId.startsWith(myUid)) {
             roomId.removePrefix(myUid)

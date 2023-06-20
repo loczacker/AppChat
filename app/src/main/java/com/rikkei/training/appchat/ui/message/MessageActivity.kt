@@ -165,23 +165,22 @@ class MessageActivity : AppCompatActivity() {
                     .addOnSuccessListener {
                         database.reference.child("Room").child(roomId).updateChildren(hashMap)
                     }
+                database.reference.child("Room").child(roomId).child("member")
+                    .child(uidFriend).addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val unreadMessages = snapshot.child("unread messages").getValue(Int::class.java) ?: 0
+                            val newCount = unreadMessages + 1
+                            database.reference.child("Room").child(roomId).child("member")
+                                .child(uidFriend).child("unread messages").setValue(newCount)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
                 binding.etSend.text.clear()
             } else {
                 Toast.makeText(this, getString(R.string.not_empty_message), Toast.LENGTH_SHORT)
                     .show()
             }
-
-            database.reference.child("Room").child(roomId).child("member")
-                .child(uidFriend).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val unreadMessages = snapshot.child("unread messages").getValue(Int::class.java) ?: 0
-                        val newCount = unreadMessages + 1
-                        database.reference.child("Room").child(roomId).child("member")
-                            .child(uidFriend).child("unread messages").setValue(newCount)
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
-                })
         }
     }
 

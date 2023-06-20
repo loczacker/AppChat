@@ -114,11 +114,21 @@ class TabFriendsFragment : Fragment() {
     private fun createRoom(myUid: String, uidFriend: String, roomId: String) {
         val hashMap: HashMap<String, Any> = HashMap()
         hashMap["unread messages"] = 0
-        database.reference.child("Room").child(roomId).child("member").child(myUid)
-            .updateChildren(hashMap)
+
+
+        val roomHashMap: HashMap<String, Any> = HashMap()
+        roomHashMap["lastMessage"] = ""
+        roomHashMap["timeStamp"] = ""
+
+        val updates: MutableMap<String, Any> = HashMap()
+        updates["Room/$roomId/member/$myUid"] = hashMap
+        updates["Room/$roomId/member/$uidFriend"] = hashMap
+
+        database.reference.updateChildren(updates)
             .addOnSuccessListener {
-                database.reference.child("Room").child(roomId).child("member").child(uidFriend)
-                    .updateChildren(hashMap)
+                database.reference.updateChildren(updates)
+            }
+            .addOnFailureListener {
             }
     }
 }

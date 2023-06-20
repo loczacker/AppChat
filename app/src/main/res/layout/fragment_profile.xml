@@ -146,10 +146,10 @@
             android:fontFamily="@font/lato_medium"
             android:text="Tiếng việt"
             android:textColor="#1A7FF1"
+            android:paddingHorizontal="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView"
             app:layout_constraintEnd_toStartOf="@+id/change_language"
-            app:layout_constraintTop_toTopOf="@+id/textView"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="@+id/textView" />
 
         <TextView
             android:id="@+id/textView7"

@@ -53,7 +53,7 @@ class UserAllAdapter(
             }
 
         }
-        }
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {

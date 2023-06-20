@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.rikkei.training.appchat.R
+import com.rikkei.training.appchat.databinding.DialogChangeLanguageBinding
 import com.rikkei.training.appchat.databinding.DialogChoiceLogOutBinding
 import com.rikkei.training.appchat.databinding.FragmentProfileBinding
 import com.rikkei.training.appchat.ui.login.LoginActivity
@@ -50,6 +51,31 @@ class ProfileFragment : Fragment() {
         binding.imgSignOut.setOnClickListener{
             checkSignOut()
         }
+        binding.languageCurrent.setOnClickListener {
+            changeLanguage()
+        }
+    }
+
+    private fun changeLanguage() {
+        val dialogBinding: DialogChangeLanguageBinding =
+            DialogChangeLanguageBinding.inflate(layoutInflater)
+        val dialog = Dialog(requireActivity())
+        dialog.setContentView(dialogBinding.root)
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.apply {
+            window?.setLayout(layoutParams.width, layoutParams.height)
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+            setCancelable(false)
+        }
+        dialogBinding.btnOk.setOnClickListener {
+        }
+        dialogBinding.btnRefuse.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     private fun checkSignOut() {
