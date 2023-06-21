@@ -45,7 +45,6 @@ class RoomMessageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRoomMessengerBinding.inflate(inflater, container, false)
-        binding.layoutNotFound.isVisible = false
         return binding.root
     }
 

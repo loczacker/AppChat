@@ -112,23 +112,27 @@ class TabFriendsFragment : Fragment() {
     }
 
     private fun createRoom(myUid: String, uidFriend: String, roomId: String) {
+        val databaseReference = FirebaseDatabase.getInstance().reference
+
+        val memberPath1 = "Room/$roomId/member/$myUid"
+        val memberPath2 = "Room/$roomId/member/$uidFriend"
+        val roomPath = "Room/$roomId"
+
         val hashMap: HashMap<String, Any> = HashMap()
         hashMap["unread messages"] = 0
-
 
         val roomHashMap: HashMap<String, Any> = HashMap()
         roomHashMap["lastMessage"] = ""
         roomHashMap["timeStamp"] = ""
 
-        val updates: MutableMap<String, Any> = HashMap()
-        updates["Room/$roomId/member/$myUid"] = hashMap
-        updates["Room/$roomId/member/$uidFriend"] = hashMap
+        databaseReference.child(memberPath1).updateChildren(hashMap)
 
-        database.reference.updateChildren(updates)
-            .addOnSuccessListener {
-                database.reference.updateChildren(updates)
-            }
-            .addOnFailureListener {
-            }
+        databaseReference.child(memberPath2).updateChildren(hashMap)
+
+        databaseReference.child(roomPath).updateChildren(roomHashMap)
+
     }
+
+
+
 }

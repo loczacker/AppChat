@@ -79,7 +79,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun checkSignOut() {
-
         val dialogBinding: DialogChoiceLogOutBinding =
             DialogChoiceLogOutBinding.inflate(layoutInflater)
         val dialog = Dialog(requireActivity())
@@ -94,6 +93,7 @@ class ProfileFragment : Fragment() {
             setCancelable(false)
         }
         dialogBinding.btnOk.setOnClickListener {
+            dialog.cancel()
             firebaseAuth.signOut()
             startActivity(Intent(activity, LoginActivity::class.java))
             requireActivity().finish()

@@ -1,5 +1,6 @@
 package com.rikkei.training.appchat.ui.register
 
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Patterns
 import android.view.View
-import android.widget.CompoundButton
+import android.view.ViewGroup
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -21,6 +22,7 @@ import com.google.firebase.ktx.Firebase
 import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.model.UsersModel
 import com.rikkei.training.appchat.databinding.ActivityRegisterBinding
+import com.rikkei.training.appchat.databinding.DialogForgotPasswordBinding
 import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.login.LoginActivity
 
@@ -44,11 +46,12 @@ class RegisterActivity : AppCompatActivity() {
         binding.tvLoginRegister.setOnClickListener{
             loginBack()
         }
-        binding.ibRes.setOnClickListener{
+        binding.ibRes.setOnClickListener {
             loginBack()
         }
-
-        //validate signup firebase
+        binding.tvForgot.setOnClickListener {
+            forgotPassword()
+        }
 
         firebaseAuth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
@@ -65,7 +68,7 @@ class RegisterActivity : AppCompatActivity() {
                         && password.matches(".*[A-Z].*".toRegex())
                         && password.matches(".*[a-z].*".toRegex())
                         && password.matches(".*\\d.*".toRegex())) {
-                        register(email,password)
+                        register(password)
                     } else {
 
                         Toast.makeText(this, "Password is not invalid", Toast.LENGTH_SHORT).show()
@@ -81,6 +84,38 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun forgotPassword() {
+        val dialogBinding: DialogForgotPasswordBinding =
+            DialogForgotPasswordBinding.inflate(layoutInflater)
+        val dialog = Dialog(this)
+        dialog.setContentView(dialogBinding.root)
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.apply {
+            window?.setLayout(layoutParams.width, layoutParams.height)
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+            setCancelable(false)
+        }
+        dialogBinding.imCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialogBinding.btnOk.setOnClickListener {
+            val forgotPass = dialogBinding.etEmail.text
+            firebaseAuth.sendPasswordResetEmail(forgotPass.toString())
+                .addOnSuccessListener {
+                    dialogBinding.etEmail.clearFocus()
+                    dialogBinding.etEmail.text.clear()
+                    Toast.makeText(this, "Check your Email!", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Try again", Toast.LENGTH_SHORT).show()
+                }
+        }
+        dialog.show()
     }
 
     //Change Color
@@ -130,7 +165,7 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
         })
-        binding.cb1.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, _ ->
+        binding.cb1.setOnCheckedChangeListener { _, _ ->
             if (binding.edName.text!!.isNotEmpty()
                 && binding.edEmail.text!!.isNotEmpty()
                 && binding.edPassword.text!!.isNotEmpty()
@@ -140,7 +175,7 @@ class RegisterActivity : AppCompatActivity() {
             } else {
                 binding.btRes.setBackgroundResource(R.drawable.button_white)
             }
-        })
+        }
     }
 
 
@@ -167,7 +202,7 @@ class RegisterActivity : AppCompatActivity() {
         finish()
     }
 
-    private  fun register(email: String, password: String){
+    private  fun register(password: String){
         val name = binding.edName.text.toString()
         val email = binding.edEmail.text.toString()
         Firebase.auth.createUserWithEmailAndPassword(email, password)

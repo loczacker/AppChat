@@ -26,5 +26,6 @@
     <string name="sent_request_friend">Đã gửi kết bạn</string>
     <string name="message">Tin nhắn</string>
     <string name="friend">Bạn bè</string>
+    <string name="forgot_password">Nhập email cần khôi phục mật khẩu</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.rikkei.training.appchat.ui.login
 
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -21,6 +23,7 @@ import com.rikkei.training.appchat.R
 import com.rikkei.training.appchat.ui.home.HomeActivity
 import com.rikkei.training.appchat.ui.register.RegisterActivity
 import com.rikkei.training.appchat.databinding.ActivityLoginBinding
+import com.rikkei.training.appchat.databinding.DialogForgotPasswordBinding
 
 
 class LoginActivity : AppCompatActivity() {
@@ -52,7 +55,44 @@ class LoginActivity : AppCompatActivity() {
                 binding.btnLogin.visibility = View.VISIBLE
             }
         }
+
+        binding.tvForgotPassword.setOnClickListener {
+            forgotPassword()
+        }
         binding.edEmail.addTextChangedListener()
+    }
+
+    private fun forgotPassword() {
+        val dialogBinding: DialogForgotPasswordBinding =
+            DialogForgotPasswordBinding.inflate(layoutInflater)
+        val dialog = Dialog(this)
+        dialog.setContentView(dialogBinding.root)
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.apply {
+            window?.setLayout(layoutParams.width, layoutParams.height)
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+            setCancelable(false)
+        }
+        dialogBinding.imCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialogBinding.btnOk.setOnClickListener {
+            val forgotPass = dialogBinding.etEmail.text
+            firebaseAuth.sendPasswordResetEmail(forgotPass.toString())
+                .addOnSuccessListener {
+                    dialogBinding.etEmail.clearFocus()
+                    dialogBinding.etEmail.text.clear()
+                    Toast.makeText(this, "Check your Email!", Toast.LENGTH_SHORT).show()
+                    dialog.cancel()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Try again", Toast.LENGTH_SHORT).show()
+                }
+        }
+        dialog.show()
     }
 
     private fun textOneSpan() {
